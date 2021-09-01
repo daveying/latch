@@ -1,7 +1,7 @@
 #ifndef ZERO_DELAY_PIN_HPP_
 #define ZERO_DELAY_PIN_HPP_
 
-#include <IPin.h>
+#include <IPin.hpp>
 
 namespace gate
 {

@@ -9,7 +9,10 @@ namespace gate
 {
 
 // ID = 1, InputSize = 2, OutputSize = 1
-DEFINE_GATE_TRUTH_TABLE(NORGate, 1, 2, 1)
+static constexpr size_t NORGateID         = 1;
+static constexpr size_t NORGateInputSize  = 2;
+static constexpr size_t NORGateOutputSize = 1;
+DEFINE_GATE_TRUTH_TABLE(NORGate, NORGateID, NORGateInputSize, NORGateOutputSize)
 {
     if (input[0]->value() != input[1]->value())
     {
@@ -20,11 +23,11 @@ DEFINE_GATE_TRUTH_TABLE(NORGate, 1, 2, 1)
         output[0]->value(PinState::Low);
     }
 }
-END_GATE_TRUTH_TABLE
+END_GATE_TRUTH_TABLE(NORGate, NORGateID, NORGateInputSize, NORGateOutputSize)
 
 using NORGate = GateTemplate<
     TypePack<ZeroDelayPin, ZeroDelayPin>,
-    gate_info<1>::TruthTable,
+    gate_info<NORGateID>::TruthTable,
     TypePack<ZeroDelayPin>>;
 
 } // namespace gate

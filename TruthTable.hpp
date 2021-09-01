@@ -26,7 +26,7 @@ class _TruthTable : public TruthTableBase
         static constexpr GateID ID = _ID;                                   \
         using InputArray = std::array<std::unique_ptr<IPin>, _InputSize>;   \
         using OutputArray = std::array<std::unique_ptr<IPin>, _OutputSize>; \
-        void compute(const InputArray& input, const OutputArray& output)
+        void compute(const InputArray& input, const OutputArray& output) const
 
 #define END_GATE_TRUTH_TABLE(_Name, _ID, _InputSize, _OutputSize)           \
     };                                                                      \
@@ -36,7 +36,7 @@ class _TruthTable : public TruthTableBase
     public:                                                                 \
         static constexpr size_t InputSize  = _InputSize;                    \
         static constexpr size_t OutputSize = _OutputSize;                   \
-        static constexpr char* Name        = #_Name;                        \
+        static constexpr const char* Name  = #_Name;                        \
         using TruthTable = _TruthTable<_ID, _InputSize, _OutputSize>;       \
     };                                                                      \
 
