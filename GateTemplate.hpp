@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <IGate.hpp>
+#include <IPin.hpp>
 
 namespace gate
 {
@@ -34,6 +35,21 @@ public:
     virtual void compute() override
     {
         m_truthTable.compute(m_inputPins, m_outputPins);
+        for (auto& output : m_outputPins)
+        {
+            for (auto& pear : output->peers())
+            {
+                pear->value(output->value());
+            }
+        }
+    }
+    virtual IPin* input(size_t index) override
+    {
+        return m_inputPins[index].get();
+    }
+    virtual IPin* output(size_t index) override
+    {
+        return m_outputPins[index].get();
     }
 protected:
     static const TruthTableT m_truthTable;

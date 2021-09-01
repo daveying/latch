@@ -9,12 +9,12 @@ namespace gate
 {
 
 // ID = 1, InputSize = 2, OutputSize = 1
-static constexpr size_t NORGateID         = 1;
+static constexpr GateID NORGateID         = 1;
 static constexpr size_t NORGateInputSize  = 2;
 static constexpr size_t NORGateOutputSize = 1;
 DEFINE_GATE_TRUTH_TABLE(NORGate, NORGateID, NORGateInputSize, NORGateOutputSize)
 {
-    if (input[0]->value() != input[1]->value())
+    if (input[0]->value() == PinState::Low && input[1]->value() == PinState::Low)
     {
         output[0]->value(PinState::High);
     }
