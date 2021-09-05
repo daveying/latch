@@ -8,6 +8,7 @@ set(GATE_SOURCES
     IGate.hpp
     GateTemplate.hpp
     TruthTable.hpp
+    ORGate.hpp
     NORGate.hpp
     NANDGate.hpp
 )

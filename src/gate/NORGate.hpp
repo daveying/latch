@@ -32,4 +32,4 @@ using NORGate = GateTemplate<
 
 } // namespace gate
 
-#endif
+#endif // NOR_GATE_HPP__
