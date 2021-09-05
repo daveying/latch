@@ -1,6 +1,8 @@
 #ifndef IPIN_HPP_
 #define IPIN_HPP_
 
+#include <cstdint>
+
 namespace gate
 {
 

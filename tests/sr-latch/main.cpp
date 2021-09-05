@@ -1,4 +1,3 @@
-#include <iostream>
 #include <NORGate.hpp>
 
 #include <gtest/gtest.h>
