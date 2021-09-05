@@ -11,3 +11,4 @@ FetchContent_MakeAvailable(googletest)
 
 add_subdirectory(components)
 add_subdirectory(sr-latch)
+add_subdirectory(d-latch)
