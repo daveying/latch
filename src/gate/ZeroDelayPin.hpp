@@ -14,7 +14,8 @@ class ZeroDelayInputPin : public IPin
 {
 public:
     explicit ZeroDelayInputPin(IGate* parent)
-        : m_parent(parent)
+        : m_parent{parent}
+        , m_value{PinState::Low}
     {}
     virtual const IGate* parent() const override
     {
@@ -41,7 +42,8 @@ class ZeroDelayOutputPin : public ISourcePin
 {
 public:
     explicit ZeroDelayOutputPin(IGate* parent)
-        : m_parent(parent)
+        : m_parent{parent}
+        , m_value{PinState::Low}
     {}
     virtual const IGate* parent() const override
     {

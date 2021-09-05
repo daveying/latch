@@ -8,7 +8,8 @@ set(GATE_SOURCES
     IGate.hpp
     GateTemplate.hpp
     TruthTable.hpp
-    NORGate.hpp 
+    NORGate.hpp
+    NANDGate.hpp
 )
 
 add_library(${PROJECT_NAME} ${GATE_SOURCES})

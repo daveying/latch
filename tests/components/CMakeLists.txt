@@ -4,6 +4,7 @@ project(components C CXX)
 
 set(SOURCES
     NORGate/NORGate.cpp
+    NANDGate/NANDGate.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
