@@ -26,9 +26,9 @@ DEFINE_GATE_TRUTH_TABLE(NORGate, NORGateID, NORGateInputSize, NORGateOutputSize)
 END_GATE_TRUTH_TABLE(NORGate, NORGateID, NORGateInputSize, NORGateOutputSize)
 
 using NORGate = GateTemplate<
-    TypePack<ZeroDelayPin, ZeroDelayPin>,
+    TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
     gate_info<NORGateID>::TruthTable,
-    TypePack<ZeroDelayPin>>;
+    TypePack<ZeroDelayOutputPin>>;
 
 } // namespace gate
 

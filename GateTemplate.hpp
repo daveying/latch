@@ -37,30 +37,27 @@ public:
     GateTemplate()
        : m_inputPins{std::make_unique<InputPinT>(this)...}
        , m_outputPins{std::make_unique<OutputPinT>(this)...}
-    {}
+    {
+        // using default input state compute right output state
+        // following operation is performed before any IPin::connect()
+        m_truthTable.compute(m_inputPins, m_outputPins);
+    }
     virtual void compute() override
     {
         m_truthTable.compute(m_inputPins, m_outputPins);
-        for (auto& output : m_outputPins)
-        {
-            for (auto& pear : output->peers())
-            {
-                pear->value(output->value());
-            }
-        }
     }
     virtual IPin* input(size_t index) override
     {
         return m_inputPins[index].get();
     }
-    virtual IPin* output(size_t index) override
+    virtual ISourcePin* output(size_t index) override
     {
         return m_outputPins[index].get();
     }
 protected:
     static const TruthTableT m_truthTable;
     std::array<std::unique_ptr<IPin>, sizeof...(InputPinT)> m_inputPins;
-    std::array<std::unique_ptr<IPin>, sizeof...(OutputPinT)> m_outputPins;
+    std::array<std::unique_ptr<ISourcePin>, sizeof...(OutputPinT)> m_outputPins;
 };
 
 template <typename... InputPinT, typename TruthTableT, typename... OutputPinT>

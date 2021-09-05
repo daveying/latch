@@ -11,9 +11,9 @@ using GateID = size_t;
 class IGate
 {
 public:
-    virtual void compute()             = 0;
-    virtual IPin* input(size_t index)  = 0;
-    virtual IPin* output(size_t index) = 0;
+    virtual void compute()                   = 0;
+    virtual IPin* input(size_t index)        = 0;
+    virtual ISourcePin* output(size_t index) = 0;
 };
 
 class TruthTableBase {};
