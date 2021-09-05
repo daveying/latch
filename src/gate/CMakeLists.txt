@@ -10,6 +10,7 @@ set(GATE_SOURCES
     TruthTable.hpp
     ORGate.hpp
     NORGate.hpp
+    ANDGate.hpp
     NANDGate.hpp
 )
 

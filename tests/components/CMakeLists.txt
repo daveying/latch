@@ -6,6 +6,7 @@ set(SOURCES
     NORGate/NORGate.cpp
     NANDGate/NANDGate.cpp
     ORGate/ORGate.cpp
+    ANDGate/ANDGate.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
