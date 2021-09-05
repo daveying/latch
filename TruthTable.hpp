@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <type_traits>
 
 #include <IGate.hpp>
 #include <IPin.hpp>
@@ -10,17 +11,15 @@
 namespace gate
 {
 
-class TruthTableBase {};
-
 template <GateID ID, size_t InputSize, size_t OutputSize>
-class _TruthTable : public TruthTableBase
+class _TruthTable
 {
-    static_assert("Gate ID invalid");
+    static_assert(std::is_same<typename gate_info<ID>::TruthTable, _TruthTable>::value, "Gate ID invalid");
 };
 
 #define DEFINE_GATE_TRUTH_TABLE(_Name, _ID, _InputSize, _OutputSize)        \
     template <>                                                             \
-    class _TruthTable<_ID, _InputSize, _OutputSize>                         \
+    class _TruthTable<_ID, _InputSize, _OutputSize> : public TruthTableBase \
     {                                                                       \
     public:                                                                 \
         static constexpr GateID ID = _ID;                                   \

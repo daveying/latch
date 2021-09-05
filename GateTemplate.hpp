@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <type_traits>
 
 #include <IGate.hpp>
 #include <IPin.hpp>
@@ -10,16 +11,20 @@
 namespace gate
 {
 
-template <typename InputPinTuple,
+class TypePackBase {};
+template <typename... Ts>
+class TypePack : TypePackBase {};
+
+template <typename InputPinT,
          typename TruthTableT,
-         typename OutputTuple>
+         typename OutputT>
 class GateTemplate
 {
-    static_assert("You need to use TypePack to wrap the input and output pin type");
+    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value);
+    static_assert(std::is_base_of<TypePackBase, InputPinT>::value && std::is_base_of<TypePackBase, OutputT>::value,
+            "You need to use TypePack to wrap the input and output pin type");
 };
 
-template <typename... Ts>
-class TypePack {};
 template <typename... InputPinT,
          typename TruthTableT,
          typename... OutputPinT>
@@ -28,6 +33,7 @@ class GateTemplate<TypePack<InputPinT...>,
       TypePack<OutputPinT...>> : public IGate
 {
 public:
+    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value);
     GateTemplate()
        : m_inputPins{std::make_unique<InputPinT>(this)...}
        , m_outputPins{std::make_unique<OutputPinT>(this)...}

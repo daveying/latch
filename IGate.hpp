@@ -16,10 +16,15 @@ public:
     virtual IPin* output(size_t index) = 0;
 };
 
+class TruthTableBase {};
+
+struct InvalidTruthTable {};
+
 template <GateID ID>
 class gate_info
 {
-    static_assert("Gate ID invalid");
+public:
+    using TruthTable = InvalidTruthTable;
 };
 
 } // namespace gate
