@@ -6,6 +6,7 @@
 
 TEST(DLatch, DLatchTruthTable)
 {
+
     gate::ZeroDelayOutputPin D{nullptr};
     gate::ZeroDelayOutputPin E{nullptr};
 
