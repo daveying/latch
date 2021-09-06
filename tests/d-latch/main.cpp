@@ -1,6 +1,7 @@
 #include <NORGate.hpp>
 #include <ANDGate.hpp>
 #include <NOTGate.hpp>
+#include <IScheduler.hpp>
 
 #include <gtest/gtest.h>
 
@@ -29,28 +30,36 @@ TEST(DLatch, DLatchTruthTable)
     norGate0.output(0)->connect(norGate1.input(0));
     norGate1.output(0)->connect(norGate0.input(1));
 
+    sched::waitTillSteady();
+
     auto Q = norGate1.output(0);
 
+    sched::waitTillSteady();
     // D Low, E Low
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 
     // D -> High, E Low
     D.value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 
     // E -> High
     E.value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(Q->value(), gate::PinState::High);
 
     // D -> Low
     D.value(gate::PinState::Low);
+    sched::waitTillSteady();
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 
     // E -> Low
     E.value(gate::PinState::Low);
+    sched::waitTillSteady();
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 
     // D -> High
     D.value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 }

@@ -8,6 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(SCHED_SOURCES
     IScheduler.hpp
     Scheduler.cpp
+    EventQueue.hpp
+    EventQueue.cpp
+    SimpleScheduler.hpp
+    SimpleScheduler.cpp
 )
 
 add_library(sched ${SCHED_SOURCES})

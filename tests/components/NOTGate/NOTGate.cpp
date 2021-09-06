@@ -1,4 +1,5 @@
 #include <NOTGate.hpp>
+#include <IScheduler.hpp>
 
 #include <gtest/gtest.h>
 
@@ -21,5 +22,6 @@ TEST(NOTGate, TruthTable)
 
     // in = High
     in->value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(out->value(), gate::PinState::Low);
 }

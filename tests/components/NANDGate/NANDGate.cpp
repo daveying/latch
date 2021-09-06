@@ -1,4 +1,5 @@
 #include <NANDGate.hpp>
+#include <IScheduler.hpp>
 
 #include <gtest/gtest.h>
 
@@ -23,11 +24,14 @@ TEST(NANDGate, TruthTable)
 
     // in0 = High, in1 = Low
     in0->value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(out->value(), gate::PinState::High);
     // in0 = High, in1 = High
     in1->value(gate::PinState::High);
+    sched::waitTillSteady();
     EXPECT_EQ(out->value(), gate::PinState::Low);
     // in0 = Low, in1 = High
     in0->value(gate::PinState::Low);
+    sched::waitTillSteady();
     EXPECT_EQ(out->value(), gate::PinState::High);
 }

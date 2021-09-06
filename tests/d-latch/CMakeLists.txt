@@ -5,8 +5,7 @@ project(d-latch C CXX)
 set(SOURCES main.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC gate gtest_main)
-
+target_link_libraries(${PROJECT_NAME} PUBLIC gate sched gtest_main)
 
 add_test(NAME ${PROJECT_NAME}_test
     COMMAND ${PROJECT_NAME})

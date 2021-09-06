@@ -18,6 +18,8 @@ public:
 };
 
 void addEvent(Timestamp relativeTime, Event event);
+void run();
+void waitTillSteady();
 
 } // namespace sched
 
