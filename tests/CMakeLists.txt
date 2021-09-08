@@ -9,6 +9,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(components)
+add_subdirectory(gate)
 add_subdirectory(sr-latch)
 add_subdirectory(d-latch)
