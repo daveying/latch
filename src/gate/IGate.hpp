@@ -1,6 +1,7 @@
 #ifndef IGATE_HPP__
 #define IGATE_HPP__
 
+#include <cstddef>
 #include <IPin.hpp>
 
 namespace gate

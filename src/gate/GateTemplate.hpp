@@ -20,7 +20,7 @@ template <typename InputPinT,
          typename OutputT>
 class GateTemplate
 {
-    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value);
+    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value, "TruthTableT must be inherited from TruthTableBase");
     static_assert(std::is_base_of<TypePackBase, InputPinT>::value && std::is_base_of<TypePackBase, OutputT>::value,
             "You need to use TypePack to wrap the input and output pin type");
 };
@@ -33,7 +33,7 @@ class GateTemplate<TypePack<InputPinT...>,
       TypePack<OutputPinT...>> : public IGate
 {
 public:
-    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value);
+    static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value, "TruthTableT must be inherited from TruthTableBase");
     GateTemplate()
        : m_inputPins{std::make_unique<InputPinT>(this)...}
        , m_outputPins{std::make_unique<OutputPinT>(this)...}
