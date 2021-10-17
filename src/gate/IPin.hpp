@@ -2,6 +2,7 @@
 #define IPIN_HPP_
 
 #include <cstdint>
+#include <vector>
 
 namespace gate
 {
@@ -13,6 +14,19 @@ enum class PinState : PinStateType
     Low  = 0,
     High = 1
 };
+
+inline PinState operator~(PinState value)
+{
+    if (value == PinState::Low)
+    {
+        return PinState::High;
+    }
+    else
+    {
+        return PinState::Low;
+    }
+    return PinState::Low;
+}
 
 class IGate;
 class IPin

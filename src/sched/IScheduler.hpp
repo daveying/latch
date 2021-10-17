@@ -6,7 +6,8 @@
 namespace sched
 {
 using Event     = std::function<void()>;
-using Timestamp = uint64_t;
+using Timestamp = int64_t;
+using Period    = int64_t;
 
 class IScheduler
 {

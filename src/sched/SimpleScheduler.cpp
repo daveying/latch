@@ -1,5 +1,7 @@
 #include <SimpleScheduler.hpp>
 
+#include <iostream>
+
 namespace sched
 {
 
@@ -18,6 +20,7 @@ void SimpleScheduler::run()
     Event latestEvent;
     do
     {
+        std::cout << "Sched: execute timestamp: " << m_queue.getCurrentTimestamp() << std::endl;
         while (m_queue.getLatestEvent(latestEvent))
         {
             latestEvent();

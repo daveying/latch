@@ -14,5 +14,5 @@ set(SCHED_SOURCES
     SimpleScheduler.cpp
 )
 
-add_library(sched ${SCHED_SOURCES})
-target_include_directories(sched PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(${PROJECT_NAME} ${SCHED_SOURCES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
