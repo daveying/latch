@@ -30,6 +30,12 @@ using NOTGate = GateTemplate<
     gate_info<NOTGateID>::TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
+// TODO fix gate_info
+using NOTGateDelayed = GateTemplate<
+    TypePack<DelayedInputPin<1>>,
+    gate_info<NOTGateID>::TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
+
 } // namespace gate
 
 #endif // NOR_GATE_HPP__

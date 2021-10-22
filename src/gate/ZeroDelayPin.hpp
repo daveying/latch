@@ -1,19 +1,22 @@
-#ifndef ZERO_DELAY_PIN_HPP_
-#define ZERO_DELAY_PIN_HPP_
+#ifndef Zero_DELAY_PIN_HPP_
+#define Zero_DELAY_PIN_HPP_
 
 #include <vector>
 
 #include <IPin.hpp>
 #include <IGate.hpp>
 #include <IScheduler.hpp>
+#include <iostream>
 
 namespace gate
 {
 
-class ZeroDelayInputPin : public IPin
+template <sched::Timestamp DELAY>
+class DelayedInputPin : public IPin
 {
 public:
-    explicit ZeroDelayInputPin(IGate* parent)
+    static_assert(DELAY >= 0, "Input pin delay must >= 0");
+    explicit DelayedInputPin(IGate* parent)
         : m_parent{parent}
         , m_value{PinState::Low}
     {}
@@ -30,13 +33,15 @@ public:
         if (m_value != newVal)
         {
             m_value = newVal;
-            sched::addEvent(0, [gate = m_parent] () -> void { gate->compute(); });
+            sched::addEvent(DELAY, [gate = m_parent] () -> void { gate->compute(); });
         }
     }
 protected:
     IGate* m_parent;
     PinState m_value;
 };
+
+using ZeroDelayInputPin = DelayedInputPin<0>;
 
 class ZeroDelayOutputPin : public ISourcePin
 {

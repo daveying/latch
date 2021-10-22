@@ -21,6 +21,7 @@ public:
 void addEvent(Timestamp relativeTime, Event event);
 void run();
 void waitTillSteady();
+Timestamp getCurrentTimestamp();
 
 } // namespace sched
 

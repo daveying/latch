@@ -24,4 +24,10 @@ void waitTillSteady()
 {
     run();
 }
+
+Timestamp getCurrentTimestamp()
+{
+    return scheduler.getCurrentTimestamp();
+}
+
 } // namespace sched
