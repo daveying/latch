@@ -10,9 +10,12 @@ Timer::Timer(sched::Period period)
     , m_enabled{gate::PinState::Low}
     , m_halt{false}
 {
-    sched::addEvent(m_period, [self = this] () {
-        self->timerEvent();
-    });
+    sched::addEvent(m_period, sched::Event::create(
+                "Timer flip",
+                [self = this] (sched::Timestamp) {
+                    self->timerEvent();
+                }
+            ));
 }
 
 void Timer::halt()
@@ -51,9 +54,12 @@ void Timer::timerEvent()
     // NOTE: will not dead lock because scheduler will execute
     // newly added event after this event returns, even the
     // m_period is 0.
-    sched::addEvent(m_period, [self = this] () {
-        self->timerEvent();
-    });
+    sched::addEvent(m_period, sched::Event::create(
+                "Timer flip",
+                [self = this] (sched::Timestamp) {
+                    self->timerEvent();
+                }
+            ));
 }
 
 void Timer::enable(gate::PinState value)

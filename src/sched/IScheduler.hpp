@@ -2,12 +2,55 @@
 #define ISCHEDULER_HPP_
 
 #include <functional>
+#include <string>
+#include <Logger.hpp>
 
 namespace sched
 {
-using Event     = std::function<void()>;
+
 using Timestamp = int64_t;
 using Period    = int64_t;
+
+class Event
+{
+public:
+    using ExeHandle = std::function<void(Timestamp)>;
+    using LogHandle = std::function<void(log::Logger&)>;
+
+    inline void operator()(Timestamp currTime)
+    {
+        this->m_execute(currTime);
+    }
+    inline void log(log::Logger& logger)
+    {
+        if (m_log != nullptr)
+        {
+            this->m_log(logger);
+        }
+    }
+    inline const std::string& name() const
+    {
+        return m_name;
+    }
+
+    static Event create(const std::string& name, ExeHandle execute, LogHandle log = nullptr)
+    {
+        return Event{name, execute, log};
+    }
+
+    Event() {}
+
+protected:
+    Event(const std::string& name, ExeHandle execute, LogHandle log)
+        : m_name{name}
+        , m_execute{execute}
+        , m_log{log}
+    {
+    }
+    ExeHandle m_execute;
+    LogHandle m_log;
+    std::string m_name;
+};
 
 class IScheduler
 {

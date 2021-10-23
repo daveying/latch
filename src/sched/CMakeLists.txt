@@ -15,4 +15,5 @@ set(SCHED_SOURCES
 )
 
 add_library(${PROJECT_NAME} ${SCHED_SOURCES})
+target_link_libraries(${PROJECT_NAME} PUBLIC logger)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

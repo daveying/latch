@@ -9,7 +9,8 @@ This project is called Latch because latch is the most fundamental element of el
 - [x] Simple scheduler and interface
 - [x] Timer
 - [x] D flip flop using basic gates
-- [ ] Change sched::addEvent interface so that useful debug info can be logged when scheduling
+- [x] Change sched::addEvent interface so that useful debug info can be logged when scheduling
+    - [x] change Event to include event name and log handle
 - [ ] Fix DelayedNOTGate gate::gate_info<>
 - [ ] Fix gate::gate_info<>
 - [ ] Simulation context

@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 namespace gate
 {
@@ -28,6 +29,11 @@ inline PinState operator~(PinState value)
     return PinState::Low;
 }
 
+inline std::string pinStateStr(const PinState& state)
+{
+    return state == PinState::High ? "High" : "Low";
+}
+
 class IGate;
 class IPin
 {
@@ -35,6 +41,8 @@ public:
     virtual const IGate* parent() const = 0;
     virtual PinState value() const      = 0;
     virtual void value(PinState newVal) = 0;
+    virtual int64_t index() const       = 0;
+    virtual void index(int64_t)         = 0;
 };
 
 class ISourcePin : public IPin

@@ -6,7 +6,7 @@
 #include <IPin.hpp>
 #include <IGate.hpp>
 #include <IScheduler.hpp>
-#include <iostream>
+#include <Logger.hpp>
 
 namespace gate
 {
@@ -16,9 +16,10 @@ class DelayedInputPin : public IPin
 {
 public:
     static_assert(DELAY >= 0, "Input pin delay must >= 0");
-    explicit DelayedInputPin(IGate* parent)
+    explicit DelayedInputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
+        , m_index{index}
     {}
     virtual const IGate* parent() const override
     {
@@ -33,12 +34,27 @@ public:
         if (m_value != newVal)
         {
             m_value = newVal;
-            sched::addEvent(DELAY, [gate = m_parent] () -> void { gate->compute(); });
+            sched::addEvent(DELAY, sched::Event::create(
+                        "Input pin trigger recompute",
+                        [gate = m_parent] (sched::Timestamp) -> void { gate->compute(); },
+                        [gate = m_parent, newVal = newVal, pin = this] (log::Logger& logger) {
+                            logger << "Input pin [" << gate->name() << "." << pin->index() << "] delayed [" << DELAY << "] value [" << pinStateStr(newVal) << "] trigger gate [" << gate->name() << "] recompute";
+                        }
+                    ));
         }
+    }
+    virtual int64_t index() const override
+    {
+        return m_index;
+    }
+    virtual void index(int64_t idx) override
+    {
+        m_index = idx;
     }
 protected:
     IGate* m_parent;
     PinState m_value;
+    int64_t m_index;
 };
 
 using ZeroDelayInputPin = DelayedInputPin<0>;
@@ -46,9 +62,10 @@ using ZeroDelayInputPin = DelayedInputPin<0>;
 class ZeroDelayOutputPin : public ISourcePin
 {
 public:
-    explicit ZeroDelayOutputPin(IGate* parent)
+    explicit ZeroDelayOutputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
+        , m_index{index}
     {}
     virtual const IGate* parent() const override
     {
@@ -79,10 +96,19 @@ public:
     {
         return m_peers;
     }
+    virtual int64_t index() const override
+    {
+        return m_index;
+    }
+    virtual void index(int64_t idx) override
+    {
+        m_index = idx;
+    }
 protected:
     IGate* m_parent;
     PinState m_value;
     std::vector<IPin*> m_peers;
+    int64_t m_index;
 };
 
 

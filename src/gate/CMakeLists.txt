@@ -15,5 +15,5 @@ set(GATE_SOURCES
 )
 
 add_library(${PROJECT_NAME} ${GATE_SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC sched)
+target_link_libraries(${PROJECT_NAME} PUBLIC sched logger)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

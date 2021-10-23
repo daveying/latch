@@ -20,10 +20,14 @@ void SimpleScheduler::run()
     Event latestEvent;
     do
     {
-        std::cout << "Sched: execute timestamp: " << m_queue.getCurrentTimestamp() << std::endl;
+        Timestamp currTime = m_queue.getCurrentTimestamp();
+        std::cout << "[Sched] execute timestamp: " << currTime << std::endl;
         while (m_queue.getLatestEvent(latestEvent))
         {
-            latestEvent();
+            std::cout << "[Sched][" << currTime << "] execute event [" << latestEvent.name() << "]\n  > ";
+            latestEvent.log(std::cout);
+            std::cout << std::endl;
+            latestEvent(currTime);
         }
     } while (m_queue.advanceTime());
 }

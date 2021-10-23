@@ -34,10 +34,19 @@ class GateTemplate<TypePack<InputPinT...>,
 {
 public:
     static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value, "TruthTableT must be inherited from TruthTableBase");
-    GateTemplate()
+    GateTemplate(const std::string name = "")
        : m_inputPins{std::make_unique<InputPinT>(this)...}
        , m_outputPins{std::make_unique<OutputPinT>(this)...}
+       , m_name{name}
     {
+        for (size_t i = 0; i < sizeof...(InputPinT); ++i)
+        {
+            m_inputPins[i]->index(i);
+        }
+        for (size_t i = 0; i < sizeof...(OutputPinT); ++i)
+        {
+            m_outputPins[i]->index(i);
+        }
         // using default input state compute right output state
         // following operation is performed before any IPin::connect()
         m_truthTable.compute(m_inputPins, m_outputPins);
@@ -54,10 +63,15 @@ public:
     {
         return m_outputPins[index].get();
     }
+    virtual const std::string& name() const override
+    {
+        return m_name;
+    }
 protected:
     static const TruthTableT m_truthTable;
     std::array<std::unique_ptr<IPin>, sizeof...(InputPinT)> m_inputPins;
     std::array<std::unique_ptr<ISourcePin>, sizeof...(OutputPinT)> m_outputPins;
+    std::string m_name;
 };
 
 template <typename... InputPinT, typename TruthTableT, typename... OutputPinT>

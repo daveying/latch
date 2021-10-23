@@ -82,14 +82,14 @@ TEST(DFlipFLop, Pulse)
     gate::ZeroDelayOutputPin D{nullptr};
     gate::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGateDelayed invertor;
-    gate::ANDGate pulseGate;
+    gate::NOTGateDelayed invertor{"invertor"};
+    gate::ANDGate pulseGate{"pulseGate"};
 
-    gate::NOTGate notGate;
-    gate::ANDGate andGate0;
-    gate::ANDGate andGate1;
-    gate::NORGate norGate0;
-    gate::NORGate norGate1;
+    gate::NOTGate notGate{"notGate"};
+    gate::ANDGate andGate0{"andGate0"};
+    gate::ANDGate andGate1{"andGate1"};
+    gate::NORGate norGate0{"norGate0"};
+    gate::NORGate norGate1{"norGate1"};
 
     E.connect(pulseGate.input(0));
     E.connect(invertor.input(0));
@@ -124,8 +124,8 @@ TEST(DFlipFLop, Pulse)
     D.value(gate::PinState::High);
 
     // E -> pulse
-    sched::addEvent(1, [&]() { E.value(gate::PinState::High); });
-    sched::addEvent(2, [&]() { E.value(gate::PinState::Low); });
+    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(gate::PinState::High); }));
+    sched::addEvent(2, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(gate::PinState::Low); }));
     sched::waitTillSteady();
 
     EXPECT_EQ(Q->value(), gate::PinState::High);
@@ -136,11 +136,11 @@ TEST(DFlipFLop, Pulse)
     D.value(gate::PinState::Low);
 
     // E -> pulse
-    sched::addEvent(1, [&]() { E.value(gate::PinState::High); });
-    sched::addEvent(2, [&]() { E.value(gate::PinState::Low); });
+    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(gate::PinState::High); }));
+    sched::addEvent(3, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(gate::PinState::Low); }));
     sched::waitTillSteady();
 
     EXPECT_EQ(Q->value(), gate::PinState::Low);
     EXPECT_EQ(E.value(), gate::PinState::Low);
-    EXPECT_EQ(beginTime + 6, sched::getCurrentTimestamp());
+    EXPECT_EQ(beginTime + 7, sched::getCurrentTimestamp());
 }

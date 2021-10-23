@@ -13,4 +13,4 @@ set(EVENT_COMPONENTS_SOURCES
 
 add_library(${PROJECT_NAME} ${EVENT_COMPONENTS_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PUBLIC gate sched)
+target_link_libraries(${PROJECT_NAME} PUBLIC gate sched logger)
