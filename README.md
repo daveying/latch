@@ -11,9 +11,15 @@ This project is called Latch because latch is the most fundamental element of el
 - [x] D flip flop using basic gates
 - [x] Change sched::addEvent interface so that useful debug info can be logged when scheduling
     - [x] change Event to include event name and log handle
-- [ ] Fix DelayedNOTGate gate::gate_info<>
-- [ ] Fix gate::gate_info<>
+- [ ] Logger to support loglevel and switch on/off sched logs
+    - [ ] Loglevel support
+    - [ ] Schedule log can be redirect to specified file
 - [ ] Simulation context
     - [ ] Gate factory
     - [ ] Fix scheduler singleton issue
     - [ ] Fix D flip flop test (Pulse)
+- [ ] Tool to rendering the gate
+    - [ ] Option 1: rendering at runtime
+    - [ ] Option 2: rendering based on logs
+- [ ] Fix DelayedNOTGate gate::gate_info<>
+- [ ] Fix gate::gate_info<>
