@@ -77,4 +77,11 @@ bool EventQueue::advanceTime()
     return ret;
 }
 
+#ifdef DEBUG
+const EventQueue::EventQueueInternal& EventQueue::getEventQueueInternal() const
+{
+    return m_events;
+}
+#endif
+
 } // namespace sched

@@ -14,6 +14,9 @@ public:
     virtual Timestamp getCurrentTimestamp() const override;
     virtual void run() override;
     virtual void stop() override;
+#ifdef DEBUG
+    const EventQueue::EventQueueInternal& getEventQueueInternal() const;
+#endif
 protected:
     EventQueue m_queue;
 };

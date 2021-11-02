@@ -30,4 +30,10 @@ Timestamp getCurrentTimestamp()
     return scheduler.getCurrentTimestamp();
 }
 
+#ifdef DEBUG
+const EventQueue::EventQueueInternal& getEventQueueInternal()
+{
+    return scheduler.getEventQueueInternal();
+}
+#endif
 } // namespace sched

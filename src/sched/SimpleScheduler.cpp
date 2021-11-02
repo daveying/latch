@@ -36,4 +36,11 @@ void SimpleScheduler::stop()
 {
 }
 
+#ifdef DEBUG
+const EventQueue::EventQueueInternal& SimpleScheduler::getEventQueueInternal() const
+{
+    return m_queue.getEventQueueInternal();
+}
+#endif
+
 } // namespace sched
