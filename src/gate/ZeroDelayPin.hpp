@@ -33,6 +33,30 @@ public:
     {
         if (m_value != newVal)
         {
+            // IMPORTANT: the value of the pin will be set immediately
+            // no matter how much the DELAY is, but there is a very subtle
+            // case where the value of the pin will be set again before the
+            // gate->compute() be called in the event even the DELAY is 0.
+            // gete->compute() will always get the latest pin value.
+            // so the right sequence is
+            //    inputPin->value(High)
+            //    gate->compute()          # compute with High
+            //    inputPin->value(Low)
+            //    gate->compute()          # re-compute with Low
+            // but following can happen because the compute is pushed into
+            // the event queue which may be executed after the second value
+            // setting
+            //    inputPin->value(High)
+            //    inputPin->value(Low)
+            //    gate->compute()          # compute with Low (wrong)
+            //    gate->compute()          # compute with Low
+            // for the edge detector circuit (tests/edge-detector) and D flip flop
+            // circuit (tests/d-flip-flop), if the not gate(invertor) has zero delayed
+            // input pin, this case can happen, so the edge detector need to have a
+            // delayed input pin.
+            // THIS IS NOT A BUG! because in real world, this kind of subtle timing
+            // issue can also happen!!
+            // Give this case a name for easy memorize: Reset before compute (RBC)
             m_value = newVal;
             sched::addEvent(DELAY, sched::Event::create(
                         "Input pin trigger recompute",

@@ -162,8 +162,10 @@ TEST(DFlipFLopNonDelayed, Pulse)
     gate::NORGate norGate0{"norGate0"};
     gate::NORGate norGate1{"norGate1"};
 
-    E.connect(invertor.input(0));
+    // connect sequence matters !!!
+    // if E.connects invertor first, there will be RBC issue
     E.connect(pulseGate.input(0));
+    E.connect(invertor.input(0));
     invertor.output(0)->connect(pulseGate.input(1));
 
     D.connect(andGate0.input(0));

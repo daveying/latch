@@ -55,8 +55,10 @@ TEST(EdgeDetectorNonDelayed, Pulse)
     gate::NOTGate invertor{"invertor"};
     gate::ANDGate pulseGate{"pulseGate"};
 
-    E.connect(pulseGate.input(0));
+    // connect sequence causes reset before compute (RBC) issue
+    // but if E.connects pulseGate first, there is no RBC issue
     E.connect(invertor.input(0));
+    E.connect(pulseGate.input(0));
     invertor.output(0)->connect(pulseGate.input(1));
 
     sched::waitTillSteady();
