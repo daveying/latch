@@ -8,6 +8,7 @@ TEST(TimerTest, APIs)
 {
     component::Timer timer{10};
     gate::NOTGate notGate;
+
     EXPECT_EQ(notGate.output(0)->value(), gate::PinState::High);
 
     timer.connect(notGate.input(0));

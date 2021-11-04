@@ -11,7 +11,7 @@ EventQueue::EventQueue(Timestamp initTime)
     m_events.insert({m_currTime, q});
 }
 
-void EventQueue::addEvent(Timestamp relativeTime, Event event)
+void EventQueue::addEvent(Period relativeTime, Event event)
 {
     auto targetTime = m_currTime + relativeTime;
     std::unique_lock<std::mutex> lk(m_qMutex);

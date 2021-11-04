@@ -6,11 +6,11 @@ namespace sched
 
 static SimpleScheduler scheduler;
 
-// void addEvent(Timestamp relativeTime, Event event)
+// void addEvent(Period relativeTime, Event event)
 // {
 //     event();
 // }
-void addEvent(Timestamp relativeTime, Event event)
+void addEvent(Period relativeTime, Event event)
 {
     scheduler.addEvent(relativeTime, event);
 }

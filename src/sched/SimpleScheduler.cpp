@@ -5,7 +5,7 @@
 namespace sched
 {
 
-void SimpleScheduler::addEvent(Timestamp relativeTime, Event event)
+void SimpleScheduler::addEvent(Period relativeTime, Event event)
 {
     m_queue.addEvent(relativeTime, event);
 }

@@ -10,7 +10,7 @@ namespace sched
 class SimpleScheduler : public IScheduler
 {
 public:
-    virtual void addEvent(Timestamp relativeTime, Event event) override;
+    virtual void addEvent(Period relativeTime, Event event) override;
     virtual Timestamp getCurrentTimestamp() const override;
     virtual void run() override;
     virtual void stop() override;

@@ -11,7 +11,7 @@
 namespace gate
 {
 
-template <sched::Timestamp DELAY>
+template <sched::Period DELAY>
 class DelayedInputPin : public IPin
 {
 public:
@@ -19,6 +19,7 @@ public:
     explicit DelayedInputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
+        , m_valueImmediate{PinState::Low}
         , m_index{index}
     {}
     virtual const IGate* parent() const override
@@ -31,7 +32,7 @@ public:
     }
     virtual void value(PinState newVal) override
     {
-        if (m_value != newVal)
+        if (m_valueImmediate != newVal)
         {
             // IMPORTANT: the value of the pin will be set immediately
             // no matter how much the DELAY is, but there is a very subtle
@@ -57,10 +58,13 @@ public:
             // THIS IS NOT A BUG! because in real world, this kind of subtle timing
             // issue can also happen!!
             // Give this case a name for easy memorize: Reset before compute (RBC)
-            m_value = newVal;
+            m_valueImmediate = newVal;
             sched::addEvent(DELAY, sched::Event::create(
                         "Input pin trigger recompute",
-                        [gate = m_parent] (sched::Timestamp) -> void { gate->compute(); },
+                        [gate = m_parent, newVal = newVal, pin = this] (sched::Timestamp) -> void {
+                            pin->m_value = newVal;
+                            gate->compute();
+                        },
                         [gate = m_parent, newVal = newVal, pin = this] (log::Logger& logger) {
                             logger << "Input pin [" << gate->name() << "." << pin->index() << "] delayed [" << DELAY << "] value [" << pinStateStr(newVal) << "] trigger gate [" << gate->name() << "] recompute";
                         }
@@ -78,15 +82,17 @@ public:
 protected:
     IGate* m_parent;
     PinState m_value;
+    PinState m_valueImmediate;
     int64_t m_index;
 };
 
 using ZeroDelayInputPin = DelayedInputPin<0>;
 
-class ZeroDelayOutputPin : public ISourcePin
+template <sched::Period DELAY>
+class DelayedOutputPin : public ISourcePin
 {
 public:
-    explicit ZeroDelayOutputPin(IGate* parent, int64_t index = -1)
+    explicit DelayedOutputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
         , m_index{index}
@@ -103,18 +109,32 @@ public:
     {
         if (m_value != newVal)
         {
+            // output port value will be set immediately no matter the DEALY is
             m_value = newVal;
-            // zero delay
-            for (auto peer : m_peers)
-            {
-                peer->value(newVal);
-            }
+            sched::addEvent(DELAY, sched::Event::create(
+                        "Output pin change forward value",
+                        [newVal = newVal, pin = this] (sched::Timestamp) -> void {
+                            for (auto peer : pin->m_peers)
+                            {
+                                // peers will be forwarded with the value when the
+                                // event is triggered
+                                peer->value(newVal);
+                            }
+                        }
+                    ));
         }
     }
-    virtual void connect(IPin* pear) override
+    virtual void connect(IPin* peer) override
     {
-        m_peers.push_back(pear);
-        pear->value(m_value); // zero delay
+        m_peers.push_back(peer);
+        sched::addEvent(DELAY, sched::Event::create(
+                        "Output pin connect forward value",
+                        [pin = this, peer = peer, value = m_value] (sched::Timestamp) -> void {
+                            // peer will be forwarded with the value when the
+                            // event is triggered
+                            peer->value(value);
+                        }
+                    ));
     }
     virtual std::vector<IPin*>& peers() override
     {
@@ -135,6 +155,7 @@ protected:
     int64_t m_index;
 };
 
+using ZeroDelayOutputPin = DelayedOutputPin<0>;
 
 } // namespace gate
 

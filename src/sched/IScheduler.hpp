@@ -55,13 +55,13 @@ protected:
 class IScheduler
 {
 public:
-    virtual void addEvent(Timestamp relativeTime, Event event) = 0;
+    virtual void addEvent(Period relativeTime, Event event) = 0;
     virtual Timestamp getCurrentTimestamp() const = 0;
     virtual void run()  = 0;
     virtual void stop() = 0;
 };
 
-void addEvent(Timestamp relativeTime, Event event);
+void addEvent(Period relativeTime, Event event);
 void run();
 void waitTillSteady();
 Timestamp getCurrentTimestamp();

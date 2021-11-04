@@ -11,11 +11,11 @@ TEST(DLatch, DLatchTruthTable)
     gate::ZeroDelayOutputPin D{nullptr};
     gate::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGate notGate;
-    gate::ANDGate andGate0;
-    gate::ANDGate andGate1;
-    gate::NORGate norGate0;
-    gate::NORGate norGate1;
+    gate::NOTGate notGate("notGate");
+    gate::ANDGate andGate0("andGate0");
+    gate::ANDGate andGate1("andGate1");
+    gate::NORGate norGate0("norGate0");
+    gate::NORGate norGate1("norGate1");
 
     D.connect(andGate0.input(0));
     D.connect(notGate.input(0));
@@ -28,6 +28,8 @@ TEST(DLatch, DLatchTruthTable)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
+    // need to wait for steady to avoid dead lock
+    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
 
     sched::waitTillSteady();

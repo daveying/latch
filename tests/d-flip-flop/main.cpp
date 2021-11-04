@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(DFlipFLop, DFlipFlopTruthTable)
+TEST(DFlipFlop, DFlipFlopTruthTable)
 {
     gate::ZeroDelayOutputPin D{nullptr};
     gate::ZeroDelayOutputPin E{nullptr};
@@ -36,6 +36,7 @@ TEST(DFlipFLop, DFlipFlopTruthTable)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
+    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
 
     sched::waitTillSteady();
@@ -74,7 +75,7 @@ TEST(DFlipFLop, DFlipFlopTruthTable)
     EXPECT_EQ(Q->value(), gate::PinState::Low);
 }
 
-TEST(DFlipFLop, Pulse)
+TEST(DFlipFlop, Pulse)
 {
     sched::waitTillSteady();
     auto beginTime = sched::getCurrentTimestamp();
@@ -108,6 +109,7 @@ TEST(DFlipFLop, Pulse)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
+    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
 
     sched::waitTillSteady();
@@ -145,7 +147,7 @@ TEST(DFlipFLop, Pulse)
     EXPECT_EQ(beginTime + 7, sched::getCurrentTimestamp());
 }
 
-TEST(DFlipFLopNonDelayed, Pulse)
+TEST(DFlipFlopNonDelayed, Pulse)
 {
     sched::waitTillSteady();
     auto beginTime = sched::getCurrentTimestamp();
@@ -181,6 +183,7 @@ TEST(DFlipFLopNonDelayed, Pulse)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
+    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
 
     sched::waitTillSteady();

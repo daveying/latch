@@ -15,7 +15,7 @@ class EventQueue
 public:
     using EventQueueInternal = std::map<Timestamp, std::queue<Event>>;
     EventQueue(Timestamp initTime = 0);
-    void addEvent(Timestamp relativeTime, Event event);
+    void addEvent(Period relativeTime, Event event);
     bool getLatestEvent(Event& event);
     Timestamp getCurrentTimestamp() const;
     bool advanceTime();
