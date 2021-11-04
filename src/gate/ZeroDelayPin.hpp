@@ -30,37 +30,20 @@ public:
     {
         return m_value;
     }
+    std::string name() const
+    {
+        return m_parent->name() + "." + std::to_string(m_index);
+    }
     virtual void value(PinState newVal) override
     {
         if (m_valueImmediate != newVal)
         {
-            // IMPORTANT: the value of the pin will be set immediately
-            // no matter how much the DELAY is, but there is a very subtle
-            // case where the value of the pin will be set again before the
-            // gate->compute() be called in the event even the DELAY is 0.
-            // gete->compute() will always get the latest pin value.
-            // so the right sequence is
-            //    inputPin->value(High)
-            //    gate->compute()          # compute with High
-            //    inputPin->value(Low)
-            //    gate->compute()          # re-compute with Low
-            // but following can happen because the compute is pushed into
-            // the event queue which may be executed after the second value
-            // setting
-            //    inputPin->value(High)
-            //    inputPin->value(Low)
-            //    gate->compute()          # compute with Low (wrong)
-            //    gate->compute()          # compute with Low
-            // for the edge detector circuit (tests/edge-detector) and D flip flop
-            // circuit (tests/d-flip-flop), if the not gate(invertor) has zero delayed
-            // input pin, this case can happen, so the edge detector need to have a
-            // delayed input pin.
-            // THIS IS NOT A BUG! because in real world, this kind of subtle timing
-            // issue can also happen!!
-            // Give this case a name for easy memorize: Reset before compute (RBC)
+            // m_valueImmediate is for record of pin value change, the new pin value will be
+            // set until the schedule schedule it, so the new value will be captured by the
+            // lambda and the pin value will be set when event is executed.
             m_valueImmediate = newVal;
             sched::addEvent(DELAY, sched::Event::create(
-                        "Input pin trigger recompute",
+                        "Input pin[" + name() + "] trigger recompute",
                         [gate = m_parent, newVal = newVal, pin = this] (sched::Timestamp) -> void {
                             pin->m_value = newVal;
                             gate->compute();
@@ -105,6 +88,10 @@ public:
     {
         return m_value;
     }
+    std::string name() const
+    {
+        return (m_parent ? m_parent->name() : "None") + "." + std::to_string(m_index);
+    }
     virtual void value(PinState newVal) override
     {
         if (m_value != newVal)
@@ -112,7 +99,7 @@ public:
             // output port value will be set immediately no matter the DEALY is
             m_value = newVal;
             sched::addEvent(DELAY, sched::Event::create(
-                        "Output pin change forward value",
+                        "Output pin[" + name() + "] change forward value",
                         [newVal = newVal, pin = this] (sched::Timestamp) -> void {
                             for (auto peer : pin->m_peers)
                             {
@@ -127,14 +114,6 @@ public:
     virtual void connect(IPin* peer) override
     {
         m_peers.push_back(peer);
-        sched::addEvent(DELAY, sched::Event::create(
-                        "Output pin connect forward value",
-                        [pin = this, peer = peer, value = m_value] (sched::Timestamp) -> void {
-                            // peer will be forwarded with the value when the
-                            // event is triggered
-                            peer->value(value);
-                        }
-                    ));
     }
     virtual std::vector<IPin*>& peers() override
     {

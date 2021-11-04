@@ -6,6 +6,7 @@
 TEST(ANDGate, DefaultState)
 {
     gate::ANDGate andGate;
+    andGate.compute();
     EXPECT_EQ(andGate.input(0)->value(), gate::PinState::Low);
     EXPECT_EQ(andGate.input(1)->value(), gate::PinState::Low);
     EXPECT_EQ(andGate.output(0)->value(), gate::PinState::Low);
@@ -14,6 +15,7 @@ TEST(ANDGate, DefaultState)
 TEST(ANDGate, TruthTable)
 {
     gate::ANDGate andGate;
+    andGate.compute();
 
     auto in0 = andGate.input(0);
     auto in1 = andGate.input(1);

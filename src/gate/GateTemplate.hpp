@@ -47,9 +47,6 @@ public:
         {
             m_outputPins[i]->index(i);
         }
-        // using default input state compute right output state
-        // following operation is performed before any IPin::connect()
-        m_truthTable.compute(m_inputPins, m_outputPins);
     }
     virtual void compute() override
     {

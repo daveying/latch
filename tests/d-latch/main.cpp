@@ -28,9 +28,14 @@ TEST(DLatch, DLatchTruthTable)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
-    // need to wait for steady to avoid dead lock
-    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
+
+    notGate.compute();
+    andGate0.compute();
+    andGate1.compute();
+    norGate0.compute();
+    sched::waitTillSteady();
+    norGate1.compute();
 
     sched::waitTillSteady();
 

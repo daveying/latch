@@ -6,6 +6,7 @@
 TEST(NOTGate, DefaultState)
 {
     gate::NOTGate notGate;
+    notGate.compute();
     EXPECT_EQ(notGate.input(0)->value(), gate::PinState::Low);
     EXPECT_EQ(notGate.output(0)->value(), gate::PinState::High);
 }
@@ -13,6 +14,7 @@ TEST(NOTGate, DefaultState)
 TEST(NOTGate, TruthTable)
 {
     gate::NOTGate notGate;
+    notGate.compute();
 
     auto in  = notGate.input(0);
     auto out = notGate.output(0);

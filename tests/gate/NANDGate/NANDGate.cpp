@@ -6,6 +6,7 @@
 TEST(NANDGate, DefaultState)
 {
     gate::NANDGate nandGate;
+    nandGate.compute();
     EXPECT_EQ(nandGate.input(0)->value(), gate::PinState::Low);
     EXPECT_EQ(nandGate.input(1)->value(), gate::PinState::Low);
     EXPECT_EQ(nandGate.output(0)->value(), gate::PinState::High);
@@ -14,6 +15,7 @@ TEST(NANDGate, DefaultState)
 TEST(NANDGate, TruthTable)
 {
     gate::NANDGate nandGate;
+    nandGate.compute();
 
     auto in0 = nandGate.input(0);
     auto in1 = nandGate.input(1);

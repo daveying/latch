@@ -6,6 +6,7 @@
 TEST(ORGate, DefaultState)
 {
     gate::ORGate orGate;
+    orGate.compute();
     EXPECT_EQ(orGate.input(0)->value(), gate::PinState::Low);
     EXPECT_EQ(orGate.input(1)->value(), gate::PinState::Low);
     EXPECT_EQ(orGate.output(0)->value(), gate::PinState::Low);
@@ -14,6 +15,7 @@ TEST(ORGate, DefaultState)
 TEST(ORGate, TruthTable)
 {
     gate::ORGate orGate;
+    orGate.compute();
 
     auto in0 = orGate.input(0);
     auto in1 = orGate.input(1);

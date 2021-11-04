@@ -6,6 +6,7 @@
 TEST(NORGate, DefaultState)
 {
     gate::NORGate norGate;
+    norGate.compute();
     EXPECT_EQ(norGate.input(0)->value(), gate::PinState::Low);
     EXPECT_EQ(norGate.input(1)->value(), gate::PinState::Low);
     EXPECT_EQ(norGate.output(0)->value(), gate::PinState::High);
@@ -14,6 +15,7 @@ TEST(NORGate, DefaultState)
 TEST(NORGate, TruthTable)
 {
     gate::NORGate norGate;
+    norGate.compute();
 
     auto in0 = norGate.input(0);
     auto in1 = norGate.input(1);

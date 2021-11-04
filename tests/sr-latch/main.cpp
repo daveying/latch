@@ -6,15 +6,15 @@
 
 TEST(SRLatch, NORSRLatchTruthTable)
 {
-    gate::NORGate norGate0;
-    gate::NORGate norGate1;
-    EXPECT_EQ(norGate0.output(0)->value(), gate::PinState::High);
-    EXPECT_EQ(norGate1.output(0)->value(), gate::PinState::High);
+    gate::NORGate norGate0("norGate0");
+    gate::NORGate norGate1("norGate1");
     norGate0.output(0)->connect(norGate1.input(0));
-    sched::waitTillSteady();
-    EXPECT_EQ(norGate1.output(0)->value(), gate::PinState::Low);
-
     norGate1.output(0)->connect(norGate0.input(1));
+    norGate0.compute();
+    // force one gate to compute faster
+    // which one compute faster also matters
+    sched::waitTillSteady();
+    norGate1.compute();
     sched::waitTillSteady();
     EXPECT_EQ(norGate0.output(0)->value(), gate::PinState::High);
 
@@ -66,12 +66,13 @@ TEST(SRLatch, NANDSRLatchTruthTable)
 {
     gate::NANDGate nandGate0;
     gate::NANDGate nandGate1;
-    EXPECT_EQ(nandGate0.output(0)->value(), gate::PinState::High);
-    EXPECT_EQ(nandGate1.output(0)->value(), gate::PinState::High);
     nandGate0.output(0)->connect(nandGate1.input(0));
-    sched::waitTillSteady();
-    EXPECT_EQ(nandGate1.output(0)->value(), gate::PinState::High);
     nandGate1.output(0)->connect(nandGate0.input(1));
+    nandGate0.compute();
+    // force one gate to compute faster
+    // which one compute faster also matters
+    sched::waitTillSteady();
+    nandGate1.compute();
     sched::waitTillSteady();
     EXPECT_EQ(nandGate0.output(0)->value(), gate::PinState::High);
 

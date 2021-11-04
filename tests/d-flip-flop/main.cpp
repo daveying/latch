@@ -36,8 +36,16 @@ TEST(DFlipFlop, DFlipFlopTruthTable)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
-    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
+
+    invertor.compute();
+    pulseGate.compute();
+    notGate.compute();
+    andGate0.compute();
+    andGate1.compute();
+    norGate0.compute();
+    sched::waitTillSteady();
+    norGate1.compute();
 
     sched::waitTillSteady();
 
@@ -109,8 +117,16 @@ TEST(DFlipFlop, Pulse)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
-    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
+
+    invertor.compute();
+    pulseGate.compute();
+    notGate.compute();
+    andGate0.compute();
+    andGate1.compute();
+    norGate0.compute();
+    sched::waitTillSteady();
+    norGate1.compute();
 
     sched::waitTillSteady();
     // here converge at timestamp 0 because invertor has no
@@ -155,7 +171,11 @@ TEST(DFlipFlopNonDelayed, Pulse)
     gate::ZeroDelayOutputPin D{nullptr};
     gate::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGate invertor{"invertor"};
+    // if all gate is non delayed pin, then need several not gate
+    // wire together to have enough time delay
+    gate::NOTGate invertor0{"invertor0"};
+    gate::NOTGate invertor1{"invertor1"};
+    gate::NOTGate invertor2{"invertor2"};
     gate::ANDGate pulseGate{"pulseGate"};
 
     gate::NOTGate notGate{"notGate"};
@@ -164,11 +184,11 @@ TEST(DFlipFlopNonDelayed, Pulse)
     gate::NORGate norGate0{"norGate0"};
     gate::NORGate norGate1{"norGate1"};
 
-    // connect sequence matters !!!
-    // if E.connects invertor first, there will be RBC issue
+    E.connect(invertor0.input(0));
     E.connect(pulseGate.input(0));
-    E.connect(invertor.input(0));
-    invertor.output(0)->connect(pulseGate.input(1));
+    invertor0.output(0)->connect(invertor1.input(0));
+    invertor1.output(0)->connect(invertor2.input(0));
+    invertor2.output(0)->connect(pulseGate.input(1));
 
     D.connect(andGate0.input(0));
     D.connect(notGate.input(0));
@@ -183,8 +203,18 @@ TEST(DFlipFlopNonDelayed, Pulse)
     andGate1.output(0)->connect(norGate1.input(1));
 
     norGate0.output(0)->connect(norGate1.input(0));
-    sched::waitTillSteady();
     norGate1.output(0)->connect(norGate0.input(1));
+
+    invertor0.compute();
+    invertor1.compute();
+    invertor2.compute();
+    pulseGate.compute();
+    notGate.compute();
+    andGate0.compute();
+    andGate1.compute();
+    norGate0.compute();
+    sched::waitTillSteady();
+    norGate1.compute();
 
     sched::waitTillSteady();
     EXPECT_EQ(beginTime + 0, sched::getCurrentTimestamp());
@@ -196,6 +226,7 @@ TEST(DFlipFlopNonDelayed, Pulse)
 
     // D -> High, E Low
     D.value(gate::PinState::High);
+    sched::waitTillSteady();
 
     // E -> pulse
     sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(gate::PinState::High); }));
