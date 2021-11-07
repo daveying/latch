@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(components C CXX)
+project(gate-tests C CXX)
 
 set(SOURCES
     NORGate/NORGate.cpp

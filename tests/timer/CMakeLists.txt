@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     sched
     gate
-    event-components
+    components
     gtest_main)
 
 add_test(NAME ${PROJECT_NAME}_test
