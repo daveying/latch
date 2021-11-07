@@ -1,6 +1,4 @@
-# Latch
-
-![cmake workflow](https://github.com/daveying/latch/actions/workflows/cmake/badge.svg)
+# Latch ![build & test](https://github.com/daveying/latch/actions/workflows/cmake.yml/badge.svg)
 
 This project is called Latch because latch is the most fundamental element of electrical computer, it forms 1 single bit. the project is aimed to create a logic gate simulation framework, and create a 8-bit CPU simulation using this framework.
 
