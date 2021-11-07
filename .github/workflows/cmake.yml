@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-18.04, ubuntu-16.04]
+        os: [ubuntu-latest, ubuntu-18.04]
         build_type: [Debug, Release]
 
     steps:
