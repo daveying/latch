@@ -1,7 +1,7 @@
 #ifndef NOR_GATE_HPP__
 #define NOR_GATE_HPP__
 
-#include <ZeroDelayPin.hpp>
+#include <DelayedPin.hpp>
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 

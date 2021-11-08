@@ -1,7 +1,7 @@
 #ifndef AND_GATE_HPP_
 #define AND_GATE_HPP_
 
-#include <ZeroDelayPin.hpp>
+#include <DelayedPin.hpp>
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 

@@ -4,7 +4,7 @@ project(gate C CXX)
 
 set(GATE_SOURCES
     IPin.hpp
-    ZeroDelayPin.hpp
+    DelayedPin.hpp
     IGate.hpp
     GateTemplate.hpp
     TruthTable.hpp

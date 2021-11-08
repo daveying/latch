@@ -1,5 +1,5 @@
-#ifndef Zero_DELAY_PIN_HPP_
-#define Zero_DELAY_PIN_HPP_
+#ifndef DELAYED_PIN_HPP_
+#define DELAYED_PIN_HPP_
 
 #include <vector>
 

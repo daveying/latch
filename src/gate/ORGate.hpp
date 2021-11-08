@@ -1,7 +1,7 @@
 #ifndef OR_GATE_HPP__
 #define OR_GATE_HPP__
 
-#include <ZeroDelayPin.hpp>
+#include <DelayedPin.hpp>
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 

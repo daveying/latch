@@ -18,20 +18,30 @@ enum class PinState : PinStateType
 
 inline PinState operator~(PinState value)
 {
+    PinState ret;
     if (value == PinState::Low)
     {
-        return PinState::High;
+        ret = PinState::High;
     }
     else
     {
-        return PinState::Low;
+        ret = PinState::Low;
     }
-    return PinState::Low;
+    return ret;
 }
 
 inline std::string pinStateStr(const PinState& state)
 {
-    return state == PinState::High ? "High" : "Low";
+    std::string ret;
+    if (state == PinState::Low)
+    {
+        ret = "Low";
+    }
+    else
+    {
+        ret = "High";
+    }
+    return ret;
 }
 
 class IGate;
