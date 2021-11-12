@@ -10,7 +10,7 @@ set(EVENT_COMPONENTS_SOURCES
     Timer.hpp
     Timer.cpp
     Register.hpp
-    Register.cpp
+    # Register.cpp
 )
 
 add_library(${PROJECT_NAME} ${EVENT_COMPONENTS_SOURCES})

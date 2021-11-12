@@ -24,9 +24,7 @@ void SimpleScheduler::run()
         std::cout << "[Sched] execute timestamp: " << currTime << std::endl;
         while (m_queue.getLatestEvent(latestEvent))
         {
-            std::cout << "[Sched][" << currTime << "] execute event [" << latestEvent.name() << "]\n  > ";
-            latestEvent.log(std::cout);
-            std::cout << std::endl;
+            std::cout << "[Sched][" << currTime << "] execute event [" << latestEvent.name() << "]" << std::endl;
             latestEvent(currTime);
         }
     } while (m_queue.advanceTime());

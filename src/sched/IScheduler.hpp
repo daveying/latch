@@ -15,40 +15,30 @@ class Event
 {
 public:
     using ExeHandle = std::function<void(Timestamp)>;
-    using LogHandle = std::function<void(log::Logger&)>;
 
     inline void operator()(Timestamp currTime)
     {
         this->m_execute(currTime);
-    }
-    inline void log(log::Logger& logger)
-    {
-        if (m_log != nullptr)
-        {
-            this->m_log(logger);
-        }
     }
     inline const std::string& name() const
     {
         return m_name;
     }
 
-    static Event create(const std::string& name, ExeHandle execute, LogHandle log = nullptr)
+    static Event create(const std::string& name, ExeHandle execute)
     {
-        return Event{name, execute, log};
+        return Event{name, execute};
     }
 
     Event() {}
 
 protected:
-    Event(const std::string& name, ExeHandle execute, LogHandle log)
+    Event(const std::string& name, ExeHandle execute)
         : m_name{name}
         , m_execute{execute}
-        , m_log{log}
     {
     }
     ExeHandle m_execute;
-    LogHandle m_log;
     std::string m_name;
 };
 
