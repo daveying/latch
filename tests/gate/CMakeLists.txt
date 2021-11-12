@@ -8,6 +8,7 @@ set(SOURCES
     ORGate/ORGate.cpp
     ANDGate/ANDGate.cpp
     NOTGate/NOTGate.cpp
+    BusBuffer/BusBuffer.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -32,7 +32,7 @@ public:
     }
     std::string name() const
     {
-        return m_parent->name() + "." + std::to_string(m_index);
+        return (m_parent ? m_parent->name() : "None") + "." + std::to_string(m_index);
     }
     virtual void value(PinState newVal) override
     {
@@ -46,10 +46,7 @@ public:
                         "Input pin[" + name() + "] trigger recompute",
                         [gate = m_parent, newVal = newVal, pin = this] (sched::Timestamp) -> void {
                             pin->m_value = newVal;
-                            gate->compute();
-                        },
-                        [gate = m_parent, newVal = newVal, pin = this] (log::Logger& logger) {
-                            logger << "Input pin [" << gate->name() << "." << pin->index() << "] delayed [" << DELAY << "] value [" << pinStateStr(newVal) << "] trigger gate [" << gate->name() << "] recompute";
+                            if(gate) gate->compute();
                         }
                     ));
         }
@@ -94,22 +91,21 @@ public:
     }
     virtual void value(PinState newVal) override
     {
-        if (m_value != newVal)
-        {
-            // output port value will be set immediately no matter the DEALY is
-            m_value = newVal;
-            sched::addEvent(DELAY, sched::Event::create(
-                        "Output pin[" + name() + "] change forward value",
-                        [newVal = newVal, pin = this] (sched::Timestamp) -> void {
-                            for (auto peer : pin->m_peers)
-                            {
-                                // peers will be forwarded with the value when the
-                                // event is triggered
-                                peer->value(newVal);
-                            }
+        // no matter if there is a different value, always forward to peer to
+        // decide the response.
+        // output port value will be set immediately no matter the DEALY is
+        m_value = newVal;
+        sched::addEvent(DELAY, sched::Event::create(
+                    "Output pin[" + name() + "] change forward value",
+                    [newVal = newVal, pin = this] (sched::Timestamp) -> void {
+                        for (auto peer : pin->m_peers)
+                        {
+                            // peers will be forwarded with the value when the
+                            // event is triggered
+                            peer->value(newVal);
                         }
-                    ));
-        }
+                    }
+                ));
     }
     virtual void connect(IPin* peer) override
     {

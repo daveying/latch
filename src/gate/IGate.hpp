@@ -8,8 +8,6 @@
 namespace gate
 {
 
-using GateID = size_t;
-
 class IGate
 {
 public:
