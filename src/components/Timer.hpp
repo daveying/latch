@@ -2,7 +2,7 @@
 #define TIMER_HPP__
 
 #include <mutex>
-#include <IEventComponent.hpp>
+#include <IComponent.hpp>
 
 namespace component
 {

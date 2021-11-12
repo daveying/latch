@@ -8,11 +8,9 @@
 namespace gate
 {
 
-// ID = 2, InputSize = 2, OutputSize = 1
-static constexpr GateID NANDGateID         = 2;
 static constexpr size_t NANDGateInputSize  = 2;
 static constexpr size_t NANDGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(NANDGate, NANDGateID, NANDGateInputSize, NANDGateOutputSize)
+DEFINE_GATE_TRUTH_TABLE(NANDGate, NANDGateInputSize, NANDGateOutputSize)
 {
     if (input[0]->value() == PinState::High && input[1]->value() == PinState::High)
     {
@@ -23,11 +21,11 @@ DEFINE_GATE_TRUTH_TABLE(NANDGate, NANDGateID, NANDGateInputSize, NANDGateOutputS
         output[0]->value(PinState::High);
     }
 }
-END_GATE_TRUTH_TABLE(NANDGate, NANDGateID, NANDGateInputSize, NANDGateOutputSize)
+END_GATE_TRUTH_TABLE
 
 using NANDGate = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
-    gate_info<NANDGateID>::TruthTable,
+    NANDGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
 } // namespace gate

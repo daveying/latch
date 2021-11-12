@@ -8,11 +8,9 @@
 namespace gate
 {
 
-// ID = 4, InputSize = 2, OutputSize = 1
-static constexpr GateID ANDGateID         = 4;
 static constexpr size_t ANDGateInputSize  = 2;
 static constexpr size_t ANDGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ANDGate, ANDGateID, ANDGateInputSize, ANDGateOutputSize)
+DEFINE_GATE_TRUTH_TABLE(ANDGate, ANDGateInputSize, ANDGateOutputSize)
 {
     if (input[0]->value() == PinState::High && input[1]->value() == PinState::High)
     {
@@ -23,11 +21,11 @@ DEFINE_GATE_TRUTH_TABLE(ANDGate, ANDGateID, ANDGateInputSize, ANDGateOutputSize)
         output[0]->value(PinState::Low);
     }
 }
-END_GATE_TRUTH_TABLE(ANDGate, ANDGateID, ANDGateInputSize, ANDGateOutputSize)
+END_GATE_TRUTH_TABLE
 
 using ANDGate = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
-    gate_info<ANDGateID>::TruthTable,
+    ANDGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
 } // namespace gate

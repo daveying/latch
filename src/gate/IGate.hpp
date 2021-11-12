@@ -20,15 +20,5 @@ public:
 };
 
 class TruthTableBase {};
-
-struct InvalidTruthTable {};
-
-template <GateID ID>
-class gate_info
-{
-public:
-    using TruthTable = InvalidTruthTable;
-};
-
 } // namespace gate
 #endif

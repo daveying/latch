@@ -8,11 +8,9 @@
 namespace gate
 {
 
-// ID = 3, InputSize = 2, OutputSize = 1
-static constexpr GateID ORGateID         = 3;
 static constexpr size_t ORGateInputSize  = 2;
 static constexpr size_t ORGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ORGate, ORGateID, ORGateInputSize, ORGateOutputSize)
+DEFINE_GATE_TRUTH_TABLE(ORGate, ORGateInputSize, ORGateOutputSize)
 {
     if (input[0]->value() == PinState::Low && input[1]->value() == PinState::Low)
     {
@@ -23,11 +21,11 @@ DEFINE_GATE_TRUTH_TABLE(ORGate, ORGateID, ORGateInputSize, ORGateOutputSize)
         output[0]->value(PinState::High);
     }
 }
-END_GATE_TRUTH_TABLE(ORGate, ORGateID, ORGateInputSize, ORGateOutputSize)
+END_GATE_TRUTH_TABLE
 
 using ORGate = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
-    gate_info<ORGateID>::TruthTable,
+    ORGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
 } // namespace gate

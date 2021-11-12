@@ -7,7 +7,11 @@
 namespace component
 {
 
-class IEventComponent
+class IComponent
+{
+};
+
+class IEventComponent : public IComponent
 {
 public:
     virtual void connect(gate::IPin* pin)     = 0;

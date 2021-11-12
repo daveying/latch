@@ -8,11 +8,9 @@
 namespace gate
 {
 
-// ID = 5, InputSize = 1, OutputSize = 1
-static constexpr GateID NOTGateID         = 5;
 static constexpr size_t NOTGateInputSize  = 1;
 static constexpr size_t NOTGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(NOTGate, NOTGateID, NOTGateInputSize, NOTGateOutputSize)
+DEFINE_GATE_TRUTH_TABLE(NOTGate, NOTGateInputSize, NOTGateOutputSize)
 {
     if (input[0]->value() == PinState::Low)
     {
@@ -23,17 +21,16 @@ DEFINE_GATE_TRUTH_TABLE(NOTGate, NOTGateID, NOTGateInputSize, NOTGateOutputSize)
         output[0]->value(PinState::Low);
     }
 }
-END_GATE_TRUTH_TABLE(NOTGate, NOTGateID, NOTGateInputSize, NOTGateOutputSize)
+END_GATE_TRUTH_TABLE
 
 using NOTGate = GateTemplate<
     TypePack<ZeroDelayInputPin>,
-    gate_info<NOTGateID>::TruthTable,
+    NOTGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-// TODO fix gate_info
 using NOTGateDelayed = GateTemplate<
     TypePack<DelayedInputPin<1>>,
-    gate_info<NOTGateID>::TruthTable,
+    NOTGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
 } // namespace gate

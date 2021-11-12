@@ -6,9 +6,11 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(EVENT_COMPONENTS_SOURCES
-    IEventComponent.hpp
+    IComponent.hpp
     Timer.hpp
     Timer.cpp
+    Register.hpp
+    Register.cpp
 )
 
 add_library(${PROJECT_NAME} ${EVENT_COMPONENTS_SOURCES})
