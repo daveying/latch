@@ -32,7 +32,7 @@ public:
     }
     std::string name() const
     {
-        return (m_parent ? m_parent->name() : "None") + "." + std::to_string(m_index);
+        return (m_parent ? m_parent->name() : "None") + ".in" + std::to_string(m_index);
     }
     virtual void value(PinState newVal) override
     {
@@ -43,7 +43,7 @@ public:
             // lambda and the pin value will be set when event is executed.
             m_valueImmediate = newVal;
             sched::addEvent(DELAY, sched::Event::create(
-                        "Input pin[" + name() + "] trigger recompute",
+                        "Input pin  [" + name() + "] new value [" + pinStateStr(newVal) + "] trigger recompute",
                         [gate = m_parent, newVal = newVal, pin = this] (sched::Timestamp) -> void {
                             pin->m_value = newVal;
                             if(gate) gate->compute();
@@ -87,7 +87,7 @@ public:
     }
     std::string name() const
     {
-        return (m_parent ? m_parent->name() : "None") + "." + std::to_string(m_index);
+        return (m_parent ? m_parent->name() : "None") + ".out" + std::to_string(m_index);
     }
     virtual void value(PinState newVal) override
     {
@@ -96,7 +96,7 @@ public:
         // output port value will be set immediately no matter the DEALY is
         m_value = newVal;
         sched::addEvent(DELAY, sched::Event::create(
-                    "Output pin[" + name() + "] change forward value",
+                    "Output pin [" + name() + "] change forward value [" + pinStateStr(newVal) + "]",
                     [newVal = newVal, pin = this] (sched::Timestamp) -> void {
                         for (auto peer : pin->m_peers)
                         {

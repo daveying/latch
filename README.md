@@ -11,7 +11,7 @@ This project is called Latch because latch is the most fundamental element of el
 - [x] D flip flop using basic gates
 - [x] Change sched::addEvent interface so that useful debug info can be logged when scheduling
     - [x] change Event to include event name and log handle
-- [ ] Fix failing test
+- [x] Fix failing test
 - [ ] Component template
 - [ ] Logger to support loglevel and switch on/off sched logs
     - [ ] Loglevel support

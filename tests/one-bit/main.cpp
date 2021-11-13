@@ -39,7 +39,7 @@ TEST(OneBit, TruthTable)
     dataInvertor.output(0)->connect(feedbackAnd.input(1));
 
     feedbackAnd.output(0)->connect(dataSelect.input(0));
-    dataAnd.output(0)->connect(dataSelect.input(0));
+    dataAnd.output(0)->connect(dataSelect.input(1));
 
     invertor.output(0)->connect(pulseGate.input(1));
 
@@ -106,6 +106,6 @@ TEST(OneBit, TruthTable)
     sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock.value(gate::PinState::Low); }));
     sched::waitTillSteady();
 
-    // EXPECT_EQ(Q->value(), gate::PinState::High);
+    EXPECT_EQ(Q->value(), gate::PinState::High);
     EXPECT_EQ(beginTime + 7, sched::getCurrentTimestamp());
 }
