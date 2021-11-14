@@ -33,6 +33,7 @@ public:
     }
     virtual gate::IPin* pin(size_t idx) override { return nullptr; };
     virtual void initialize() override {};
+    virtual const std::string& name() const override { return ""; };
 
 protected:
     void connect(gate::IPin* src, gate::IPin* dest) {};

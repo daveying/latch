@@ -3,12 +3,13 @@
 namespace component
 {
 
-Timer::Timer(sched::Period period)
+Timer::Timer(sched::Period period, const std::string& name)
     : m_period{period}
     , m_pin{nullptr}
     , m_value{gate::PinState::Low}
     , m_enabled{gate::PinState::Low}
     , m_halt{false}
+    , m_name{name}
 {
 }
 
@@ -20,6 +21,11 @@ void Timer::initialize()
                     self->timerEvent();
                 }
             ));
+}
+
+const std::string& Timer::name() const
+{
+    return m_name;
 }
 
 gate::IPin* Timer::pin(size_t idx)

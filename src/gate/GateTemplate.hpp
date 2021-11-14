@@ -15,6 +15,8 @@ class TypePackBase {};
 template <typename... Ts>
 class TypePack : TypePackBase {};
 
+class GateTemplateBase {};
+
 template <typename InputPinT,
          typename TruthTableT,
          typename OutputT>
@@ -30,7 +32,7 @@ template <typename... InputPinT,
          typename... OutputPinT>
 class GateTemplate<TypePack<InputPinT...>,
       TruthTableT,
-      TypePack<OutputPinT...>> : public IGate
+      TypePack<OutputPinT...>> : public IGate, GateTemplateBase
 {
 public:
     static_assert(std::is_base_of<TruthTableBase, TruthTableT>::value, "TruthTableT must be inherited from TruthTableBase");

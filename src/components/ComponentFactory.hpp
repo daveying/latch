@@ -1,7 +1,6 @@
 #ifndef COMPONENT_FACTORY_HPP__
 #define COMPONENT_FACTORY_HPP__
 
-#include <ComponentBase.hpp>
 #include <ComponentDescription.hpp>
 
 namespace component

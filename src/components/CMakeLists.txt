@@ -10,6 +10,7 @@ set(EVENT_COMPONENTS_SOURCES
     ComponentDescription.hpp
     ComponentFactory.hpp
     ComponentFactory.cpp
+    GateComponents.hpp
     IComponent.hpp
     Timer.hpp
     Timer.cpp
