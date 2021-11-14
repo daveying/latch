@@ -9,6 +9,9 @@ namespace component
 
 class IComponent
 {
+public:
+    virtual void initialize()           = 0;
+    virtual gate::IPin* pin(size_t idx) = 0;
 };
 
 class IEventComponent : public IComponent

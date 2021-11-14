@@ -10,12 +10,21 @@ Timer::Timer(sched::Period period)
     , m_enabled{gate::PinState::Low}
     , m_halt{false}
 {
+}
+
+void Timer::initialize()
+{
     sched::addEvent(m_period, sched::Event::create(
                 "Timer flip",
                 [self = this] (sched::Timestamp) {
                     self->timerEvent();
                 }
             ));
+}
+
+gate::IPin* Timer::pin(size_t idx)
+{
+    throw std::runtime_error("Timer::pin(): Invalid operation");
 }
 
 void Timer::halt()

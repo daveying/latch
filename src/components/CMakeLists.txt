@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(EVENT_COMPONENTS_SOURCES
+    ComponentBase.hpp
+    ComponentDescription.hpp
+    ComponentFactory.hpp
+    ComponentFactory.cpp
     IComponent.hpp
     Timer.hpp
     Timer.cpp

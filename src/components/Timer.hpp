@@ -11,6 +11,8 @@ class Timer : public IEventComponent
 {
 public:
     Timer(sched::Period period);
+    virtual void initialize() override;
+    virtual gate::IPin* pin(size_t idx) override;
     virtual void connect(gate::IPin* pin) override;
     virtual void disconnect() override;
     virtual void enable(gate::PinState value) override;
