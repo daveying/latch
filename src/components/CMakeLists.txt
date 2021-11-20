@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(EVENT_COMPONENTS_SOURCES
+    ForwardPin.hpp
     ComponentBase.hpp
     ComponentDescription.hpp
     ComponentFactory.hpp

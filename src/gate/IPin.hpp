@@ -5,6 +5,11 @@
 #include <vector>
 #include <string>
 
+namespace component
+{
+class IComponent;
+}
+
 namespace gate
 {
 
@@ -44,15 +49,14 @@ inline std::string pinStateStr(const PinState& state)
     return ret;
 }
 
-class IGate;
 class IPin
 {
 public:
-    virtual const IGate* parent() const = 0;
-    virtual PinState value() const      = 0;
-    virtual void value(PinState newVal) = 0;
-    virtual int64_t index() const       = 0;
-    virtual void index(int64_t)         = 0;
+    virtual const component::IComponent* parent() const = 0;
+    virtual PinState value() const                      = 0;
+    virtual void value(PinState newVal)                 = 0;
+    virtual int64_t index() const                       = 0;
+    virtual void index(int64_t)                         = 0;
 };
 
 class ISourcePin : public IPin

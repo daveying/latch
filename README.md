@@ -25,3 +25,4 @@ This project is called Latch because latch is the most fundamental element of el
     - [ ] Option 2: rendering based on logs
 - [x] Fix DelayedNOTGate gate::gate_info<>
 - [x] Fix gate::gate_info<>
+- [ ] Name of pins are computed on the fly which saves memory but it's expected to slow down the simulation a lot

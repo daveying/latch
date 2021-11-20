@@ -68,6 +68,10 @@ public:
         }
         return ret;
     }
+    virtual IComponent* subcomponent(int) override
+    {
+        return &m_gate;
+    }
     static std::unique_ptr<IComponent> create(const std::string& name)
     {
         return std::make_unique<GateComponentTemplate>(name);

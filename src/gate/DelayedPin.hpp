@@ -30,6 +30,9 @@ public:
     {
         return m_value;
     }
+    // compute the name every time to save memory
+    // revisit to determine if name should be stored
+    // in a member
     std::string name() const
     {
         return (m_parent ? m_parent->name() : "None") + ".in" + std::to_string(m_index);
@@ -85,6 +88,9 @@ public:
     {
         return m_value;
     }
+    // compute the name every time to save memory
+    // revisit to determine if name should be stored
+    // in a member
     std::string name() const
     {
         return (m_parent ? m_parent->name() : "None") + ".out" + std::to_string(m_index);

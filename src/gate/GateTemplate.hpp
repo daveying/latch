@@ -66,6 +66,14 @@ public:
     {
         return m_name;
     }
+    virtual IPin* pin(size_t index) override
+    {
+        if (index >= sizeof...(InputPinT))
+        {
+            return m_outputPins[index - sizeof...(InputPinT)].get();
+        }
+        return m_inputPins[index].get();
+    }
 protected:
     static const TruthTableT m_truthTable;
     std::array<std::unique_ptr<IPin>, sizeof...(InputPinT)> m_inputPins;

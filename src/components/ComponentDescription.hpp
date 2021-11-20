@@ -15,7 +15,6 @@ enum class PinDirection
 {
     INPUT,
     OUTPUT,
-    VIRTUAL,
 };
 
 struct PinDescription
