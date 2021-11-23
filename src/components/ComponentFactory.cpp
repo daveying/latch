@@ -7,6 +7,12 @@ namespace component
 std::unordered_map<std::string, ComponentDescription> ComponentFactory::m_preCompiledComponents;
 std::unordered_map<std::string, ComponentDescription> ComponentFactory::m_customComponents;
 
+void ComponentFactory::clear()
+{
+    m_preCompiledComponents.clear();
+    m_customComponents.clear();
+}
+
 void ComponentFactory::registerCustomComponents(const ComponentDescription& desc)
 {
     if (m_preCompiledComponents.find(desc.type) != m_preCompiledComponents.end())
@@ -42,6 +48,10 @@ std::unique_ptr<IComponent> ComponentFactory::create(const std::string& type, co
                 ret = std::make_unique<ComponentBase>(desc2->second, name);
             }
         }
+    }
+    if (ret == nullptr)
+    {
+        throw std::runtime_error("Cannot find description for " + type);
     }
 
     return ret;

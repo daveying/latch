@@ -61,6 +61,7 @@ public:
         for (auto& subcomp : m_subcomponents)
         {
             subcomp->initialize();
+            sched::waitTillSteady();
         }
     };
 

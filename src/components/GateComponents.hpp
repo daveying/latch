@@ -60,7 +60,7 @@ public:
         }
         else if (idx >= inputSize())
         {
-            ret = m_gate.output(idx = inputSize());
+            ret = m_gate.output(idx - inputSize());
         }
         else
         {
@@ -84,6 +84,7 @@ using ANDGateComponent        = GateComponentTemplate<gate::ANDGate>;
 using BusBufferComponent      = GateComponentTemplate<gate::BusBuffer>;
 using NANDGateComponent       = GateComponentTemplate<gate::NANDGate>;
 using NORGateComponent        = GateComponentTemplate<gate::NORGate>;
+using NORGateDelayedComponent = GateComponentTemplate<gate::NORGateDelayed>;
 using NOTGateComponent        = GateComponentTemplate<gate::NOTGate>;
 using NOTGateDelayedComponent = GateComponentTemplate<gate::NOTGateDelayed>;
 using ORGateComponent         = GateComponentTemplate<gate::ORGate>;

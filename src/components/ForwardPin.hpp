@@ -28,6 +28,10 @@ public:
     {
         return m_parent;
     }
+    virtual IComponent* parent() override
+    {
+        return m_parent;
+    }
 
     virtual gate::PinState value() const override
     {
@@ -47,6 +51,7 @@ public:
 
     virtual void value(gate::PinState newVal) override
     {
+        m_value = newVal;
         for (auto peer : m_peers)
         {
             peer->value(newVal);

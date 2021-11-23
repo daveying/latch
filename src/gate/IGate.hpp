@@ -25,7 +25,10 @@ public:
     virtual void compute()                   = 0;
     virtual IPin* input(size_t index)        = 0;
     virtual ISourcePin* output(size_t index) = 0;
-    virtual void initialize() final {}
+    virtual void initialize() final
+    {
+        compute();
+    }
     virtual component::IComponent* subcomponent(int) final
     {
         return nullptr;

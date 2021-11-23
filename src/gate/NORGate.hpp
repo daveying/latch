@@ -28,6 +28,11 @@ using NORGate = GateTemplate<
     NORGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
+using NORGateDelayed = GateTemplate<
+    TypePack<DelayedInputPin<1>, ZeroDelayInputPin>,
+    NORGate_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
+
 } // namespace gate
 
 #endif // NOR_GATE_HPP__

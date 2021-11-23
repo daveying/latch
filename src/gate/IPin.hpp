@@ -53,6 +53,7 @@ class IPin
 {
 public:
     virtual const component::IComponent* parent() const = 0;
+    virtual component::IComponent* parent()             = 0;
     virtual PinState value() const                      = 0;
     virtual void value(PinState newVal)                 = 0;
     virtual int64_t index() const                       = 0;

@@ -22,7 +22,11 @@ public:
         , m_valueImmediate{PinState::Low}
         , m_index{index}
     {}
-    virtual const IGate* parent() const override
+    virtual const component::IComponent* parent() const override
+    {
+        return m_parent;
+    }
+    virtual component::IComponent* parent() override
     {
         return m_parent;
     }
@@ -49,7 +53,10 @@ public:
                         "Input pin  [" + name() + "] new value [" + pinStateStr(newVal) + "] trigger recompute",
                         [gate = m_parent, newVal = newVal, pin = this] (sched::Timestamp) -> void {
                             pin->m_value = newVal;
-                            if(gate) gate->compute();
+                            if(gate)
+                            {
+                                gate->compute();
+                            }
                         }
                     ));
         }
@@ -80,7 +87,11 @@ public:
         , m_value{PinState::Low}
         , m_index{index}
     {}
-    virtual const IGate* parent() const override
+    virtual const component::IComponent* parent() const override
+    {
+        return m_parent;
+    }
+    virtual component::IComponent* parent() override
     {
         return m_parent;
     }

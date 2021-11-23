@@ -9,6 +9,7 @@ namespace component
 class ComponentFactory
 {
 public:
+    static void clear();
     template <typename T>
     static void registerPrecompiledComponent(const std::string& type)
     {
