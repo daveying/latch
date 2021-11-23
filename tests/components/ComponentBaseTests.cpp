@@ -70,6 +70,47 @@ protected:
         description.connections.push_back({.src = {10, 2}, .dest = {-1, 3}});  // dff.norGate1.2  -> Q
         ComponentFactory::registerCustomComponents(description);
     }
+
+    void registerFourBitDescription()
+    {
+        ComponentDescription description;
+        description.type = "FourBit";
+        description.pins.push_back({"Load", PinDirection::INPUT});  // -1,0
+        description.pins.push_back({"D0", PinDirection::INPUT});    // -1,1
+        description.pins.push_back({"D1", PinDirection::INPUT});    // -1,2
+        description.pins.push_back({"D2", PinDirection::INPUT});    // -1,3
+        description.pins.push_back({"D3", PinDirection::INPUT});    // -1,4
+        description.pins.push_back({"Clock", PinDirection::INPUT}); // -1,5
+        description.pins.push_back({"Q0", PinDirection::OUTPUT});   // -1,6
+        description.pins.push_back({"Q1", PinDirection::OUTPUT});   // -1,7
+        description.pins.push_back({"Q2", PinDirection::OUTPUT});   // -1,8
+        description.pins.push_back({"Q3", PinDirection::OUTPUT});   // -1,9
+
+        description.subcomponents.push_back({"bit0", "OneBit"}); // 0
+        description.subcomponents.push_back({"bit1", "OneBit"}); // 1
+        description.subcomponents.push_back({"bit2", "OneBit"}); // 2
+        description.subcomponents.push_back({"bit3", "OneBit"}); // 3
+
+        description.connections.push_back({.src = {-1, 0}, .dest = {0,  0}});  // Load  -> bit0.Load
+        description.connections.push_back({.src = {-1, 0}, .dest = {1,  0}});  // Load  -> bit1.Load
+        description.connections.push_back({.src = {-1, 0}, .dest = {2,  0}});  // Load  -> bit2.Load
+        description.connections.push_back({.src = {-1, 0}, .dest = {3,  0}});  // Load  -> bit3.Load
+        description.connections.push_back({.src = {-1, 5}, .dest = {0,  2}});  // Clock -> bit0.Clock
+        description.connections.push_back({.src = {-1, 5}, .dest = {1,  2}});  // Clock -> bit1.Clock
+        description.connections.push_back({.src = {-1, 5}, .dest = {2,  2}});  // Clock -> bit2.Clock
+        description.connections.push_back({.src = {-1, 5}, .dest = {3,  2}});  // Clock -> bit3.Clock
+
+        description.connections.push_back({.src = {-1, 1}, .dest = {0,  1}});  // D0    -> bit0.D
+        description.connections.push_back({.src = {-1, 2}, .dest = {1,  1}});  // D1    -> bit1.D
+        description.connections.push_back({.src = {-1, 3}, .dest = {2,  1}});  // D2    -> bit2.D
+        description.connections.push_back({.src = {-1, 4}, .dest = {3,  1}});  // D3    -> bit3.D
+
+        description.connections.push_back({.src = {0, 3}, .dest = {-1,  6}});  // bit0.Q -> Q0
+        description.connections.push_back({.src = {1, 3}, .dest = {-1,  7}});  // bit1.Q -> Q1
+        description.connections.push_back({.src = {2, 3}, .dest = {-1,  8}});  // bit2.Q -> Q2
+        description.connections.push_back({.src = {3, 3}, .dest = {-1,  9}});  // bit3.Q -> Q3
+        ComponentFactory::registerCustomComponents(description);
+    }
 };
 
 TEST_F(ComponentBaseTests, OneBit)
@@ -111,9 +152,74 @@ TEST_F(ComponentBaseTests, OneBit)
     sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
     sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
     sched::waitTillSteady();
-    auto onebb = dynamic_cast<component::ComponentBase*>(oneBit.get());
-    auto r = onebb->subcomponent(10)->pin(2)->value();
     EXPECT_EQ(Q->value(), gate::PinState::High);
 }
 
+TEST_F(ComponentBaseTests, FourBit)
+{
+    registerOneBitDescription();
+    registerFourBitDescription();
+
+    std::unique_ptr<IComponent> fourBit;
+    ASSERT_NO_THROW(fourBit = ComponentFactory::create("FourBit", "fourBit"));
+    ASSERT_NO_THROW(fourBit->initialize());
+
+    auto Load  = fourBit->pin(0);
+    auto D0    = fourBit->pin(1);
+    auto D1    = fourBit->pin(2);
+    auto D2    = fourBit->pin(3);
+    auto D3    = fourBit->pin(4);
+    auto Clock = fourBit->pin(5);
+    auto Q0    = fourBit->pin(6);
+    auto Q1    = fourBit->pin(7);
+    auto Q2    = fourBit->pin(8);
+    auto Q3    = fourBit->pin(9);
+
+    sched::waitTillSteady();
+
+    // D Low, Load Low
+    EXPECT_EQ(Q0->value(), gate::PinState::Low);
+    EXPECT_EQ(Q1->value(), gate::PinState::Low);
+    EXPECT_EQ(Q2->value(), gate::PinState::Low);
+    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+
+    // D -> High, Load Low
+    D0->value(gate::PinState::High);
+    D1->value(gate::PinState::Low);
+    D2->value(gate::PinState::High);
+    D3->value(gate::PinState::Low);
+    sched::waitTillSteady();
+    EXPECT_EQ(Q0->value(), gate::PinState::Low);
+    EXPECT_EQ(Q1->value(), gate::PinState::Low);
+    EXPECT_EQ(Q2->value(), gate::PinState::Low);
+    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+
+    // Clock -> pulse
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::waitTillSteady();
+
+    EXPECT_EQ(Q0->value(), gate::PinState::Low);
+    EXPECT_EQ(Q1->value(), gate::PinState::Low);
+    EXPECT_EQ(Q2->value(), gate::PinState::Low);
+    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+    EXPECT_EQ(Clock->value(), gate::PinState::Low);
+
+    // D High, Load High
+    Load->value(gate::PinState::High);
+    sched::waitTillSteady();
+    EXPECT_EQ(Q0->value(), gate::PinState::Low);
+    EXPECT_EQ(Q1->value(), gate::PinState::Low);
+    EXPECT_EQ(Q2->value(), gate::PinState::Low);
+    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+
+    // Clock -> pulse
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::waitTillSteady();
+    EXPECT_EQ(Q0->value(), gate::PinState::High);
+    EXPECT_EQ(Q1->value(), gate::PinState::Low);
+    EXPECT_EQ(Q2->value(), gate::PinState::High);
+    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+}
 } // namespace component
