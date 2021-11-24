@@ -91,7 +91,26 @@ void getSubcomponents(std::vector<SubcomponentDescription>& subcomponents) {};
 template <typename T>
 void getConnections(std::vector<ConnectionDescription>& connections) {};
 
+template <typename T>
+ComponentDescription getDescription()
+{
+    ComponentDescription desc;
+    desc.type = T::Name;
+    detail::getPins<T>(desc.pins);
+    detail::getSubcomponents<T>(desc.subcomponents);
+    detail::getConnections<T>(desc.connections);
+    desc.createFunc = T::create;
+    return desc;
+};
 } // namespace detail
+
+#define DEFINE_PIN_ARRAY(NAME, TYPE, SIZE) std::make_tuple(NAME, static_cast<TYPE*>(nullptr), SIZE)
+#define DEFINE_PIN(NAME, TYPE) DEFINE_PIN_ARRAY(NAME, TYPE, 1)
+#define DEFINE_SUBCOMPONENT_ARRAY(NAME, TYPE, SIZE) std::make_tuple(NAME, static_cast<TYPE*>(nullptr), SIZE)
+#define DEFINE_SUBCOMPONENT(NAME, TYPE) DEFINE_SUBCOMPONENT_ARRAY(NAME, TYPE, 1)
+#define CONNECT(FROM, TO) std::make_tuple(FROM, TO)
+#define CONNECT_MULTICAST(FROM, TO, SIZE) std::make_tuple(FROM, TO, SIZE)
+#define CONNECT_ARRAY(FROM, TO, SIZE) std::make_tuple(FROM, SIZE, TO, SIZE)
 } // namespace component
 
 #endif // COMPONENT_DESCRIPTION_HPP__

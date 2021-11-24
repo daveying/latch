@@ -103,6 +103,8 @@ public:
         return m_description;
     }
 
+    virtual ~ComponentBase() {}
+
 protected:
     std::string m_name;
     std::vector<std::unique_ptr<IComponent>> m_subcomponents;
