@@ -30,6 +30,13 @@
 
 namespace component
 {
+
+enum class PinDirection
+{
+    INPUT,
+    OUTPUT,
+};
+
 class IComponent
 {
 public:

@@ -40,6 +40,11 @@ using gate::GateTemplateBase;
 using gate::TypePack;
 
 template <typename T>
+struct GateComponentName
+{
+};
+
+template <typename T>
 class GateComponentTemplate
 {
     static_assert(std::is_base_of<GateTemplateBase, T>::value, "T must be an instantiation of GateTemplate");
@@ -65,6 +70,22 @@ public:
     static inline constexpr size_t outputSize()
     {
         return sizeof...(OutputPinT);
+    }
+    static constexpr const char* Name()
+    {
+        return GateComponentName<GateT>::Name();
+    }
+    static constexpr auto Pins()
+    {
+        return detail::gatePins<InputPinT..., OutputPinT...>(sizeof...(InputPinT));
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple();
+    }
+    static constexpr auto Connections()
+    {
+        return std::make_tuple();
     }
     virtual void initialize() override
     {
@@ -103,14 +124,25 @@ protected:
     GateT m_gate;
 };
 
-using ANDGateComponent        = GateComponentTemplate<gate::ANDGate>;
-using BusBufferComponent      = GateComponentTemplate<gate::BusBuffer>;
-using NANDGateComponent       = GateComponentTemplate<gate::NANDGate>;
-using NORGateComponent        = GateComponentTemplate<gate::NORGate>;
-using NORGateDelayedComponent = GateComponentTemplate<gate::NORGateDelayed>;
-using NOTGateComponent        = GateComponentTemplate<gate::NOTGate>;
-using NOTGateDelayedComponent = GateComponentTemplate<gate::NOTGateDelayed>;
-using ORGateComponent         = GateComponentTemplate<gate::ORGate>;
+#define DEFINE_GATE_COMPONENT(NAME, GATE)       \
+    using NAME = GateComponentTemplate<GATE>;   \
+    template <>                                 \
+    struct GateComponentName<GATE>              \
+    {                                           \
+        static constexpr const char* Name()     \
+        {                                       \
+            return #NAME;                       \
+        }                                       \
+    };
+
+DEFINE_GATE_COMPONENT(ANDGateComponent, gate::ANDGate);
+DEFINE_GATE_COMPONENT(BusBufferComponent, gate::BusBuffer);
+DEFINE_GATE_COMPONENT(NANDGateComponent, gate::NANDGate);
+DEFINE_GATE_COMPONENT(NORGateComponent, gate::NORGate);
+DEFINE_GATE_COMPONENT(NORGateDelayedComponent, gate::NORGateDelayed);
+DEFINE_GATE_COMPONENT(NOTGateComponent, gate::NOTGate);
+DEFINE_GATE_COMPONENT(NOTGateDelayedComponent, gate::NOTGateDelayed);
+DEFINE_GATE_COMPONENT(ORGateComponent, gate::ORGate);
 
 } // namespace component
 

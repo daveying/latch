@@ -44,7 +44,7 @@ public:
         desc.type = type;
         detail::getPins<T>(desc.pins);
         detail::getSubcomponents<T>(desc.subcomponents);
-        detail::getConnections<T>(desc.connections);
+        detail::getConnections<T>(desc);
         desc.createFunc = T::create;
     }
     static void registerCustomComponents(const ComponentDescription& desc);

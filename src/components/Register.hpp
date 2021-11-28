@@ -35,8 +35,11 @@ namespace component
 class DFlipFlop : public ComponentBase
 {
 public:
-    static constexpr const char* Name = "DFlipFlop";
-    static constexpr auto pins()
+    static constexpr const char* Name()
+    {
+       return "DFlipFlop";
+    }
+    static constexpr auto Pins()
     {
         return std::make_tuple(
             DEFINE_PIN("Clock", ForwardInputPin),
@@ -45,7 +48,7 @@ public:
             DEFINE_PIN("Qc", ForwardOutputPin)
         );
     }
-    static constexpr auto subcomponents()
+    static constexpr auto Subcomponents()
     {
         return std::make_tuple(
             DEFINE_SUBCOMPONENT("invertor", NOTGateDelayedComponent),
@@ -57,7 +60,7 @@ public:
             DEFINE_SUBCOMPONENT("norGate1", NORGateComponent)
         );
     }
-    static constexpr auto connections()
+    static constexpr auto Connections()
     {
         return std::make_tuple(
             CONNECT("D", "andGate0.in0"),
@@ -89,8 +92,11 @@ public:
 class Bit : public ComponentBase
 {
 public:
-    static constexpr const char* Name = "Bit";
-    static constexpr auto pins()
+    static constexpr const char* Name()
+    {
+        return "Bit";
+    }
+    static constexpr auto Pins()
     {
         return std::make_tuple(
             DEFINE_PIN("Load", ForwardInputPin),
@@ -99,7 +105,7 @@ public:
             DEFINE_PIN("Q", ForwardOutputPin)
         );
     }
-    static constexpr auto subcomponents()
+    static constexpr auto Subcomponents()
     {
         return std::make_tuple(
             DEFINE_SUBCOMPONENT("dataInvertor", NOTGateComponent),
@@ -109,7 +115,7 @@ public:
             DEFINE_SUBCOMPONENT("dff", DFlipFlop)
         );
     }
-    static constexpr auto connections()
+    static constexpr auto Connections()
     {
         return std::make_tuple(
             CONNECT("Load", "dataInvertor.in0"),
@@ -138,8 +144,12 @@ template <size_t BITS>
 class Register : public ComponentBase
 {
 public:
-    static constexpr const char* Name = "Register";
-    static constexpr auto pins()
+    static const char* Name()
+    {
+        static std::string name{"Register" + std::to_string(BITS)};
+        return name.c_str();
+    }
+    static constexpr auto Pins()
     {
         return std::make_tuple(
             DEFINE_PIN("Load", ForwardInputPin),
@@ -148,19 +158,19 @@ public:
             DEFINE_PIN_ARRAY("Q", ForwardOutputPin, BITS)
         );
     }
-    static constexpr auto subcomponents()
+    static constexpr auto Subcomponents()
     {
         return std::make_tuple(
             DEFINE_SUBCOMPONENT_ARRAY("bit", Bit, BITS)
         );
     }
-    static constexpr auto connections()
+    static constexpr auto Connections()
     {
         return std::make_tuple(
-            CONNECT_MULTICAST("Load", "bit.Load", BITS),
-            CONNECT_MULTICAST("Clock", "bit.Clock", BITS),
-            CONNECT_ARRAY("D", "bit.D", BITS),
-            CONNECT_ARRAY("Q", "bit.Q", BITS)
+            CONNECT_MULTICAST_COMPONENT("Load", "bit.Load", BITS),
+            CONNECT_MULTICAST_COMPONENT("Clock", "bit.Clock", BITS),
+            CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("D", "bit.D", BITS),
+            CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("Q", "bit.Q", BITS)
         );
     }
     static std::unique_ptr<IComponent> create(const std::string& name)

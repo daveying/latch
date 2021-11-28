@@ -39,6 +39,10 @@ class DelayedInputPin : public IPin
 {
 public:
     static_assert(DELAY >= 0, "Input pin delay must >= 0");
+    static constexpr auto direction()
+    {
+        return component::PinDirection::INPUT;
+    }
     explicit DelayedInputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
@@ -105,6 +109,11 @@ template <sched::Period DELAY>
 class DelayedOutputPin : public ISourcePin
 {
 public:
+    static_assert(DELAY >= 0, "Output pin delay must >= 0");
+    static constexpr auto direction()
+    {
+        return component::PinDirection::OUTPUT;
+    }
     explicit DelayedOutputPin(IGate* parent, int64_t index = -1)
         : m_parent{parent}
         , m_value{PinState::Low}
