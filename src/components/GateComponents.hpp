@@ -31,6 +31,7 @@
 #include <NOTGate.hpp>
 #include <ORGate.hpp>
 #include <IComponent.hpp>
+#include <ComponentDescription.hpp>
 
 namespace component
 {

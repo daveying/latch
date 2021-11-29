@@ -168,7 +168,7 @@ static constexpr auto gatePinsImpl(T& t, size_t inputPinSize, std::index_sequenc
                 pinDirection(std::get<I>(t)) == PinDirection::INPUT ? detail::defaultInputNames[I] : detail::defaultOutputNames[I - inputPinSize]
             ),
             std::get<I>(t),
-            1
+            0
         )...
     );
 }
@@ -188,7 +188,7 @@ static void getPins(std::vector<PinDescription>& pinsOut)
             std::string pinName    = std::get<PIN_NAME>(pinTuple);
             PinDirection direction = pinDirection(std::get<PIN_TYPE>(pinTuple));
             size_t pinSize         = std::get<PIN_SIZE>(pinTuple);
-            if (pinSize > 1)
+            if (pinSize > 0)
             {
                 for (size_t i = 0; i < pinSize; ++i)
                 {
@@ -220,7 +220,7 @@ static void getSubcomponents(std::vector<SubcomponentDescription>& subcomponents
             std::string subcompName = std::get<SUBCOMP_NAME>(subcompTuple);
             std::string subcompType = subcomponentTypeName(std::get<SUBCOMP_TYPE>(subcompTuple));
             size_t subcompSize      = std::get<SUBCOMP_SIZE>(subcompTuple);
-            if (subcompSize > 1)
+            if (subcompSize > 0)
             {
                 for (size_t i = 0; i < subcompSize; ++i)
                 {
@@ -296,8 +296,8 @@ static void getEndpointArray(const std::string& name,
             {
                 std::string pinWithIdx = pinName + "[" + std::to_string(i) + "]";
                 Endpoint t;
-                t.componentIndex = static_cast<int>(findIndex(subcomps, compName, "Dest component not found: " + compName));
-                t.pinIndex = findIndex(subcompPins[t.componentIndex], pinWithIdx, "Source component pin not found: " + compName + "." + pinWithIdx);
+                t.componentIndex = static_cast<int>(findIndex(subcomps, compName, "Component not found: " + compName));
+                t.pinIndex = findIndex(subcompPins[t.componentIndex], pinWithIdx, "Component pin not found: " + compName + "." + pinWithIdx);
                 endpoints.push_back(t);
             }
         }
@@ -307,8 +307,8 @@ static void getEndpointArray(const std::string& name,
             {
                 std::string compWithIdx = compName + "[" + std::to_string(i) + "]";
                 Endpoint t;
-                t.componentIndex = static_cast<int>(findIndex(subcomps, compWithIdx, "Dest component not found: " + compWithIdx));
-                t.pinIndex = findIndex(subcompPins[t.componentIndex], pinName, "Source component pin not found: " + compWithIdx + "." + pinName);
+                t.componentIndex = static_cast<int>(findIndex(subcomps, compWithIdx, "Component not found: " + compWithIdx));
+                t.pinIndex = findIndex(subcompPins[t.componentIndex], pinName, "Component pin not found: " + compWithIdx + "." + pinName);
                 endpoints.push_back(t);
             }
         }
@@ -322,13 +322,13 @@ static void getEndpointArray(const std::string& name,
                 std::string pinWithIdx = pinName + "[" + std::to_string(i) + "]";
                 Endpoint t;
                 t.componentIndex = -1;
-                t.pinIndex = findIndex(thisPins, pinWithIdx, "Source component pin not found: " + compName + "." + pinWithIdx);
+                t.pinIndex = findIndex(thisPins, pinWithIdx, "Component pin not found: " + compName + "." + pinWithIdx);
                 endpoints.push_back(t);
             }
         }
         else
         {
-            throw std::runtime_error("Endpoint array respect to subcomponents, but the component is this component");
+            throw std::runtime_error("Endpoint array respect to subcomponents, but the component is this component: " + name);
         }
     }
 }
@@ -339,11 +339,24 @@ static void getConnections(ComponentDescription& desc)
     auto subcompsTuple    = T::Subcomponents();
     auto connectionsTuple = T::Connections();
     std::vector<std::vector<PinDescription>> subcompPins;
-    subcompPins.reserve(std::tuple_size<decltype(subcompsTuple)>::value);
     for_each(subcompsTuple, [&subcompPins] (auto& subcompTuple, size_t idx) {
-            auto& subPins  = subcompPins[idx];
-            using SubcompT = typename std::remove_pointer<typename std::remove_reference<decltype(std::get<SUBCOMP_TYPE>(subcompTuple))>::type>::type;
-            getPins<SubcompT>(subPins);
+            using SubcompT     = typename std::remove_pointer<typename std::remove_reference<decltype(std::get<SUBCOMP_TYPE>(subcompTuple))>::type>::type;
+            size_t subcompSize = std::get<SUBCOMP_SIZE>(subcompTuple);
+            if (subcompSize > 0)
+            {
+                for (size_t i = 0; i < subcompSize; ++i)
+                {
+                    subcompPins.push_back({});
+                    auto& subPins = subcompPins[subcompPins.size() - 1];
+                    getPins<SubcompT>(subPins);
+                }
+            }
+            else
+            {
+                subcompPins.push_back({});
+                auto& subPins = subcompPins[subcompPins.size() - 1];
+                getPins<SubcompT>(subPins);
+            }
         });
     for_each(connectionsTuple, [&] (auto& connectionTuple, size_t) {
             auto& thisPins = desc.pins;
@@ -359,6 +372,7 @@ static void getConnections(ComponentDescription& desc)
                 getEndpoint(from, subcompPins, thisPins, subcomps, f);
                 getEndpoint(to, subcompPins, thisPins, subcomps, t);
                 desc.connections.push_back({.src = f, .dest = t});
+                break;
             }
             case ConnectionDefinitionType::SINGLE_2_COMPONENT_ARRAY:
             case ConnectionDefinitionType::SINGLE_2_PIN_ARRAY:
@@ -376,6 +390,7 @@ static void getConnections(ComponentDescription& desc)
                 {
                     desc.connections.push_back({.src = f, .dest = ts[i]});
                 }
+                break;
             }
             case ConnectionDefinitionType::PIN_ARRAY_2_PIN_ARRAY:
             case ConnectionDefinitionType::PIN_ARRAY_2_COMPONENT_ARRAY:
@@ -398,6 +413,7 @@ static void getConnections(ComponentDescription& desc)
                 {
                     desc.connections.push_back({.src = fs[i], .dest = ts[i]});
                 }
+                break;
             }
             default:
             {
@@ -422,10 +438,10 @@ static ComponentDescription getDescription()
 
 #define DEFINE_PIN_ARRAY(NAME, TYPE, SIZE) \
     std::make_tuple(NAME, static_cast<TYPE*>(nullptr), SIZE)
-#define DEFINE_PIN(NAME, TYPE) DEFINE_PIN_ARRAY(NAME, TYPE, 1)
+#define DEFINE_PIN(NAME, TYPE) DEFINE_PIN_ARRAY(NAME, TYPE, 0)  // non-zero means array
 #define DEFINE_SUBCOMPONENT_ARRAY(NAME, TYPE, SIZE) \
     std::make_tuple(NAME, static_cast<TYPE*>(nullptr), SIZE)
-#define DEFINE_SUBCOMPONENT(NAME, TYPE) DEFINE_SUBCOMPONENT_ARRAY(NAME, TYPE, 1)
+#define DEFINE_SUBCOMPONENT(NAME, TYPE) DEFINE_SUBCOMPONENT_ARRAY(NAME, TYPE, 0) // non-zero means array
 
 #define CONNECT(FROM, TO) \
     std::make_tuple(ConnectionDefinitionType::SINGLE_2_SINGLE, FROM, TO, 0)   // will not use 0

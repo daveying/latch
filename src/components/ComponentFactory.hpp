@@ -32,27 +32,42 @@ namespace component
 class ComponentFactory
 {
 public:
-    static void clear();
+    static void clearCustomComponents();
+
     template <typename T>
-    static void registerPrecompiledComponent(const std::string& type)
+    static void registerPrecompiledComponent()
     {
-        if (m_preCompiledComponents.find(type) != m_preCompiledComponents.end())
+        ComponentDescription desc = detail::getDescription<T>();
+        if (m_preCompiledComponents.find(desc.type) != m_preCompiledComponents.end())
         {
-            throw std::runtime_error("Precompiled component type: " + type + " has already been registered.");
+            throw std::runtime_error("Precompiled component type: " + desc.type + " has already been registered.");
         }
-        ComponentDescription& desc = m_preCompiledComponents[type];
-        desc.type = type;
-        detail::getPins<T>(desc.pins);
-        detail::getSubcomponents<T>(desc.subcomponents);
-        detail::getConnections<T>(desc);
-        desc.createFunc = T::create;
+        m_preCompiledComponents[desc.type] = desc;
     }
-    static void registerCustomComponents(const ComponentDescription& desc);
+
+    static void registerCustomComponent(const ComponentDescription& desc);
+    static bool tryRegisterCustomComponent(const ComponentDescription& desc);
     static std::unique_ptr<IComponent> create(const std::string& type, const std::string& name);
 private:
     static std::unordered_map<std::string, ComponentDescription> m_preCompiledComponents;
     static std::unordered_map<std::string, ComponentDescription> m_customComponents;
 };
+
+template <typename T>
+class ComponentItem
+{
+public:
+    ComponentItem()
+    {
+        ComponentFactory::registerPrecompiledComponent<T>();
+    }
+};
+
+// must register in C++ file
+#define REGISTER_COMPONENT_WITH_SUFFIX(T, SUFFIX) static component::ComponentItem<T> componentTypeItem##SUFFIX;
+#define REGISTER_COMPONENT_WITHOUT_SUFFIX(T) REGISTER_COMPONENT_WITH_SUFFIX(T, T);
+#define GET_MACRO(_1, _2, NAME, ...) NAME
+#define REGISTER_COMPONENT(...) GET_MACRO(__VA_ARGS__, REGISTER_COMPONENT_WITH_SUFFIX, REGISTER_COMPONENT_WITHOUT_SUFFIX)(__VA_ARGS__)
 
 } // namespace component
 

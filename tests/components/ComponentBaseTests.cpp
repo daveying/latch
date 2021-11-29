@@ -33,23 +33,6 @@ namespace component
 class ComponentBaseTests : public ::testing::Test
 {
 protected:
-    void SetUp() override
-    {
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::ANDGateComponent>("ANDGateComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NANDGateComponent>("NANDGateComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NORGateComponent>("NORGateComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NORGateDelayedComponent>("NORGateDelayedComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::ORGateComponent>("ORGateComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NOTGateComponent>("NOTGateComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NOTGateDelayedComponent>("NOTGateDelayedComponent"));
-        ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::BusBufferComponent>("BusBufferComponent"));
-    }
-
-    void TearDown() override
-    {
-        ComponentFactory::clear();
-    }
-
     void registerOneBitDescription()
     {
         ComponentDescription description;
@@ -91,7 +74,7 @@ protected:
         description.connections.push_back({.src = {9,  2}, .dest = {10, 0}});  // dff.norGate0.2  -> dff.norGate1.0
         description.connections.push_back({.src = {10, 2}, .dest = {1,  0}});  // dff.norGate1.2  -> feedbackAnd.0
         description.connections.push_back({.src = {10, 2}, .dest = {-1, 3}});  // dff.norGate1.2  -> Q
-        ComponentFactory::registerCustomComponents(description);
+        ComponentFactory::tryRegisterCustomComponent(description);
     }
 
     void registerFourBitDescription()
@@ -132,7 +115,7 @@ protected:
         description.connections.push_back({.src = {1, 3}, .dest = {-1,  7}});  // bit1.Q -> Q1
         description.connections.push_back({.src = {2, 3}, .dest = {-1,  8}});  // bit2.Q -> Q2
         description.connections.push_back({.src = {3, 3}, .dest = {-1,  9}});  // bit3.Q -> Q3
-        ComponentFactory::registerCustomComponents(description);
+        ComponentFactory::tryRegisterCustomComponent(description);
     }
 };
 

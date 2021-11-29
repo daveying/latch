@@ -21,17 +21,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <Register.hpp>
+#include <GateComponents.hpp>
 #include <ComponentFactory.hpp>
 
 namespace component
 {
-REGISTER_COMPONENT(DFlipFlop);
-REGISTER_COMPONENT(Bit);
-REGISTER_COMPONENT(Register<1>, 1); // for test
-REGISTER_COMPONENT(Register<4>, 4);
-REGISTER_COMPONENT(Register<8>, 8);
-REGISTER_COMPONENT(Register<16>, 16);
-REGISTER_COMPONENT(Register<32>, 32);
-REGISTER_COMPONENT(Register<64>, 64);
+
+REGISTER_COMPONENT(ANDGateComponent);
+REGISTER_COMPONENT(BusBufferComponent);
+REGISTER_COMPONENT(NANDGateComponent);
+REGISTER_COMPONENT(NORGateComponent);
+REGISTER_COMPONENT(NORGateDelayedComponent);
+REGISTER_COMPONENT(NOTGateComponent);
+REGISTER_COMPONENT(NOTGateDelayedComponent);
+REGISTER_COMPONENT(ORGateComponent);
+
 } // namespace component

@@ -26,17 +26,54 @@
 
 #include <gtest/gtest.h>
 
+#define EXPECT_THROW_WITH_MESSAGE(stmt, etype, whatstring) EXPECT_THROW( \
+    try {                                                                \
+        stmt;                                                            \
+    } catch (const etype& ex) {                                          \
+        EXPECT_EQ(std::string(ex.what()), whatstring);                   \
+        throw;                                                           \
+    }                                                                    \
+    , etype)
+
 using component::ComponentFactory;
 
 TEST(ComponentFactory, AddPreCompiledComponents)
 {
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::ANDGateComponent>("ANDGateComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NANDGateComponent>("NANDGateComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NORGateComponent>("NORGateComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::ORGateComponent>("ORGateComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NOTGateComponent>("NOTGateComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::NOTGateDelayedComponent>("NOTGateDelayedComponent"));
-    ASSERT_NO_THROW(ComponentFactory::registerPrecompiledComponent<component::BusBufferComponent>("BusBufferComponent"));
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::ANDGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: ANDGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::NANDGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: NANDGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::NORGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: NORGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::ORGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: ORGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::NOTGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: NOTGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::NOTGateDelayedComponent>(),
+            std::runtime_error,
+            "Precompiled component type: NOTGateDelayedComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::BusBufferComponent>(),
+            std::runtime_error,
+            "Precompiled component type: BusBufferComponent has already been registered."
+            );
 
     auto andGateComp        = ComponentFactory::create("ANDGateComponent", "andGateComp");
     auto nandGateComp       = ComponentFactory::create("NANDGateComponent", "nandGateComp");

@@ -30,13 +30,12 @@ namespace component
 std::unordered_map<std::string, ComponentDescription> ComponentFactory::m_preCompiledComponents;
 std::unordered_map<std::string, ComponentDescription> ComponentFactory::m_customComponents;
 
-void ComponentFactory::clear()
+void ComponentFactory::clearCustomComponents()
 {
-    m_preCompiledComponents.clear();
     m_customComponents.clear();
 }
 
-void ComponentFactory::registerCustomComponents(const ComponentDescription& desc)
+void ComponentFactory::registerCustomComponent(const ComponentDescription& desc)
 {
     if (m_preCompiledComponents.find(desc.type) != m_preCompiledComponents.end())
     {
@@ -47,6 +46,17 @@ void ComponentFactory::registerCustomComponents(const ComponentDescription& desc
         throw std::runtime_error("Custom component type: " + desc.type + " has already been registered.");
     }
     m_customComponents[desc.type] = desc;
+}
+
+bool ComponentFactory::tryRegisterCustomComponent(const ComponentDescription& desc)
+{
+    if (m_preCompiledComponents.find(desc.type) != m_preCompiledComponents.end()
+        || m_customComponents.find(desc.type) != m_customComponents.end())
+    {
+        return false;
+    }
+    m_customComponents[desc.type] = desc;
+    return true;
 }
 
 std::unique_ptr<IComponent> ComponentFactory::create(const std::string& type, const std::string& name)
