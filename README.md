@@ -12,7 +12,7 @@ This project is called Latch because latch is the most fundamental element of el
 - [x] Change sched::addEvent interface so that useful debug info can be logged when scheduling
     - [x] change Event to include event name and log handle
 - [x] Fix failing test
-- [ ] Component template
+- [x] Component template
 - [ ] Logger to support loglevel and switch on/off sched logs
     - [ ] Loglevel support
     - [ ] Schedule log can be redirect to specified file
@@ -26,4 +26,4 @@ This project is called Latch because latch is the most fundamental element of el
 - [x] Fix DelayedNOTGate gate::gate_info<>
 - [x] Fix gate::gate_info<>
 - [ ] Name of pins are computed on the fly which saves memory but it's expected to slow down the simulation a lot
-- [ ] Remove gate namespace
+- [x] Remove gate namespace
