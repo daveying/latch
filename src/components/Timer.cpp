@@ -29,8 +29,8 @@ namespace component
 Timer::Timer(sched::Period period, const std::string& name)
     : m_period{period}
     , m_pin{nullptr}
-    , m_value{gate::PinState::Low}
-    , m_enabled{gate::PinState::Low}
+    , m_value{PinState::Low}
+    , m_enabled{PinState::Low}
     , m_halt{false}
     , m_name{name}
 {
@@ -51,7 +51,7 @@ const std::string& Timer::name() const
     return m_name;
 }
 
-gate::IPin* Timer::pin(size_t idx)
+IPin* Timer::pin(size_t idx)
 {
     throw std::runtime_error("Timer::pin(): Invalid operation");
 }
@@ -62,7 +62,7 @@ void Timer::halt()
     m_halt = true;
 }
 
-void Timer::connect(gate::IPin* pin)
+void Timer::connect(IPin* pin)
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_pin = pin;
@@ -81,7 +81,7 @@ void Timer::timerEvent()
     {
         return;
     }
-    if (m_enabled == gate::PinState::High)
+    if (m_enabled == PinState::High)
     {
         m_value = ~m_value;
     }
@@ -100,7 +100,7 @@ void Timer::timerEvent()
             ));
 }
 
-void Timer::enable(gate::PinState value)
+void Timer::enable(PinState value)
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_enabled = value;

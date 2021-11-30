@@ -28,7 +28,7 @@
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
-namespace gate
+namespace component
 {
 
 static constexpr size_t ANDGateInputSize  = 2;
@@ -51,6 +51,6 @@ using ANDGate = GateTemplate<
     ANDGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-} // namespace gate
+} // namespace component
 
 #endif // AND_GATE_HPP_

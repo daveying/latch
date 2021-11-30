@@ -28,7 +28,7 @@
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
-namespace gate
+namespace component
 {
 
 static constexpr size_t NANDGateInputSize  = 2;
@@ -51,6 +51,6 @@ using NANDGate = GateTemplate<
     NANDGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-} // namespace gate
+} // namespace component
 
 #endif // NAND_GATE_HPP_

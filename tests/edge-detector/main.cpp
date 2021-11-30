@@ -33,11 +33,11 @@ TEST(EdgeDetectorUnitDelay, Pulse)
     sched::waitTillSteady();
     auto beginTime = sched::getCurrentTimestamp();
 
-    gate::ZeroDelayOutputPin D{nullptr};
-    gate::ZeroDelayOutputPin E{nullptr};
+    component::ZeroDelayOutputPin D{nullptr};
+    component::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGateDelayed invertor{"invertor"};
-    gate::ANDGate pulseGate{"pulseGate"};
+    component::NOTGateDelayed invertor{"invertor"};
+    component::ANDGate pulseGate{"pulseGate"};
 
     E.connect(pulseGate.input(0));
     E.connect(invertor.input(0));
@@ -50,20 +50,20 @@ TEST(EdgeDetectorUnitDelay, Pulse)
 
     auto Q = pulseGate.output(0);
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // E -> High
-    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(gate::PinState::High); }));
+    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(component::PinState::High); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
     EXPECT_EQ(beginTime + 2, sched::getCurrentTimestamp());
 
     // E -> Low
-    sched::addEvent(1, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(component::PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
     EXPECT_EQ(beginTime + 4, sched::getCurrentTimestamp());
 }
 
@@ -72,11 +72,11 @@ TEST(EdgeDetectorNonDelayed, Pulse)
     sched::waitTillSteady();
     auto beginTime = sched::getCurrentTimestamp();
 
-    gate::ZeroDelayOutputPin D{nullptr};
-    gate::ZeroDelayOutputPin E{nullptr};
+    component::ZeroDelayOutputPin D{nullptr};
+    component::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGate invertor{"invertor"};
-    gate::ANDGate pulseGate{"pulseGate"};
+    component::NOTGate invertor{"invertor"};
+    component::ANDGate pulseGate{"pulseGate"};
 
     // connect sequence causes reset before compute (RBC) issue
     // but if E.connects pulseGate first, there is no RBC issue
@@ -91,19 +91,19 @@ TEST(EdgeDetectorNonDelayed, Pulse)
 
     auto Q = pulseGate.output(0);
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // E -> High
-    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(gate::PinState::High); }));
+    sched::addEvent(1, sched::Event::create("E goes high", [&](sched::Timestamp) { E.value(component::PinState::High); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
     EXPECT_EQ(beginTime + 1, sched::getCurrentTimestamp());
 
     // E -> Low
-    sched::addEvent(1, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("E goes low", [&](sched::Timestamp) { E.value(component::PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
     EXPECT_EQ(beginTime + 2, sched::getCurrentTimestamp());
 }

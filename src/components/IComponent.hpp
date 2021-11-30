@@ -34,9 +34,9 @@ namespace component
 class IEventComponent : public IComponent
 {
 public:
-    virtual void connect(gate::IPin* pin)     = 0;
+    virtual void connect(IPin* pin)     = 0;
     virtual void disconnect()                 = 0;
-    virtual void enable(gate::PinState value) = 0;
+    virtual void enable(PinState value) = 0;
     virtual IComponent* subcomponent(int) override { return nullptr; };
     virtual ~IEventComponent() {}
 };

@@ -53,31 +53,31 @@ TEST_F(RegisterTests, OneBit)
     sched::waitTillSteady();
 
     // D Low, Load Low
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // D -> High, Load Low
-    D->value(gate::PinState::High);
+    D->value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
-    EXPECT_EQ(Clock->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
+    EXPECT_EQ(Clock->value(), PinState::Low);
 
     // D High, Load High
-    Load->value(gate::PinState::High);
+    Load->value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::High);
+    EXPECT_EQ(Q->value(), PinState::High);
 }
 
 TEST_F(RegisterTests, FourBit)
@@ -99,49 +99,49 @@ TEST_F(RegisterTests, FourBit)
     sched::waitTillSteady();
 
     // D Low, Load Low
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
 
     // D -> High, Load Low
-    D0->value(gate::PinState::High);
-    D1->value(gate::PinState::Low);
-    D2->value(gate::PinState::High);
-    D3->value(gate::PinState::Low);
+    D0->value(PinState::High);
+    D1->value(PinState::Low);
+    D2->value(PinState::High);
+    D3->value(PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Clock->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Clock->value(), PinState::Low);
 
     // D High, Load High
-    Load->value(gate::PinState::High);
+    Load->value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::High);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::High);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::High);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::High);
+    EXPECT_EQ(Q3->value(), PinState::Low);
 }
 
 TEST_F(RegisterTests, EightBit)
@@ -171,73 +171,73 @@ TEST_F(RegisterTests, EightBit)
     sched::waitTillSteady();
 
     // D Low, Load Low
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
 
     // D -> High, Load Low
-    D0->value(gate::PinState::High);
-    D1->value(gate::PinState::Low);
-    D2->value(gate::PinState::High);
-    D3->value(gate::PinState::Low);
-    D4->value(gate::PinState::High);
-    D5->value(gate::PinState::High);
-    D6->value(gate::PinState::Low);
-    D7->value(gate::PinState::Low);
+    D0->value(PinState::High);
+    D1->value(PinState::Low);
+    D2->value(PinState::High);
+    D3->value(PinState::Low);
+    D4->value(PinState::High);
+    D5->value(PinState::High);
+    D6->value(PinState::Low);
+    D7->value(PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Clock->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Clock->value(), PinState::Low);
 
     // D High, Load High
-    Load->value(gate::PinState::High);
+    Load->value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::High);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::High);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::High);
-    EXPECT_EQ(Q5->value(), gate::PinState::High);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::High);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::High);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::High);
+    EXPECT_EQ(Q5->value(), PinState::High);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
 }
 
 TEST_F(RegisterTests, sixteenBit)
@@ -283,121 +283,121 @@ TEST_F(RegisterTests, sixteenBit)
     sched::waitTillSteady();
 
     // D Low, Load Low
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Q10->value(), gate::PinState::Low);
-    EXPECT_EQ(Q11->value(), gate::PinState::Low);
-    EXPECT_EQ(Q12->value(), gate::PinState::Low);
-    EXPECT_EQ(Q13->value(), gate::PinState::Low);
-    EXPECT_EQ(Q14->value(), gate::PinState::Low);
-    EXPECT_EQ(Q15->value(), gate::PinState::Low);
-    EXPECT_EQ(Q16->value(), gate::PinState::Low);
-    EXPECT_EQ(Q17->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Q10->value(), PinState::Low);
+    EXPECT_EQ(Q11->value(), PinState::Low);
+    EXPECT_EQ(Q12->value(), PinState::Low);
+    EXPECT_EQ(Q13->value(), PinState::Low);
+    EXPECT_EQ(Q14->value(), PinState::Low);
+    EXPECT_EQ(Q15->value(), PinState::Low);
+    EXPECT_EQ(Q16->value(), PinState::Low);
+    EXPECT_EQ(Q17->value(), PinState::Low);
 
     // D -> High, Load Low
-    D0->value(gate::PinState::High);
-    D1->value(gate::PinState::Low);
-    D2->value(gate::PinState::High);
-    D3->value(gate::PinState::Low);
-    D4->value(gate::PinState::High);
-    D5->value(gate::PinState::High);
-    D6->value(gate::PinState::Low);
-    D7->value(gate::PinState::Low);
-    D10->value(gate::PinState::High);
-    D11->value(gate::PinState::Low);
-    D12->value(gate::PinState::High);
-    D13->value(gate::PinState::Low);
-    D14->value(gate::PinState::High);
-    D15->value(gate::PinState::High);
-    D16->value(gate::PinState::Low);
-    D17->value(gate::PinState::Low);
+    D0->value(PinState::High);
+    D1->value(PinState::Low);
+    D2->value(PinState::High);
+    D3->value(PinState::Low);
+    D4->value(PinState::High);
+    D5->value(PinState::High);
+    D6->value(PinState::Low);
+    D7->value(PinState::Low);
+    D10->value(PinState::High);
+    D11->value(PinState::Low);
+    D12->value(PinState::High);
+    D13->value(PinState::Low);
+    D14->value(PinState::High);
+    D15->value(PinState::High);
+    D16->value(PinState::Low);
+    D17->value(PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Q10->value(), gate::PinState::Low);
-    EXPECT_EQ(Q11->value(), gate::PinState::Low);
-    EXPECT_EQ(Q12->value(), gate::PinState::Low);
-    EXPECT_EQ(Q13->value(), gate::PinState::Low);
-    EXPECT_EQ(Q14->value(), gate::PinState::Low);
-    EXPECT_EQ(Q15->value(), gate::PinState::Low);
-    EXPECT_EQ(Q16->value(), gate::PinState::Low);
-    EXPECT_EQ(Q17->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Q10->value(), PinState::Low);
+    EXPECT_EQ(Q11->value(), PinState::Low);
+    EXPECT_EQ(Q12->value(), PinState::Low);
+    EXPECT_EQ(Q13->value(), PinState::Low);
+    EXPECT_EQ(Q14->value(), PinState::Low);
+    EXPECT_EQ(Q15->value(), PinState::Low);
+    EXPECT_EQ(Q16->value(), PinState::Low);
+    EXPECT_EQ(Q17->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Q10->value(), gate::PinState::Low);
-    EXPECT_EQ(Q11->value(), gate::PinState::Low);
-    EXPECT_EQ(Q12->value(), gate::PinState::Low);
-    EXPECT_EQ(Q13->value(), gate::PinState::Low);
-    EXPECT_EQ(Q14->value(), gate::PinState::Low);
-    EXPECT_EQ(Q15->value(), gate::PinState::Low);
-    EXPECT_EQ(Q16->value(), gate::PinState::Low);
-    EXPECT_EQ(Q17->value(), gate::PinState::Low);
-    EXPECT_EQ(Clock->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Q10->value(), PinState::Low);
+    EXPECT_EQ(Q11->value(), PinState::Low);
+    EXPECT_EQ(Q12->value(), PinState::Low);
+    EXPECT_EQ(Q13->value(), PinState::Low);
+    EXPECT_EQ(Q14->value(), PinState::Low);
+    EXPECT_EQ(Q15->value(), PinState::Low);
+    EXPECT_EQ(Q16->value(), PinState::Low);
+    EXPECT_EQ(Q17->value(), PinState::Low);
+    EXPECT_EQ(Clock->value(), PinState::Low);
 
     // D High, Load High
-    Load->value(gate::PinState::High);
+    Load->value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::Low);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::Low);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::Low);
-    EXPECT_EQ(Q5->value(), gate::PinState::Low);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Q10->value(), gate::PinState::Low);
-    EXPECT_EQ(Q11->value(), gate::PinState::Low);
-    EXPECT_EQ(Q12->value(), gate::PinState::Low);
-    EXPECT_EQ(Q13->value(), gate::PinState::Low);
-    EXPECT_EQ(Q14->value(), gate::PinState::Low);
-    EXPECT_EQ(Q15->value(), gate::PinState::Low);
-    EXPECT_EQ(Q16->value(), gate::PinState::Low);
-    EXPECT_EQ(Q17->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::Low);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::Low);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::Low);
+    EXPECT_EQ(Q5->value(), PinState::Low);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Q10->value(), PinState::Low);
+    EXPECT_EQ(Q11->value(), PinState::Low);
+    EXPECT_EQ(Q12->value(), PinState::Low);
+    EXPECT_EQ(Q13->value(), PinState::Low);
+    EXPECT_EQ(Q14->value(), PinState::Low);
+    EXPECT_EQ(Q15->value(), PinState::Low);
+    EXPECT_EQ(Q16->value(), PinState::Low);
+    EXPECT_EQ(Q17->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(gate::PinState::High); }));
-    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock->value(PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock->value(PinState::Low); }));
     sched::waitTillSteady();
-    EXPECT_EQ(Q0->value(), gate::PinState::High);
-    EXPECT_EQ(Q1->value(), gate::PinState::Low);
-    EXPECT_EQ(Q2->value(), gate::PinState::High);
-    EXPECT_EQ(Q3->value(), gate::PinState::Low);
-    EXPECT_EQ(Q4->value(), gate::PinState::High);
-    EXPECT_EQ(Q5->value(), gate::PinState::High);
-    EXPECT_EQ(Q6->value(), gate::PinState::Low);
-    EXPECT_EQ(Q7->value(), gate::PinState::Low);
-    EXPECT_EQ(Q10->value(), gate::PinState::High);
-    EXPECT_EQ(Q11->value(), gate::PinState::Low);
-    EXPECT_EQ(Q12->value(), gate::PinState::High);
-    EXPECT_EQ(Q13->value(), gate::PinState::Low);
-    EXPECT_EQ(Q14->value(), gate::PinState::High);
-    EXPECT_EQ(Q15->value(), gate::PinState::High);
-    EXPECT_EQ(Q16->value(), gate::PinState::Low);
-    EXPECT_EQ(Q17->value(), gate::PinState::Low);
+    EXPECT_EQ(Q0->value(), PinState::High);
+    EXPECT_EQ(Q1->value(), PinState::Low);
+    EXPECT_EQ(Q2->value(), PinState::High);
+    EXPECT_EQ(Q3->value(), PinState::Low);
+    EXPECT_EQ(Q4->value(), PinState::High);
+    EXPECT_EQ(Q5->value(), PinState::High);
+    EXPECT_EQ(Q6->value(), PinState::Low);
+    EXPECT_EQ(Q7->value(), PinState::Low);
+    EXPECT_EQ(Q10->value(), PinState::High);
+    EXPECT_EQ(Q11->value(), PinState::Low);
+    EXPECT_EQ(Q12->value(), PinState::High);
+    EXPECT_EQ(Q13->value(), PinState::Low);
+    EXPECT_EQ(Q14->value(), PinState::High);
+    EXPECT_EQ(Q15->value(), PinState::High);
+    EXPECT_EQ(Q16->value(), PinState::Low);
+    EXPECT_EQ(Q17->value(), PinState::Low);
 }
 
 TEST_F(RegisterTests, thirtyTwoBitInitialize)

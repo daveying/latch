@@ -33,7 +33,7 @@ namespace component
 class IComponent;
 }
 
-namespace gate
+namespace component
 {
 
 using PinStateType = uint8_t;
@@ -90,6 +90,6 @@ public:
     virtual std::vector<IPin*>& peers() = 0;
 };
 
-} // namespace gate
+} // namespace component
 
 #endif

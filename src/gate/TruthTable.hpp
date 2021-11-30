@@ -31,7 +31,7 @@
 #include <IGate.hpp>
 #include <IPin.hpp>
 
-namespace gate
+namespace component
 {
 
 #define DEFINE_GATE_TRUTH_TABLE(_Name, _InputSize, _OutputSize)                   \
@@ -43,6 +43,6 @@ namespace gate
         void compute(const InputArray& input, const OutputArray& output) const
 #define END_GATE_TRUTH_TABLE };
 
-} // namespace gate
+} // namespace component
 
 #endif

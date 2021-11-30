@@ -28,16 +28,16 @@
 
 TEST(ANDGate, DefaultState)
 {
-    gate::ANDGate andGate;
+    component::ANDGate andGate;
     andGate.compute();
-    EXPECT_EQ(andGate.input(0)->value(), gate::PinState::Low);
-    EXPECT_EQ(andGate.input(1)->value(), gate::PinState::Low);
-    EXPECT_EQ(andGate.output(0)->value(), gate::PinState::Low);
+    EXPECT_EQ(andGate.input(0)->value(), component::PinState::Low);
+    EXPECT_EQ(andGate.input(1)->value(), component::PinState::Low);
+    EXPECT_EQ(andGate.output(0)->value(), component::PinState::Low);
 }
 
 TEST(ANDGate, TruthTable)
 {
-    gate::ANDGate andGate;
+    component::ANDGate andGate;
     andGate.compute();
 
     auto in0 = andGate.input(0);
@@ -45,18 +45,18 @@ TEST(ANDGate, TruthTable)
     auto out = andGate.output(0);
 
     // in0 = Low, in1 = Low
-    EXPECT_EQ(out->value(), gate::PinState::Low);
+    EXPECT_EQ(out->value(), component::PinState::Low);
 
     // in0 = High, in1 = Low
-    in0->value(gate::PinState::High);
+    in0->value(component::PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(out->value(), gate::PinState::Low);
+    EXPECT_EQ(out->value(), component::PinState::Low);
     // in0 = High, in1 = High
-    in1->value(gate::PinState::High);
+    in1->value(component::PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(out->value(), gate::PinState::High);
+    EXPECT_EQ(out->value(), component::PinState::High);
     // in0 = Low, in1 = High
-    in0->value(gate::PinState::Low);
+    in0->value(component::PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(out->value(), gate::PinState::Low);
+    EXPECT_EQ(out->value(), component::PinState::Low);
 }

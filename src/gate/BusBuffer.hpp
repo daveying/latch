@@ -28,7 +28,7 @@
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
-namespace gate
+namespace component
 {
 
 static constexpr size_t BusBufferInputSize  = 2;
@@ -49,6 +49,6 @@ using BusBuffer = GateTemplate<
     BusBuffer_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-} // namespace gate
+} // namespace component
 
 #endif // BUS_BUFFER_HPP__

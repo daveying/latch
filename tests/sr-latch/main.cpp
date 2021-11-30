@@ -29,8 +29,8 @@
 
 TEST(SRLatch, NORSRLatchTruthTable)
 {
-    gate::NORGate norGate0("norGate0");
-    gate::NORGate norGate1("norGate1");
+    component::NORGate norGate0("norGate0");
+    component::NORGate norGate1("norGate1");
     norGate0.output(0)->connect(norGate1.input(0));
     norGate1.output(0)->connect(norGate0.input(1));
     norGate0.compute();
@@ -39,7 +39,7 @@ TEST(SRLatch, NORSRLatchTruthTable)
     sched::waitTillSteady();
     norGate1.compute();
     sched::waitTillSteady();
-    EXPECT_EQ(norGate0.output(0)->value(), gate::PinState::High);
+    EXPECT_EQ(norGate0.output(0)->value(), component::PinState::High);
 
     auto S  = norGate0.input(0);
     auto R  = norGate1.input(1);
@@ -47,48 +47,48 @@ TEST(SRLatch, NORSRLatchTruthTable)
     auto Q  = norGate1.output(0);
 
     // S -> High
-    S->value(gate::PinState::High);
+    S->value(component::PinState::High);
     // R -> Low
-    R->value(gate::PinState::Low);
+    R->value(component::PinState::Low);
     // S High, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 
     // S -> Low
-    S->value(gate::PinState::Low);
+    S->value(component::PinState::Low);
     // S Low, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 
     // R -> High
-    R->value(gate::PinState::High);
+    R->value(component::PinState::High);
     // S Low, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
 
     // R -> Low
-    R->value(gate::PinState::Low);
+    R->value(component::PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
 
     // R -> High
-    R->value(gate::PinState::High);
+    R->value(component::PinState::High);
     // S -> High
-    S->value(gate::PinState::High);
+    S->value(component::PinState::High);
     // S High, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
 }
 
 TEST(SRLatch, NANDSRLatchTruthTable)
 {
-    gate::NANDGate nandGate0;
-    gate::NANDGate nandGate1;
+    component::NANDGate nandGate0;
+    component::NANDGate nandGate1;
     nandGate0.output(0)->connect(nandGate1.input(0));
     nandGate1.output(0)->connect(nandGate0.input(1));
     nandGate0.compute();
@@ -97,7 +97,7 @@ TEST(SRLatch, NANDSRLatchTruthTable)
     sched::waitTillSteady();
     nandGate1.compute();
     sched::waitTillSteady();
-    EXPECT_EQ(nandGate0.output(0)->value(), gate::PinState::High);
+    EXPECT_EQ(nandGate0.output(0)->value(), component::PinState::High);
 
     auto S  = nandGate0.input(0);
     auto R  = nandGate1.input(1);
@@ -105,57 +105,57 @@ TEST(SRLatch, NANDSRLatchTruthTable)
     auto Qb = nandGate1.output(0);
 
     // R -> High
-    R->value(gate::PinState::High);
+    R->value(component::PinState::High);
     // S Low, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 
     // S -> High
-    S->value(gate::PinState::High);
+    S->value(component::PinState::High);
     // S High, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 
     // R -> Low
-    R->value(gate::PinState::Low);
+    R->value(component::PinState::Low);
     // S High, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
 
     // R -> High
-    R->value(gate::PinState::High);
+    R->value(component::PinState::High);
     // S High, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
 
     // S -> Low
-    S->value(gate::PinState::Low);
+    S->value(component::PinState::Low);
     // S Low, R High
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::Low, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::Low, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
     // R -> Low
-    R->value(gate::PinState::Low);
+    R->value(component::PinState::Low);
     // S Low, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 
     // S -> High, R -> Low
-    S->value(gate::PinState::High);
-    R->value(gate::PinState::Low);
+    S->value(component::PinState::High);
+    R->value(component::PinState::Low);
     // S High, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::Low, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::Low, Q->value());
     // S -> Low
-    S->value(gate::PinState::Low);
+    S->value(component::PinState::Low);
     // S Low, R Low
     sched::waitTillSteady();
-    EXPECT_EQ(gate::PinState::High, Qb->value());
-    EXPECT_EQ(gate::PinState::High, Q->value());
+    EXPECT_EQ(component::PinState::High, Qb->value());
+    EXPECT_EQ(component::PinState::High, Q->value());
 }

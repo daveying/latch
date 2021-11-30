@@ -28,7 +28,7 @@
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
-namespace gate
+namespace component
 {
 
 static constexpr size_t ORGateInputSize  = 2;
@@ -51,6 +51,6 @@ using ORGate = GateTemplate<
     ORGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-} // namespace gate
+} // namespace component
 
 #endif // OR_GATE_HPP__

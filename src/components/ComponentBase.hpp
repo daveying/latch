@@ -64,8 +64,8 @@ public:
             }
             IComponent* srcComp       = subcomponent(connection.src.componentIndex);
             IComponent* destComp      = subcomponent(connection.dest.componentIndex);
-            gate::ISourcePin* srcPin  = dynamic_cast<gate::ISourcePin*>(srcComp->pin(connection.src.pinIndex));
-            gate::IPin* destPin       = destComp->pin(connection.dest.pinIndex);
+            ISourcePin* srcPin  = dynamic_cast<ISourcePin*>(srcComp->pin(connection.src.pinIndex));
+            IPin* destPin       = destComp->pin(connection.dest.pinIndex);
             if (srcPin == nullptr)
             {
                 throw std::runtime_error("Source pin is not ISourcePin");
@@ -74,7 +74,7 @@ public:
         }
     }
 
-    virtual gate::IPin* pin(size_t idx) override
+    virtual IPin* pin(size_t idx) override
     {
         return m_pins[idx].get();
     };
@@ -108,7 +108,7 @@ public:
 protected:
     std::string m_name;
     std::vector<std::unique_ptr<IComponent>> m_subcomponents;
-    std::vector<std::unique_ptr<gate::ISourcePin>> m_pins;
+    std::vector<std::unique_ptr<ISourcePin>> m_pins;
     const ComponentDescription& m_description;
 };
 } // namespace component

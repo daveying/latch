@@ -35,10 +35,6 @@
 
 namespace component
 {
-using gate::TruthTableBase;
-using gate::TypePackBase;
-using gate::GateTemplateBase;
-using gate::TypePack;
 
 template <typename T>
 struct GateComponentName
@@ -55,12 +51,12 @@ template <typename... InputPinT,
          typename TruthTableT,
          typename... OutputPinT>
 class GateComponentTemplate<
-    gate::GateTemplate<TypePack<InputPinT...>,
-                       TruthTableT,
-                       TypePack<OutputPinT...>>> : public IComponent
+    GateTemplate<TypePack<InputPinT...>,
+                 TruthTableT,
+                 TypePack<OutputPinT...>>> : public IComponent
 {
 public:
-    using GateT = gate::GateTemplate<TypePack<InputPinT...>, TruthTableT, TypePack<OutputPinT...>>;
+    using GateT = GateTemplate<TypePack<InputPinT...>, TruthTableT, TypePack<OutputPinT...>>;
     GateComponentTemplate(const std::string& name)
         : m_gate{name}
     {}
@@ -96,9 +92,9 @@ public:
     {
         return m_gate.name();
     }
-    virtual gate::IPin* pin(size_t idx) override
+    virtual IPin* pin(size_t idx) override
     {
-        gate::IPin* ret{nullptr};
+        IPin* ret{nullptr};
         if (idx >= inputSize() + outputSize())
         {
             throw std::runtime_error("Invalid pin index: " + std::to_string(idx) + ", for component " + m_gate.name());
@@ -136,14 +132,14 @@ protected:
         }                                       \
     };
 
-DEFINE_GATE_COMPONENT(ANDGateComponent, gate::ANDGate);
-DEFINE_GATE_COMPONENT(BusBufferComponent, gate::BusBuffer);
-DEFINE_GATE_COMPONENT(NANDGateComponent, gate::NANDGate);
-DEFINE_GATE_COMPONENT(NORGateComponent, gate::NORGate);
-DEFINE_GATE_COMPONENT(NORGateDelayedComponent, gate::NORGateDelayed);
-DEFINE_GATE_COMPONENT(NOTGateComponent, gate::NOTGate);
-DEFINE_GATE_COMPONENT(NOTGateDelayedComponent, gate::NOTGateDelayed);
-DEFINE_GATE_COMPONENT(ORGateComponent, gate::ORGate);
+DEFINE_GATE_COMPONENT(ANDGateComponent, ANDGate);
+DEFINE_GATE_COMPONENT(BusBufferComponent, BusBuffer);
+DEFINE_GATE_COMPONENT(NANDGateComponent, NANDGate);
+DEFINE_GATE_COMPONENT(NORGateComponent, NORGate);
+DEFINE_GATE_COMPONENT(NORGateDelayedComponent, NORGateDelayed);
+DEFINE_GATE_COMPONENT(NOTGateComponent, NOTGate);
+DEFINE_GATE_COMPONENT(NOTGateDelayedComponent, NOTGateDelayed);
+DEFINE_GATE_COMPONENT(ORGateComponent, ORGate);
 
 } // namespace component
 

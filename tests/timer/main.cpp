@@ -30,11 +30,11 @@
 TEST(TimerTest, APIs)
 {
     component::Timer timer{10};
-    gate::NOTGate notGate;
+    component::NOTGate notGate;
     timer.initialize();
     notGate.compute();
 
-    EXPECT_EQ(notGate.output(0)->value(), gate::PinState::High);
+    EXPECT_EQ(notGate.output(0)->value(), component::PinState::High);
 
     timer.connect(notGate.input(0));
 

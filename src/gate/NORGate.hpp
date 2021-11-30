@@ -28,7 +28,7 @@
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
-namespace gate
+namespace component
 {
 
 static constexpr size_t NORGateInputSize  = 2;
@@ -56,6 +56,6 @@ using NORGateDelayed = GateTemplate<
     NORGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
-} // namespace gate
+} // namespace component
 
 #endif // NOR_GATE_HPP__

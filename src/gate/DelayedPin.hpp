@@ -31,7 +31,7 @@
 #include <IScheduler.hpp>
 #include <Logger.hpp>
 
-namespace gate
+namespace component
 {
 
 template <sched::Period DELAY>
@@ -181,6 +181,6 @@ protected:
 
 using ZeroDelayOutputPin = DelayedOutputPin<0>;
 
-} // namespace gate
+} // namespace component
 
 #endif

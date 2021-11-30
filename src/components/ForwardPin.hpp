@@ -32,7 +32,7 @@ namespace component
 {
 
 template <PinDirection Direction>
-class ForwardPin : public gate::ISourcePin
+class ForwardPin : public ISourcePin
 {
 public:
     static constexpr auto direction()
@@ -42,7 +42,7 @@ public:
 
     explicit ForwardPin(IComponent* parent, int64_t index = -1)
         : m_parent{parent}
-        , m_value{gate::PinState::Low}
+        , m_value{PinState::Low}
         , m_index{index}
     {
     }
@@ -56,7 +56,7 @@ public:
         return m_parent;
     }
 
-    virtual gate::PinState value() const override
+    virtual PinState value() const override
     {
         return m_value;
     }
@@ -72,7 +72,7 @@ public:
         return n;
     }
 
-    virtual void value(gate::PinState newVal) override
+    virtual void value(PinState newVal) override
     {
         m_value = newVal;
         for (auto peer : m_peers)
@@ -103,7 +103,7 @@ public:
 
 protected:
     IComponent* m_parent;
-    gate::PinState m_value;
+    PinState m_value;
     std::vector<IPin*> m_peers;
     int64_t m_index;
 };

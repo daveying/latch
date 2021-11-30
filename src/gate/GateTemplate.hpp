@@ -31,7 +31,7 @@
 #include <IGate.hpp>
 #include <IPin.hpp>
 
-namespace gate
+namespace component
 {
 
 class TypePackBase {};
@@ -107,6 +107,6 @@ protected:
 template <typename... InputPinT, typename TruthTableT, typename... OutputPinT>
 const TruthTableT GateTemplate<TypePack<InputPinT...>, TruthTableT, TypePack<OutputPinT...>>::m_truthTable;
 
-} // namespace gate
+} // namespace component
 
 #endif

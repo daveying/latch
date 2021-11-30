@@ -29,29 +29,32 @@
 
 #include <gtest/gtest.h>
 
+namespace component
+{
+
 TEST(OneBit, TruthTable)
 {
     sched::waitTillSteady();
     auto beginTime = sched::getCurrentTimestamp();
 
-    gate::ZeroDelayOutputPin D{nullptr};
-    gate::ZeroDelayOutputPin Load{nullptr};
-    gate::ZeroDelayOutputPin Clock{nullptr};
+    ZeroDelayOutputPin D{nullptr};
+    ZeroDelayOutputPin Load{nullptr};
+    ZeroDelayOutputPin Clock{nullptr};
 
-    gate::NOTGate dataInvertor{"dataInvertor"};
-    gate::ANDGate feedbackAnd{"feedbackAnd"};
-    gate::ANDGate dataAnd{"dataAnd"};
-    gate::ORGate dataSelect{"dataSelect"};
+    NOTGate dataInvertor{"dataInvertor"};
+    ANDGate feedbackAnd{"feedbackAnd"};
+    ANDGate dataAnd{"dataAnd"};
+    ORGate dataSelect{"dataSelect"};
 
     // D flip flop gates
-    gate::NOTGateDelayed invertor{"dff.invertor"};
-    gate::ANDGate pulseGate{"dff.pulseGate"};
+    NOTGateDelayed invertor{"dff.invertor"};
+    ANDGate pulseGate{"dff.pulseGate"};
 
-    gate::NOTGate notGate{"dff.notGate"};
-    gate::ANDGate andGate0{"dff.andGate0"};
-    gate::ANDGate andGate1{"dff.andGate1"};
-    gate::NORGate norGate0{"dff.norGate0"};
-    gate::NORGate norGate1{"dff.norGate1"};
+    NOTGate notGate{"dff.notGate"};
+    ANDGate andGate0{"dff.andGate0"};
+    ANDGate andGate1{"dff.andGate1"};
+    NORGate norGate0{"dff.norGate0"};
+    NORGate norGate1{"dff.norGate1"};
 
     Load.connect(dataInvertor.input(0));
     Load.connect(dataAnd.input(0));
@@ -103,32 +106,33 @@ TEST(OneBit, TruthTable)
     EXPECT_EQ(beginTime + 0, sched::getCurrentTimestamp());
 
     // D Low, Load Low
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // D -> High, Load Low
-    D.value(gate::PinState::High);
+    D.value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock.value(gate::PinState::High); }));
-    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock.value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock.value(PinState::High); }));
+    sched::addEvent(2, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock.value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
-    EXPECT_EQ(Clock.value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
+    EXPECT_EQ(Clock.value(), PinState::Low);
     EXPECT_EQ(beginTime + 3, sched::getCurrentTimestamp());
 
     // D High, Load High
-    Load.value(gate::PinState::High);
+    Load.value(PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), PinState::Low);
 
     // Clock -> pulse
-    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock.value(gate::PinState::High); }));
-    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock.value(gate::PinState::Low); }));
+    sched::addEvent(1, sched::Event::create("Clock goes high", [&](sched::Timestamp) { Clock.value(PinState::High); }));
+    sched::addEvent(3, sched::Event::create("Clock goes low", [&](sched::Timestamp) { Clock.value(PinState::Low); }));
     sched::waitTillSteady();
 
-    EXPECT_EQ(Q->value(), gate::PinState::High);
+    EXPECT_EQ(Q->value(), PinState::High);
     EXPECT_EQ(beginTime + 7, sched::getCurrentTimestamp());
 }
+} // namespace component

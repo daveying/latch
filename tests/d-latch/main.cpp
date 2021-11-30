@@ -31,14 +31,14 @@
 TEST(DLatch, DLatchTruthTable)
 {
 
-    gate::ZeroDelayOutputPin D{nullptr};
-    gate::ZeroDelayOutputPin E{nullptr};
+    component::ZeroDelayOutputPin D{nullptr};
+    component::ZeroDelayOutputPin E{nullptr};
 
-    gate::NOTGate notGate("notGate");
-    gate::ANDGate andGate0("andGate0");
-    gate::ANDGate andGate1("andGate1");
-    gate::NORGate norGate0("norGate0");
-    gate::NORGate norGate1("norGate1");
+    component::NOTGate notGate("notGate");
+    component::ANDGate andGate0("andGate0");
+    component::ANDGate andGate1("andGate1");
+    component::NORGate norGate0("norGate0");
+    component::NORGate norGate1("norGate1");
 
     D.connect(andGate0.input(0));
     D.connect(notGate.input(0));
@@ -66,30 +66,30 @@ TEST(DLatch, DLatchTruthTable)
 
     sched::waitTillSteady();
     // D Low, E Low
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // D -> High, E Low
-    D.value(gate::PinState::High);
+    D.value(component::PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // E -> High
-    E.value(gate::PinState::High);
+    E.value(component::PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::High);
+    EXPECT_EQ(Q->value(), component::PinState::High);
 
     // D -> Low
-    D.value(gate::PinState::Low);
+    D.value(component::PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // E -> Low
-    E.value(gate::PinState::Low);
+    E.value(component::PinState::Low);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 
     // D -> High
-    D.value(gate::PinState::High);
+    D.value(component::PinState::High);
     sched::waitTillSteady();
-    EXPECT_EQ(Q->value(), gate::PinState::Low);
+    EXPECT_EQ(Q->value(), component::PinState::Low);
 }
