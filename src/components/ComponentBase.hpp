@@ -54,7 +54,7 @@ public:
         }
         for (auto const& subcomponent : m_description.subcomponents)
         {
-            m_subcomponents.push_back(ComponentFactory::create(subcomponent.type, subcomponent.name));
+            m_subcomponents.push_back(ComponentFactory::create(subcomponent.type, name + "." + subcomponent.name));
         }
         for (auto const& connection : m_description.connections)
         {
