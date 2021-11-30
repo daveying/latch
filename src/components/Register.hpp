@@ -170,7 +170,7 @@ public:
             CONNECT_MULTICAST_COMPONENT("Load", "bit.Load", BITS),
             CONNECT_MULTICAST_COMPONENT("Clock", "bit.Clock", BITS),
             CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("D", "bit.D", BITS),
-            CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("Q", "bit.Q", BITS)
+            CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("bit.Q", "Q", BITS)
         );
     }
     static std::unique_ptr<IComponent> create(const std::string& name)
