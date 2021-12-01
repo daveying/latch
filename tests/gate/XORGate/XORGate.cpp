@@ -21,20 +21,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <GateComponents.hpp>
-#include <ComponentFactory.hpp>
+#include <XORGate.hpp>
+#include <IScheduler.hpp>
 
-namespace component
+#include <gtest/gtest.h>
+
+TEST(XORGate, DefaultState)
 {
+    component::XORGate xorGate;
+    xorGate.compute();
+    EXPECT_EQ(xorGate.input(0)->value(), component::PinState::Low);
+    EXPECT_EQ(xorGate.input(1)->value(), component::PinState::Low);
+    EXPECT_EQ(xorGate.output(0)->value(), component::PinState::Low);
+}
 
-REGISTER_COMPONENT(ANDGateComponent);
-REGISTER_COMPONENT(BusBufferComponent);
-REGISTER_COMPONENT(NANDGateComponent);
-REGISTER_COMPONENT(NORGateComponent);
-REGISTER_COMPONENT(NORGateDelayedComponent);
-REGISTER_COMPONENT(NOTGateComponent);
-REGISTER_COMPONENT(NOTGateDelayedComponent);
-REGISTER_COMPONENT(ORGateComponent);
-REGISTER_COMPONENT(XORGateComponent);
+TEST(XORGate, TruthTable)
+{
+    component::XORGate xorGate;
+    xorGate.compute();
 
-} // namespace component
+    auto in0 = xorGate.input(0);
+    auto in1 = xorGate.input(1);
+    auto out = xorGate.output(0);
+
+    // in0 = Low, in1 = Low
+    EXPECT_EQ(out->value(), component::PinState::Low);
+
+    // in0 = High, in1 = Low
+    in0->value(component::PinState::High);
+    sched::waitTillSteady();
+    EXPECT_EQ(out->value(), component::PinState::High);
+    // in0 = High, in1 = High
+    in1->value(component::PinState::High);
+    sched::waitTillSteady();
+    EXPECT_EQ(out->value(), component::PinState::Low);
+    // in0 = Low, in1 = High
+    in0->value(component::PinState::Low);
+    sched::waitTillSteady();
+    EXPECT_EQ(out->value(), component::PinState::High);
+}

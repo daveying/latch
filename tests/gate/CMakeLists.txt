@@ -6,6 +6,7 @@ set(SOURCES
     NORGate/NORGate.cpp
     NANDGate/NANDGate.cpp
     ORGate/ORGate.cpp
+    XORGate/XORGate.cpp
     ANDGate/ANDGate.cpp
     NOTGate/NOTGate.cpp
     BusBuffer/BusBuffer.cpp

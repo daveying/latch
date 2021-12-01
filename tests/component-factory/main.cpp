@@ -60,6 +60,11 @@ TEST(ComponentFactory, AddPreCompiledComponents)
             "Precompiled component type: ORGateComponent has already been registered."
             );
     EXPECT_THROW_WITH_MESSAGE(
+            ComponentFactory::registerPrecompiledComponent<component::XORGateComponent>(),
+            std::runtime_error,
+            "Precompiled component type: XORGateComponent has already been registered."
+            );
+    EXPECT_THROW_WITH_MESSAGE(
             ComponentFactory::registerPrecompiledComponent<component::NOTGateComponent>(),
             std::runtime_error,
             "Precompiled component type: NOTGateComponent has already been registered."
@@ -79,6 +84,7 @@ TEST(ComponentFactory, AddPreCompiledComponents)
     auto nandGateComp       = ComponentFactory::create("NANDGateComponent", "nandGateComp");
     auto norGateComp        = ComponentFactory::create("NORGateComponent", "norGateComp");
     auto orGateComp         = ComponentFactory::create("ORGateComponent", "orGateComp");
+    auto xorGateComp        = ComponentFactory::create("XORGateComponent", "xorGateComp");
     auto notGateComp        = ComponentFactory::create("NOTGateComponent", "notGateComp");
     auto notGateDelayedComp = ComponentFactory::create("NOTGateDelayedComponent", "notGateDelayedComp");
     auto BusBufferComp      = ComponentFactory::create("BusBufferComponent", "BusBufferComp");

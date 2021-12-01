@@ -30,6 +30,7 @@
 #include <NORGate.hpp>
 #include <NOTGate.hpp>
 #include <ORGate.hpp>
+#include <XORGate.hpp>
 #include <IComponent.hpp>
 #include <ComponentDescription.hpp>
 
@@ -140,6 +141,7 @@ DEFINE_GATE_COMPONENT(NORGateDelayedComponent, NORGateDelayed);
 DEFINE_GATE_COMPONENT(NOTGateComponent, NOTGate);
 DEFINE_GATE_COMPONENT(NOTGateDelayedComponent, NOTGateDelayed);
 DEFINE_GATE_COMPONENT(ORGateComponent, ORGate);
+DEFINE_GATE_COMPONENT(XORGateComponent, XORGate);
 
 } // namespace component
 

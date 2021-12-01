@@ -21,20 +21,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <GateComponents.hpp>
-#include <ComponentFactory.hpp>
+#ifndef XOR_GATE_HPP__
+#define XOR_GATE_HPP__
+
+#include <DelayedPin.hpp>
+#include <GateTemplate.hpp>
+#include <TruthTable.hpp>
 
 namespace component
 {
 
-REGISTER_COMPONENT(ANDGateComponent);
-REGISTER_COMPONENT(BusBufferComponent);
-REGISTER_COMPONENT(NANDGateComponent);
-REGISTER_COMPONENT(NORGateComponent);
-REGISTER_COMPONENT(NORGateDelayedComponent);
-REGISTER_COMPONENT(NOTGateComponent);
-REGISTER_COMPONENT(NOTGateDelayedComponent);
-REGISTER_COMPONENT(ORGateComponent);
-REGISTER_COMPONENT(XORGateComponent);
+static constexpr size_t XORGateInputSize  = 2;
+static constexpr size_t XORGateOutputSize = 1;
+DEFINE_GATE_TRUTH_TABLE(XORGate, XORGateInputSize, XORGateOutputSize)
+{
+    //  X   Y   Z
+    //  0   0   0
+    //  0   1   1
+    //  1   0   1
+    //  1   1   0
+    if (input[0]->value() == input[1]->value())
+    {
+        output[0]->value(PinState::Low);
+    }
+    else
+    {
+        output[0]->value(PinState::High);
+    }
+}
+END_GATE_TRUTH_TABLE
+
+using XORGate = GateTemplate<
+    TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
+    XORGate_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
 
 } // namespace component
+
+#endif // XOR_GATE_HPP__
