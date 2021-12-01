@@ -145,6 +145,39 @@ for_each(std::tuple<Tp...>& t, FuncT f)
     for_each<IDX + 1, FuncT, Tp...>(t, f);
 }
 
+#define sp(...) std::make_tuple(__VA_ARGS__) // string promise
+
+static inline const char* to_str(const char* in)
+{
+    return in;
+}
+
+template <typename T>
+static inline
+typename std::enable_if<std::is_arithmetic<T>::value>::type
+append_str(std::string& target, T val)
+{
+    target += std::to_string(val);
+}
+
+template <typename T>
+static inline
+typename std::enable_if<!std::is_arithmetic<T>::value>::type
+append_str(std::string& target, T val)
+{
+    target += val;
+}
+
+template <typename... Ts>
+static inline std::string to_str(std::tuple<Ts...>& s)
+{
+    std::string ret;
+    for_each(s, [&ret](auto& el, size_t) {
+        append_str(ret, el);
+    });
+    return ret;
+}
+
 static constexpr size_t PIN_NAME = 0;
 static constexpr size_t PIN_TYPE = 1;
 static constexpr size_t PIN_SIZE = 2;
@@ -185,7 +218,7 @@ static void getPins(std::vector<PinDescription>& pinsOut)
 {
     auto pinsTuple = T::Pins();
     for_each(pinsTuple, [&pinsOut] (auto& pinTuple, size_t) {
-            std::string pinName    = std::get<PIN_NAME>(pinTuple);
+            std::string pinName    = to_str(std::get<PIN_NAME>(pinTuple));
             PinDirection direction = pinDirection(std::get<PIN_TYPE>(pinTuple));
             size_t pinSize         = std::get<PIN_SIZE>(pinTuple);
             if (pinSize > 0)
@@ -217,7 +250,7 @@ static void getSubcomponents(std::vector<SubcomponentDescription>& subcomponents
 {
     auto subcompsTuple = T::Subcomponents();
     for_each(subcompsTuple, [&subcomponentsOut] (auto& subcompTuple, size_t) {
-            std::string subcompName = std::get<SUBCOMP_NAME>(subcompTuple);
+            std::string subcompName = to_str(std::get<SUBCOMP_NAME>(subcompTuple));
             std::string subcompType = subcomponentTypeName(std::get<SUBCOMP_TYPE>(subcompTuple));
             size_t subcompSize      = std::get<SUBCOMP_SIZE>(subcompTuple);
             if (subcompSize > 0)
@@ -365,8 +398,8 @@ static void getConnections(ComponentDescription& desc)
             {
             case ConnectionDefinitionType::SINGLE_2_SINGLE: // single to single
             {
-                std::string from     = std::get<1>(connectionTuple);
-                std::string to       = std::get<2>(connectionTuple);
+                std::string from     = to_str(std::get<1>(connectionTuple));
+                std::string to       = to_str(std::get<2>(connectionTuple));
                 Endpoint f;
                 Endpoint t;
                 getEndpoint(from, subcompPins, thisPins, subcomps, f);
@@ -378,8 +411,8 @@ static void getConnections(ComponentDescription& desc)
             case ConnectionDefinitionType::SINGLE_2_PIN_ARRAY:
             {
                 auto type        = std::get<0>(connectionTuple);
-                std::string from = std::get<1>(connectionTuple);
-                std::string to   = std::get<2>(connectionTuple);
+                std::string from = to_str(std::get<1>(connectionTuple));
+                std::string to   = to_str(std::get<2>(connectionTuple));
                 size_t toSize    = std::get<3>(connectionTuple);
                 Endpoint f;
                 std::vector<Endpoint> ts;
@@ -398,8 +431,8 @@ static void getConnections(ComponentDescription& desc)
             case ConnectionDefinitionType::COMPONENT_ARRAY_2_COMPONENT_ARRAY:
             {
                 auto type        = std::get<0>(connectionTuple);
-                std::string from = std::get<1>(connectionTuple);
-                std::string to   = std::get<2>(connectionTuple);
+                std::string from = to_str(std::get<1>(connectionTuple));
+                std::string to   = to_str(std::get<2>(connectionTuple));
                 size_t arrSize   = std::get<3>(connectionTuple);
                 std::vector<Endpoint> fs;
                 std::vector<Endpoint> ts;
