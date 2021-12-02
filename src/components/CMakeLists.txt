@@ -18,6 +18,8 @@ set(EVENT_COMPONENTS_SOURCES
     Timer.cpp
     Register.hpp
     Register.cpp
+    ALU.hpp
+    ALU.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${EVENT_COMPONENTS_SOURCES})

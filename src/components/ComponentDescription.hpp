@@ -62,12 +62,25 @@ struct ConnectionDescription
 
 enum class ConnectionDefinitionType
 {
+    // single pin to single pin
     SINGLE_2_SINGLE,
+    // single pin to array of pins, specific pin from an array of components
+    // (i.e. comp.D -> bit[0-7].D)
     SINGLE_2_COMPONENT_ARRAY,
+    // single pin to array of pins, pin array from a single component
+    // (i.e. comp.D -> register.D[0-7])
     SINGLE_2_PIN_ARRAY,
+    // pin array of a component to pin array of another component
+    // (i.e. comp.A[0-7] -> register.A[0-7])
     PIN_ARRAY_2_PIN_ARRAY,
+    // specific pin from an array of components to pin array of a component
+    // (i.e. bit[0-7].D -> register.D[0-7])
     COMPONENT_ARRAY_2_PIN_ARRAY,
+    // pin array of a component to specific pin from an array of components
+    // (i.e. bit.D[0-7] -> register[0-7].D)
     PIN_ARRAY_2_COMPONENT_ARRAY,
+    // specific pin from an array of compoents to specific pin from another array of components
+    // (i.e. bit[0-7].D -> register[0-7].D)
     COMPONENT_ARRAY_2_COMPONENT_ARRAY
 };
 
@@ -211,6 +224,23 @@ static constexpr auto gatePins(size_t inputPinSize)
 {
     auto t = std::make_tuple(static_cast<Ts*>(nullptr)...);
     return gatePinsImpl(t, inputPinSize, std::make_index_sequence<sizeof...(Ts)>{});
+}
+
+template <typename... Ts1, typename... Ts2, size_t... I1, size_t... I2>
+static constexpr auto cmbImpl(std::tuple<Ts1...>& t1,
+        std::tuple<Ts2...>& t2,
+        std::index_sequence<I1...>,
+        std::index_sequence<I2...>)
+{
+    return std::make_tuple(std::get<I1>(t1)..., std::get<I2>(t2)...);
+}
+
+template <typename... Ts1, typename... Ts2>
+static constexpr auto cmb(std::tuple<Ts1...>& t1, std::tuple<Ts2...>& t2)
+{
+    return cmbImpl(t1, t2,
+            std::make_index_sequence<sizeof...(Ts1)>{},
+            std::make_index_sequence<sizeof...(Ts2)>{});
 }
 
 template <typename T>

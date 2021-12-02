@@ -144,6 +144,7 @@ template <size_t BITS>
 class Register : public ComponentBase
 {
 public:
+    static_assert(BITS >= 1, "BITS must >= 1");
     static const char* Name()
     {
         static std::string name{"Register" + std::to_string(BITS)};
