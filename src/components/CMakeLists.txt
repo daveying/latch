@@ -25,3 +25,4 @@ set(EVENT_COMPONENTS_SOURCES
 add_library(${PROJECT_NAME} SHARED ${EVENT_COMPONENTS_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PUBLIC gate sched logger)
+target_compile_options(${PROJECT_NAME} PUBLIC -ftemplate-depth=1900)
