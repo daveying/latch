@@ -21,29 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <NOTGate.hpp>
-#include <Timer.hpp>
-#include <gtest/gtest.h>
-#include <thread>
-#include <chrono>
+#ifndef TIMER_HPP__
+#define TIMER_HPP__
 
-TEST(TimerTest, APIs)
+#include <mutex>
+#include <IComponent.hpp>
+
+namespace component
 {
-    component::Timer timer{10};
-    component::NOTGate notGate;
-    timer.initialize();
-    notGate.compute();
 
-    EXPECT_EQ(notGate.output(0)->value(), component::PinState::High);
+class Clock : public IEventComponent
+{
+public:
+    Clock(sched::Period period, const std::string& name = "");
+    virtual void initialize() override;
+    virtual const std::string& name() const override;
+    virtual IPin* pin(size_t idx) override;
+    virtual void connect(IPin* pin) override;
+    virtual void disconnect() override;
+    virtual void enable(PinState value) override;
+    void halt();
+    virtual ~Clock() {}
+protected:
+    void timerEvent();
 
-    timer.connect(notGate.input(0));
+    sched::Period m_period;
+    IPin* m_pin;
+    PinState m_enabled;
+    PinState m_value;
+    bool m_halt;
+    // the public APIs will be called in different threads
+    std::mutex m_eventMutex;
+    std::string m_name;
+};
 
-    std::thread schedThread([] () {
-        sched::waitTillSteady();
-    });
+} // namespace component
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    timer.halt();
-
-    schedThread.join();
-}
+#endif // TIMER_HPP__

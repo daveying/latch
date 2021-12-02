@@ -14,8 +14,8 @@ set(EVENT_COMPONENTS_SOURCES
     GateComponents.hpp
     GateComponents.cpp
     IComponent.hpp
-    Timer.hpp
-    Timer.cpp
+    Clock.hpp
+    Clock.cpp
     Register.hpp
     Register.cpp
     ALU.hpp

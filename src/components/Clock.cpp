@@ -21,12 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#include <Timer.hpp>
+#include <Clock.hpp>
 
 namespace component
 {
 
-Timer::Timer(sched::Period period, const std::string& name)
+Clock::Clock(sched::Period period, const std::string& name)
     : m_period{period}
     , m_pin{nullptr}
     , m_value{PinState::Low}
@@ -36,45 +36,45 @@ Timer::Timer(sched::Period period, const std::string& name)
 {
 }
 
-void Timer::initialize()
+void Clock::initialize()
 {
     sched::addEvent(m_period, sched::Event::create(
-                "Timer flip",
+                "Clock flip",
                 [self = this] (sched::Timestamp) {
                     self->timerEvent();
                 }
             ));
 }
 
-const std::string& Timer::name() const
+const std::string& Clock::name() const
 {
     return m_name;
 }
 
-IPin* Timer::pin(size_t idx)
+IPin* Clock::pin(size_t idx)
 {
-    throw std::runtime_error("Timer::pin(): Invalid operation");
+    throw std::runtime_error("Clock::pin(): Invalid operation");
 }
 
-void Timer::halt()
+void Clock::halt()
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_halt = true;
 }
 
-void Timer::connect(IPin* pin)
+void Clock::connect(IPin* pin)
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_pin = pin;
 }
 
-void Timer::disconnect()
+void Clock::disconnect()
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_pin = nullptr;
 }
 
-void Timer::timerEvent()
+void Clock::timerEvent()
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     if (m_halt)
@@ -93,14 +93,14 @@ void Timer::timerEvent()
     // newly added event after this event returns, even the
     // m_period is 0.
     sched::addEvent(m_period, sched::Event::create(
-                "Timer flip",
+                "Clock flip",
                 [self = this] (sched::Timestamp) {
                     self->timerEvent();
                 }
             ));
 }
 
-void Timer::enable(PinState value)
+void Clock::enable(PinState value)
 {
     std::unique_lock<std::mutex> lock(m_eventMutex);
     m_enabled = value;
