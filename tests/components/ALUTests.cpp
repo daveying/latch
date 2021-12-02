@@ -97,7 +97,7 @@ TEST_F(ALUTests, ALU1)
     sched::waitTillSteady();
     EXPECT_EQ(Sum0->value(), PinState::Low);
     EXPECT_EQ(Co->value(), PinState::High);
-    // A0: 1, B0: 1, Ci: 1 -> Sum0: 0, Co: 1
+    // A0: 1, B0: 1, Ci: 1 -> Sum0: 1, Co: 1
     A0->value(PinState::High);
     B0->value(PinState::High);
     Ci->value(PinState::High);
