@@ -87,13 +87,13 @@ public:
 };
 
 template <size_t BITS>
-class ALU : public ComponentBase
+class BinaryAdder : public ComponentBase
 {
 public:
     static_assert(BITS >= 1, "BITS must >= 1");
     static const char* Name()
     {
-        static std::string name{"ALU" + std::to_string(BITS)};
+        static std::string name{"BinaryAdder" + std::to_string(BITS)};
         return name.c_str();
     }
     static constexpr auto Pins()
@@ -126,12 +126,12 @@ public:
     }
     static std::unique_ptr<IComponent> create(const std::string& name)
     {
-        return std::make_unique<ALU>(name);
+        return std::make_unique<BinaryAdder>(name);
     }
-    ALU(const std::string& name)
-        : ComponentBase(detail::getDescription<ALU>(), name)
+    BinaryAdder(const std::string& name)
+        : ComponentBase(detail::getDescription<BinaryAdder>(), name)
     {}
-    virtual ~ALU() {}
+    virtual ~BinaryAdder() {}
 private:
     template <size_t... I>
     static constexpr auto connectCarryPins(std::index_sequence<I...>)

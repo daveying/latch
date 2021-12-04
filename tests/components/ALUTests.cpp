@@ -29,7 +29,7 @@
 namespace component
 {
 
-class ALUTests : public ::testing::Test
+class BinaryAdderTests : public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -73,26 +73,26 @@ protected:
     }
 
     template <size_t... I>
-    void aluAddTest(std::index_sequence<I...>)
+    void binaryAdderAddTest(std::index_sequence<I...>)
     {
         constexpr size_t BITS = sizeof...(I);
         static_assert(BITS < 64, "Too many bits for 64bits system, will overflow");
-        auto alu = BITS == 6
-            ? ALU<6>::create("alu7")
-            : ComponentFactory::create("ALU" + std::to_string(BITS), "alu" + std::to_string(BITS));
-        alu->initialize();
+        auto binaryAdder = BITS == 6
+            ? BinaryAdder<6>::create("binaryAdder6")
+            : ComponentFactory::create("BinaryAdder" + std::to_string(BITS), "binaryAdder" + std::to_string(BITS));
+        binaryAdder->initialize();
 
         std::array<IPin*, BITS> A = {
-            alu->pin(0 + I)...
+            binaryAdder->pin(0 + I)...
         };
         std::array<IPin*, BITS> B = {
-            alu->pin(BITS + I)...
+            binaryAdder->pin(BITS + I)...
         };
-        auto Ci = alu->pin(2 * BITS);
+        auto Ci = binaryAdder->pin(2 * BITS);
         std::array<IPin*, BITS> Sum = {
-            alu->pin(2 * BITS + 1 + I)...
+            binaryAdder->pin(2 * BITS + 1 + I)...
         };
-        auto Co = alu->pin(3 * BITS + 1);
+        auto Co = binaryAdder->pin(3 * BITS + 1);
 
         sched::waitTillSteady();
 
@@ -150,26 +150,26 @@ protected:
     }
 
     template <size_t... I>
-    void aluOverflowTest(std::index_sequence<I...>)
+    void binaryAdderOverflowTest(std::index_sequence<I...>)
     {
         constexpr size_t BITS = sizeof...(I);
         static_assert(BITS <= 64, "Too many bits for 64bits system, will overflow");
-        auto alu = BITS == 6
-            ? ALU<6>::create("alu7")
-            : ComponentFactory::create("ALU" + std::to_string(BITS), "alu" + std::to_string(BITS));
-        alu->initialize();
+        auto binaryAdder = BITS == 6
+            ? BinaryAdder<6>::create("binaryAdder6")
+            : ComponentFactory::create("BinaryAdder" + std::to_string(BITS), "binaryAdder" + std::to_string(BITS));
+        binaryAdder->initialize();
 
         std::array<IPin*, BITS> A = {
-            alu->pin(0 + I)...
+            binaryAdder->pin(0 + I)...
         };
         std::array<IPin*, BITS> B = {
-            alu->pin(BITS + I)...
+            binaryAdder->pin(BITS + I)...
         };
-        auto Ci = alu->pin(2 * BITS);
+        auto Ci = binaryAdder->pin(2 * BITS);
         std::array<IPin*, BITS> Sum = {
-            alu->pin(2 * BITS + 1 + I)...
+            binaryAdder->pin(2 * BITS + 1 + I)...
         };
-        auto Co = alu->pin(3 * BITS + 1);
+        auto Co = binaryAdder->pin(3 * BITS + 1);
 
         sched::waitTillSteady();
         checkVal(0, A);
@@ -206,16 +206,16 @@ protected:
     }
 };
 
-TEST_F(ALUTests, ALU1)
+TEST_F(BinaryAdderTests, BinaryAdder1)
 {
-    auto alu1 = ALU<1>::create("alu1");
-    alu1->initialize();
+    auto binaryAdder1 = BinaryAdder<1>::create("binaryAdder1");
+    binaryAdder1->initialize();
 
-    auto A0   = alu1->pin(0);
-    auto B0   = alu1->pin(1);
-    auto Ci   = alu1->pin(2);
-    auto Sum0 = alu1->pin(3);
-    auto Co   = alu1->pin(4);
+    auto A0   = binaryAdder1->pin(0);
+    auto B0   = binaryAdder1->pin(1);
+    auto Ci   = binaryAdder1->pin(2);
+    auto Sum0 = binaryAdder1->pin(3);
+    auto Co   = binaryAdder1->pin(4);
 
     sched::waitTillSteady();
     // A0: 0, B0: 0, Ci: 0 -> Sum0: 0, Co: 0
@@ -272,43 +272,43 @@ TEST_F(ALUTests, ALU1)
     EXPECT_EQ(Co->value(), PinState::High);
 }
 
-TEST_F(ALUTests, ALU1AddTest)
+TEST_F(BinaryAdderTests, BinaryAdder1AddTest)
 {
-    aluAddTest(std::make_index_sequence<1>{});
+    binaryAdderAddTest(std::make_index_sequence<1>{});
 }
 
-TEST_F(ALUTests, ALU4)
+TEST_F(BinaryAdderTests, BinaryAdder4)
 {
-    aluAddTest(std::make_index_sequence<4>{});
+    binaryAdderAddTest(std::make_index_sequence<4>{});
 }
 
-TEST_F(ALUTests, ALU6)
+TEST_F(BinaryAdderTests, BinaryAdder6)
 {
-    aluAddTest(std::make_index_sequence<6>{});
+    binaryAdderAddTest(std::make_index_sequence<6>{});
 }
 
-TEST_F(ALUTests, ALU6Overflow)
+TEST_F(BinaryAdderTests, BinaryAdder6Overflow)
 {
-    aluOverflowTest(std::make_index_sequence<6>{});
+    binaryAdderOverflowTest(std::make_index_sequence<6>{});
 }
 
-TEST_F(ALUTests, ALU8Overflow)
+TEST_F(BinaryAdderTests, BinaryAdder8Overflow)
 {
-    aluOverflowTest(std::make_index_sequence<8>{});
+    binaryAdderOverflowTest(std::make_index_sequence<8>{});
 }
 
-TEST_F(ALUTests, ALU16Overflow)
+TEST_F(BinaryAdderTests, BinaryAdder16Overflow)
 {
-    aluOverflowTest(std::make_index_sequence<16>{});
+    binaryAdderOverflowTest(std::make_index_sequence<16>{});
 }
 
-TEST_F(ALUTests, ALU32Overflow)
+TEST_F(BinaryAdderTests, BinaryAdder32Overflow)
 {
-    aluOverflowTest(std::make_index_sequence<32>{});
+    binaryAdderOverflowTest(std::make_index_sequence<32>{});
 }
 
-TEST_F(ALUTests, ALU64Overflow)
+TEST_F(BinaryAdderTests, BinaryAdder64Overflow)
 {
-    aluOverflowTest(std::make_index_sequence<64>{});
+    binaryAdderOverflowTest(std::make_index_sequence<64>{});
 }
 } // namespace component
