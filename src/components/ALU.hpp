@@ -142,6 +142,69 @@ private:
     }
 };
 
+template <size_t BITS>
+class ALU : public ComponentBase
+{
+public:
+    static_assert(BITS >=1, "BITS must >= 1");
+    static const char* Name()
+    {
+        static std::string name{"ALU" + std::to_string(BITS)};
+        return name.c_str();
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            DEFINE_PIN_ARRAY("A", ForwardInputPin, BITS),
+            DEFINE_PIN_ARRAY("B", ForwardInputPin, BITS),
+            DEFINE_PIN("EO", ForwardInputPin),
+            DEFINE_PIN("SUB", ForwardInputPin),
+            DEFINE_PIN_ARRAY("Sum", ForwardOutputPin, BITS),
+            DEFINE_PIN("Co", ForwardOutputPin)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT_ARRAY("adder", BitAdder, BITS),
+            DEFINE_SUBCOMPONENT_ARRAY("negater", XORGateComponent, BITS),
+            DEFINE_SUBCOMPONENT_ARRAY("enable", BusBufferComponent, BITS)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        auto conn0 = std::make_tuple(
+            CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("A", "adder.A", BITS),
+            CONNECT_PIN_ARRAY_2_COMPONENT_ARRAY("B", "negater.in0", BITS),
+            CONNECT_COMPONENT_ARRAY_2_COMPONENT_ARRAY("negater.out0", "adder.B", BITS),
+            CONNECT_COMPONENT_ARRAY_2_COMPONENT_ARRAY("adder.Sum", "enable.in0", BITS),
+            CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("enable.out0", "Sum", BITS),
+            CONNECT_MULTICAST_COMPONENT("EO", "enable.in1", BITS),
+            CONNECT_MULTICAST_COMPONENT("SUB", "negater.in1", BITS),
+            CONNECT("SUB", "adder[0].Ci"),
+            CONNECT(sp("adder[", BITS - 1, "].Co"), "Co")
+        );
+        auto conn1 = connectCarryPins(std::make_index_sequence<BITS - 1>{});
+        return detail::cmb(conn0, conn1);
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<ALU>(name);
+    }
+    ALU(const std::string& name)
+        : ComponentBase(detail::getDescription<ALU>(), name)
+    {}
+    virtual ~ALU() {}
+private:
+    template <size_t... I>
+    static constexpr auto connectCarryPins(std::index_sequence<I...>)
+    {
+        return std::make_tuple(
+            CONNECT(sp("adder[", I, "].Co"), sp("adder[", I + 1, "].Ci"))...
+        );
+    }
+};
+
 } // namespace component
 
 #endif // ALU_HPP__
