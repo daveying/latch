@@ -23,8 +23,13 @@ add_test(NAME ${TEST_NAME}_test
     COMMAND ${TEST_NAME})
 
 set(TEST_NAME alu-test)
-set(${TEST_NAME}_SOURCES ALUTests.cpp)
+set(${TEST_NAME}_SOURCES
+    ALUTests.hpp
+    BinaryAdderTests.cpp
+    ALUTests.cpp
+)
 add_executable(${TEST_NAME} ${${TEST_NAME}_SOURCES})
 target_link_libraries(${TEST_NAME} PUBLIC ${DEPS})
+target_include_directories(${TEST_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_test(NAME ${TEST_NAME}_test
     COMMAND ${TEST_NAME})
