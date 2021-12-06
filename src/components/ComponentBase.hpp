@@ -58,10 +58,6 @@ public:
         }
         for (auto const& connection : m_description.connections)
         {
-            if (connection.src.componentIndex == -1 && connection.dest.componentIndex == -1)
-            {
-                throw std::runtime_error("ComponentBase: Invalid connection, two component pins connected together inside");
-            }
             IComponent* srcComp       = subcomponent(connection.src.componentIndex);
             IComponent* destComp      = subcomponent(connection.dest.componentIndex);
             ISourcePin* srcPin  = dynamic_cast<ISourcePin*>(srcComp->pin(connection.src.pinIndex));

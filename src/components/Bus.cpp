@@ -21,47 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef IGATE_HPP__
-#define IGATE_HPP__
-
-#include <cstddef>
-#include <string>
-#include <IPin.hpp>
+#include <Bus.hpp>
+#include <ComponentFactory.hpp>
 
 namespace component
 {
-
-enum class PinDirection
-{
-    INPUT,
-    OUTPUT,
-};
-
-class IComponent
-{
-public:
-    virtual void initialize()                 = 0;
-    virtual IComponent* subcomponent(int idx) = 0;
-    virtual IPin* pin(size_t idx)       = 0;
-    virtual const std::string& name() const   = 0;
-};
-
-class IGate : public IComponent
-{
-public:
-    virtual void compute()                   = 0;
-    virtual IPin* input(size_t index)        = 0;
-    virtual ISourcePin* output(size_t index) = 0;
-    virtual void initialize() final
-    {
-        compute();
-    }
-    virtual component::IComponent* subcomponent(int) final
-    {
-        return nullptr;
-    };
-};
-
-class TruthTableBase {};
+REGISTER_COMPONENT(Bus<1>, 1);
+REGISTER_COMPONENT(Bus<4>, 4);
+REGISTER_COMPONENT(Bus<8>, 8);
+REGISTER_COMPONENT(Bus<16>, 16);
+REGISTER_COMPONENT(Bus<32>, 32);
+REGISTER_COMPONENT(Bus<64>, 64);
 } // namespace component
-#endif

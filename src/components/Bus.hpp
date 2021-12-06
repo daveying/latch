@@ -21,47 +21,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef IGATE_HPP__
-#define IGATE_HPP__
+#ifndef BUS_HPP__
+#define BUS_HPP__
 
-#include <cstddef>
-#include <string>
-#include <IPin.hpp>
+#include <ComponentDescription.hpp>
+#include <ComponentBase.hpp>
 
 namespace component
 {
 
-enum class PinDirection
-{
-    INPUT,
-    OUTPUT,
-};
-
-class IComponent
+template <size_t BITS>
+class Bus : public ComponentBase
 {
 public:
-    virtual void initialize()                 = 0;
-    virtual IComponent* subcomponent(int idx) = 0;
-    virtual IPin* pin(size_t idx)       = 0;
-    virtual const std::string& name() const   = 0;
-};
-
-class IGate : public IComponent
-{
-public:
-    virtual void compute()                   = 0;
-    virtual IPin* input(size_t index)        = 0;
-    virtual ISourcePin* output(size_t index) = 0;
-    virtual void initialize() final
+    static_assert(BITS >= 1, "BITS must >= 1");
+    static const char* Name()
     {
-        compute();
+        static std::string name{"Bus" + std::to_string(BITS)};
+        return name.c_str();
     }
-    virtual component::IComponent* subcomponent(int) final
+    static constexpr auto Pins()
     {
-        return nullptr;
-    };
+        return std::make_tuple(
+            DEFINE_PIN_ARRAY("I", ForwardInputPin, BITS),
+            DEFINE_PIN_ARRAY("O", ForwardOutputPin, BITS)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple();
+    }
+    static constexpr auto Connections()
+    {
+        return std::make_tuple(
+            CONNECT_PIN_ARRAY_2_PIN_ARRAY("I", "O", BITS)
+        );
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<Bus>(name);
+    }
+    Bus(const std::string& name)
+        : ComponentBase(detail::getDescription<Bus>(), name)
+    {}
+    virtual ~Bus() {}
 };
 
-class TruthTableBase {};
 } // namespace component
-#endif
+
+#endif // BUS_HPP__

@@ -20,6 +20,8 @@ set(COMPONENTS_SOURCES
     Register.cpp
     ALU.hpp
     ALU.cpp
+    Bus.hpp
+    Bus.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${COMPONENTS_SOURCES})
