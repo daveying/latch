@@ -42,3 +42,12 @@ add_executable(${TEST_NAME} ${${TEST_NAME}_SOURCES})
 target_link_libraries(${TEST_NAME} PUBLIC ${DEPS})
 add_test(NAME ${TEST_NAME}_test
     COMMAND ${TEST_NAME})
+
+set(TEST_NAME pc-test)
+set(${TEST_NAME}_SOURCES
+    ProgramCounterTests.cpp
+)
+add_executable(${TEST_NAME} ${${TEST_NAME}_SOURCES})
+target_link_libraries(${TEST_NAME} PUBLIC ${DEPS})
+add_test(NAME ${TEST_NAME}_test
+    COMMAND ${TEST_NAME})

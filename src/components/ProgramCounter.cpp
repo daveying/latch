@@ -21,58 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef AND_GATE_HPP_
-#define AND_GATE_HPP_
-
-#include <DelayedPin.hpp>
-#include <GateTemplate.hpp>
-#include <TruthTable.hpp>
+#include <ProgramCounter.hpp>
+#include <ComponentFactory.hpp>
 
 namespace component
 {
-
-static constexpr size_t ANDGateInputSize  = 2;
-static constexpr size_t ANDGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ANDGate, ANDGateInputSize, ANDGateOutputSize)
-{
-    if (input[0]->value() == PinState::High && input[1]->value() == PinState::High)
-    {
-        output[0]->value(PinState::High);
-    }
-    else
-    {
-        output[0]->value(PinState::Low);
-    }
-}
-END_GATE_TRUTH_TABLE
-
-static constexpr size_t ANDGate3InputSize  = 3;
-static constexpr size_t ANDGate3OutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ANDGate3, ANDGate3InputSize, ANDGate3OutputSize)
-{
-    if (input[0]->value() == PinState::High
-            && input[1]->value() == PinState::High
-            && input[2]->value() == PinState::High)
-    {
-        output[0]->value(PinState::High);
-    }
-    else
-    {
-        output[0]->value(PinState::Low);
-    }
-}
-END_GATE_TRUTH_TABLE
-
-using ANDGate = GateTemplate<
-    TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
-    ANDGate_TruthTable,
-    TypePack<ZeroDelayOutputPin>>;
-
-using ANDGate3 = GateTemplate<
-    TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
-    ANDGate3_TruthTable,
-    TypePack<ZeroDelayOutputPin>>;
-
+REGISTER_COMPONENT(MSJKFlipFlop);
 } // namespace component
-
-#endif // AND_GATE_HPP_

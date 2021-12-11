@@ -134,6 +134,7 @@ protected:
     };
 
 DEFINE_GATE_COMPONENT(ANDGateComponent, ANDGate);
+DEFINE_GATE_COMPONENT(ANDGate3Component, ANDGate3);
 DEFINE_GATE_COMPONENT(BusBufferComponent, BusBuffer);
 DEFINE_GATE_COMPONENT(BusBufferDataDelayedComponent, BusBufferDataDelayed);
 DEFINE_GATE_COMPONENT(NANDGateComponent, NANDGate);

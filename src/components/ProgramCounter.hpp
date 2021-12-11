@@ -1,0 +1,104 @@
+/////////////////////////////////////////////////////////////////////////////////
+// MIT License
+//
+// Copyright (c) 2021 Xingpeng Da
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+/////////////////////////////////////////////////////////////////////////////////
+
+#ifndef PROGRAM_COUNTER_HPP__
+#define PROGRAM_COUNTER_HPP__
+
+#include <IComponent.hpp>
+#include <ComponentBase.hpp>
+#include <ComponentDescription.hpp>
+#include <GateComponents.hpp>
+
+namespace component
+{
+
+class MSJKFlipFlop : public ComponentBase
+{
+public:
+    static constexpr const char* Name()
+    {
+        return "MSJKFlipFlop";
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            DEFINE_PIN("Clock", ForwardInputPin),
+            DEFINE_PIN("J", ForwardInputPin),
+            DEFINE_PIN("K", ForwardInputPin),
+            DEFINE_PIN("Q", ForwardOutputPin),
+            DEFINE_PIN("Qc", ForwardOutputPin)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT("and0", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("and1", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("nor0", NORGateComponent),
+            DEFINE_SUBCOMPONENT("nor1", NORGateComponent),
+            DEFINE_SUBCOMPONENT("and2", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("and3", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("nor2", NORGateComponent),
+            DEFINE_SUBCOMPONENT("nor3", NORGateComponent),
+            DEFINE_SUBCOMPONENT("or", ORGateComponent)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        return std::make_tuple(
+            CONNECT("J", "and0.in1"),
+            CONNECT("K", "and1.in1"),
+            CONNECT("Clock", "and0.in2"),
+            CONNECT("Clock", "and1.in0"),
+            CONNECT("Clock", "or.in0"),
+            CONNECT("and0.out0", "nor0.in0"),
+            CONNECT("and1.out0", "nor1.in1"),
+            CONNECT("nor0.out0", "nor1.in0"),
+            CONNECT("nor1.out0", "nor0.in1"),
+            CONNECT("nor0.out0", "and2.in0"),
+            CONNECT("nor1.out0", "and3.in1"),
+            CONNECT("or.out0", "and2.in1"),
+            CONNECT("or.out0", "and3.in0"),
+            CONNECT("and2.out0", "nor2.in0"),
+            CONNECT("and3.out0", "nor3.in1"),
+            CONNECT("nor3.out0", "nor2.in1"),
+            CONNECT("nor2.out0", "nor3.in0"),
+            CONNECT("nor2.out0", "and1.in2"),
+            CONNECT("nor3.out0", "and0.in0"),
+            CONNECT("nor2.out0", "Q"),
+            CONNECT("nor3.out0", "Qc")
+        );
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<MSJKFlipFlop>(name);
+    }
+    MSJKFlipFlop(const std::string& name)
+        : ComponentBase(detail::getDescription<MSJKFlipFlop>(), name)
+    {}
+    virtual ~MSJKFlipFlop() {}
+};
+
+} // namespace component
+
+#endif // PROGRAM_COUNTER_HPP__

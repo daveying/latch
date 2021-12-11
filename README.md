@@ -30,3 +30,4 @@ This project is called Latch because latch is the most fundamental element of el
     - Tool to plot pin voltage sequence
 - [x] Remove gate namespace
 - [ ] Get pin instance using pin name
+- [ ] Support floating state, pin connections should be non-directional.

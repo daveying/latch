@@ -21,58 +21,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-#ifndef AND_GATE_HPP_
-#define AND_GATE_HPP_
+#include <ComponentFactory.hpp>
+#include <ProgramCounter.hpp>
+#include <IScheduler.hpp>
 
-#include <DelayedPin.hpp>
-#include <GateTemplate.hpp>
-#include <TruthTable.hpp>
+#include <gtest/gtest.h>
 
 namespace component
 {
 
-static constexpr size_t ANDGateInputSize  = 2;
-static constexpr size_t ANDGateOutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ANDGate, ANDGateInputSize, ANDGateOutputSize)
+class ProgramCounterTests : public ::testing::Test
 {
-    if (input[0]->value() == PinState::High && input[1]->value() == PinState::High)
+protected:
+    void SetUp() override
     {
-        output[0]->value(PinState::High);
     }
-    else
+    void TearDown() override
     {
-        output[0]->value(PinState::Low);
     }
-}
-END_GATE_TRUTH_TABLE
+};
 
-static constexpr size_t ANDGate3InputSize  = 3;
-static constexpr size_t ANDGate3OutputSize = 1;
-DEFINE_GATE_TRUTH_TABLE(ANDGate3, ANDGate3InputSize, ANDGate3OutputSize)
+TEST_F(ProgramCounterTests, MSJKFlipFlopInitialize)
 {
-    if (input[0]->value() == PinState::High
-            && input[1]->value() == PinState::High
-            && input[2]->value() == PinState::High)
-    {
-        output[0]->value(PinState::High);
-    }
-    else
-    {
-        output[0]->value(PinState::Low);
-    }
+    auto msJK = ComponentFactory::create("MSJKFlipFlop", "msJK");
+    msJK->initialize();
 }
-END_GATE_TRUTH_TABLE
-
-using ANDGate = GateTemplate<
-    TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
-    ANDGate_TruthTable,
-    TypePack<ZeroDelayOutputPin>>;
-
-using ANDGate3 = GateTemplate<
-    TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
-    ANDGate3_TruthTable,
-    TypePack<ZeroDelayOutputPin>>;
 
 } // namespace component
-
-#endif // AND_GATE_HPP_

@@ -22,6 +22,8 @@ set(COMPONENTS_SOURCES
     ALU.cpp
     Bus.hpp
     Bus.cpp
+    ProgramCounter.hpp
+    ProgramCounter.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${COMPONENTS_SOURCES})
