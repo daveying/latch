@@ -39,6 +39,42 @@ protected:
     void TearDown() override
     {
     }
+    void checkVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
+    {
+        for (uint64_t i = 0; i < bits; ++i)
+        {
+            uint64_t mask = 1ull << i;
+            if ((mask & val) > 0)
+            {
+                ASSERT_EQ(pins[i]->value(), PinState::High);
+            }
+            else
+            {
+                ASSERT_EQ(pins[i]->value(), PinState::Low);
+            }
+        }
+    }
+    template <size_t BITS>
+    void binaryCounterTest()
+    {
+        auto bc = ComponentFactory::create("BinaryCounter" + std::to_string(BITS), "bc" + std::to_string(BITS));
+        bc->initialize();
+        auto Clock = bc->pin(0);
+        std::vector<IPin*> C;
+        for (size_t i = 0; i < BITS; ++i)
+        {
+            C.push_back(bc->pin(1 + i));
+        }
+
+        for (uint64_t i = 0; i < BITS * BITS; ++i)
+        {
+            Clock->value(PinState::High);
+            sched::waitTillSteady();
+            Clock->value(PinState::Low);
+            sched::waitTillSteady();
+            checkVal(i + 1, C, BITS);
+        }
+    }
 };
 
 TEST_F(ProgramCounterTests, MSJKFlipFlopTruthTable)
@@ -162,6 +198,35 @@ TEST_F(ProgramCounterTests, MSJKFlipFlopTruthTable)
     sched::waitTillSteady();
     ASSERT_EQ(Q->value(), PinState::High);
     ASSERT_EQ(Qc->value(), PinState::Low);
+}
+
+TEST_F(ProgramCounterTests, BinaryCounter1)
+{
+    binaryCounterTest<1>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter2)
+{
+    binaryCounterTest<2>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter4)
+{
+    binaryCounterTest<4>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter8)
+{
+    binaryCounterTest<8>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter16)
+{
+    binaryCounterTest<16>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter32)
+{
+    binaryCounterTest<32>();
+}
+TEST_F(ProgramCounterTests, BinaryCounter64)
+{
+    binaryCounterTest<64>();
 }
 
 } // namespace component

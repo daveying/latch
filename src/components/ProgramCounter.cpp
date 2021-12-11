@@ -27,4 +27,11 @@
 namespace component
 {
 REGISTER_COMPONENT(MSJKFlipFlop);
+REGISTER_COMPONENT(BinaryCounter<1>, 1);
+REGISTER_COMPONENT(BinaryCounter<2>, 2);
+REGISTER_COMPONENT(BinaryCounter<4>, 4);
+REGISTER_COMPONENT(BinaryCounter<8>, 8);
+REGISTER_COMPONENT(BinaryCounter<16>, 16);
+REGISTER_COMPONENT(BinaryCounter<32>, 32);
+REGISTER_COMPONENT(BinaryCounter<64>, 64);
 } // namespace component

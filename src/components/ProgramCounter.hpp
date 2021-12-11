@@ -99,6 +99,66 @@ public:
     virtual ~MSJKFlipFlop() {}
 };
 
+template <size_t BITS>
+class BinaryCounter : public ComponentBase
+{
+public:
+    static const char* Name()
+    {
+        static std::string name{"BinaryCounter" + std::to_string(BITS)};
+        return name.c_str();
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            DEFINE_PIN("Clock", ForwardInputPin),
+            DEFINE_PIN_ARRAY("C", ForwardInputPin, BITS)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT_ARRAY("msJK", MSJKFlipFlop, BITS)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        auto conn0 = std::make_tuple(
+            CONNECT("Clock", "msJK[0].Clock"),
+            CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("msJK.Q", "C", BITS)
+        );
+        auto conn1 = connectCarryPins(std::make_index_sequence<BITS - 1>{});
+        return detail::cmb(conn0, conn1);
+    }
+    virtual void initialize() override
+    {
+        ComponentBase::initialize();
+        // J & K set to high and never changes
+        for (size_t i = 0; i < BITS; ++i)
+        {
+            m_subcomponents[i]->pin(1)->value(PinState::High);
+            m_subcomponents[i]->pin(2)->value(PinState::High);
+        }
+        sched::waitTillSteady();
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<BinaryCounter>(name);
+    }
+    BinaryCounter(const std::string& name)
+        : ComponentBase(detail::getDescription<BinaryCounter>(), name)
+    {}
+    virtual ~BinaryCounter() {}
+private:
+    template <size_t... I>
+    static constexpr auto connectCarryPins(const std::index_sequence<I...>&)
+    {
+        return std::make_tuple(
+            CONNECT(sp("msJK[", I, "].Q"), sp("msJK[", I + 1, "].Clock"))...
+        );
+    }
+};
+
 } // namespace component
 
 #endif // PROGRAM_COUNTER_HPP__

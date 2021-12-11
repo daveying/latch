@@ -134,7 +134,7 @@ public:
     virtual ~BinaryAdder() {}
 private:
     template <size_t... I>
-    static constexpr auto connectCarryPins(std::index_sequence<I...>)
+    static constexpr auto connectCarryPins(const std::index_sequence<I...>&)
     {
         return std::make_tuple(
             CONNECT(sp("adder[", I, "].Co"), sp("adder[", I + 1, "].Ci"))...
