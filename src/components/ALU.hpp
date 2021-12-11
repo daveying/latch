@@ -168,7 +168,7 @@ public:
         return std::make_tuple(
             DEFINE_SUBCOMPONENT_ARRAY("adder", BitAdder, BITS),
             DEFINE_SUBCOMPONENT_ARRAY("negater", XORGateComponent, BITS),
-            DEFINE_SUBCOMPONENT_ARRAY("enable", BusBufferComponent, BITS)
+            DEFINE_SUBCOMPONENT_ARRAY("enable", BusBufferDataDelayedComponent, BITS)
         );
     }
     static constexpr auto Connections()

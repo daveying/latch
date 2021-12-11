@@ -48,6 +48,10 @@ using BusBuffer = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
     BusBuffer_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
+using BusBufferDataDelayed = GateTemplate<
+    TypePack<DelayedInputPin<5>, ZeroDelayInputPin>,
+    BusBuffer_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
 
 } // namespace component
 

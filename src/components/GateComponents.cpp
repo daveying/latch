@@ -29,6 +29,7 @@ namespace component
 
 REGISTER_COMPONENT(ANDGateComponent);
 REGISTER_COMPONENT(BusBufferComponent);
+REGISTER_COMPONENT(BusBufferDataDelayedComponent);
 REGISTER_COMPONENT(NANDGateComponent);
 REGISTER_COMPONENT(NORGateComponent);
 REGISTER_COMPONENT(NORGateDelayedComponent);

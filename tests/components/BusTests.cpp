@@ -26,6 +26,7 @@
 #include <Bus.hpp>
 #include <ALU.hpp>
 #include <Register.hpp>
+#include <IScheduler.hpp>
 
 #include <gtest/gtest.h>
 
@@ -88,7 +89,7 @@ public:
             CONNECT("Clock", "A.Clock"),
             CONNECT("Clock", "B.Clock"),
             CONNECT_PIN_ARRAY_2_PIN_ARRAY("Bus.O", "BusO", BITS), // for test
-            CONNECT_PIN_ARRAY_2_PIN_ARRAY("Bus.I", "BusI", BITS)  // for test
+            CONNECT_PIN_ARRAY_2_PIN_ARRAY("BusI", "Bus.I", BITS)  // for test
         );
     }
     static std::unique_ptr<IComponent> create(const std::string& name)
@@ -142,6 +143,36 @@ protected:
             BusO.push_back(busO[i]);
         }
     }
+    void setVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
+    {
+        for (uint64_t i = 0; i < bits; ++i)
+        {
+            uint64_t mask = 1ull << i;
+            if ((mask & val) > 0)
+            {
+                pins[i]->value(PinState::High);
+            }
+            else
+            {
+                pins[i]->value(PinState::Low);
+            }
+        }
+    }
+    void checkVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
+    {
+        for (uint64_t i = 0; i < bits; ++i)
+        {
+            uint64_t mask = 1ull << i;
+            if ((mask & val) > 0)
+            {
+                ASSERT_EQ(pins[i]->value(), PinState::High);
+            }
+            else
+            {
+                ASSERT_EQ(pins[i]->value(), PinState::Low);
+            }
+        }
+    }
     template <size_t BITS>
     void ALU_A_B_addTest()
     {
@@ -157,6 +188,50 @@ protected:
         std::vector<IPin*> BusI;
         std::vector<IPin*> BusO;
         getPins(aluAB.get(), Clock, AI, AO, BI, BO, EO, SUB, BusI, BusO, std::make_index_sequence<BITS>{});
+        ASSERT_EQ(PinState::Low, Clock->value());
+        ASSERT_EQ(PinState::Low, AI->value());
+        ASSERT_EQ(PinState::Low, AO->value());
+        ASSERT_EQ(PinState::Low, BI->value());
+        ASSERT_EQ(PinState::Low, BO->value());
+        ASSERT_EQ(PinState::Low, EO->value());
+        ASSERT_EQ(PinState::Low, SUB->value());
+        for (size_t i = 0; i < BITS; ++i)
+        {
+            ASSERT_EQ(PinState::Low, BusI[i]->value());
+            ASSERT_EQ(PinState::Low, BusO[i]->value());
+        }
+
+        setVal(111ull, BusI, BITS);
+        AI->value(PinState::High);
+        sched::addEvent(1, sched::Event::create("Clock goes High", [&](sched::Timestamp) {
+            Clock->value(PinState::High);
+        }));
+        sched::waitTillSteady();
+        AI->value(PinState::Low);
+        sched::waitTillSteady();
+        EO->value(PinState::High);
+        sched::waitTillSteady();
+        checkVal(111ull, BusO, BITS);
+        sched::addEvent(1, sched::Event::create("Clock goes Low", [&](sched::Timestamp) {
+            Clock->value(PinState::Low);
+        }));
+        sched::waitTillSteady();
+        checkVal(111ull, BusO, BITS);
+
+        BI->value(PinState::High);
+
+        // each clock pulse will increament B and and BusI/O by 111
+        for (size_t i = 0; i < 2 * BITS; ++i)
+        {
+            sched::addEvent(1, sched::Event::create("Clock goes High", [&](sched::Timestamp) {
+                Clock->value(PinState::High);
+            }));
+            sched::addEvent(2, sched::Event::create("Clock goes Low", [&](sched::Timestamp) {
+                Clock->value(PinState::Low);
+            }));
+            sched::waitTillSteady();
+            checkVal(222ull + i * 111ull, BusO, BITS);
+        }
     }
 };
 
@@ -189,6 +264,18 @@ TEST_F(BusTests, ALU_A_B4)
 TEST_F(BusTests, ALU_A_B8)
 {
     ALU_A_B_addTest<8>();
+}
+TEST_F(BusTests, ALU_A_B16)
+{
+    ALU_A_B_addTest<16>();
+}
+TEST_F(BusTests, ALU_A_B32)
+{
+    ALU_A_B_addTest<32>();
+}
+TEST_F(BusTests, ALU_A_B64)
+{
+    ALU_A_B_addTest<64>();
 }
 
 } // namespace component
