@@ -58,9 +58,9 @@ public:
             DEFINE_SUBCOMPONENT("nor1", NORGateComponent),
             DEFINE_SUBCOMPONENT("and2", ANDGateComponent),
             DEFINE_SUBCOMPONENT("and3", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("nor3", NORGateComponent), // reverse the order to make Q Low after initialize
             DEFINE_SUBCOMPONENT("nor2", NORGateComponent),
-            DEFINE_SUBCOMPONENT("nor3", NORGateComponent),
-            DEFINE_SUBCOMPONENT("or", ORGateComponent)
+            DEFINE_SUBCOMPONENT("not", NOTGateComponent)
         );
     }
     static constexpr auto Connections()
@@ -70,15 +70,15 @@ public:
             CONNECT("K", "and1.in1"),
             CONNECT("Clock", "and0.in2"),
             CONNECT("Clock", "and1.in0"),
-            CONNECT("Clock", "or.in0"),
+            CONNECT("Clock", "not.in0"),
             CONNECT("and0.out0", "nor0.in0"),
             CONNECT("and1.out0", "nor1.in1"),
             CONNECT("nor0.out0", "nor1.in0"),
             CONNECT("nor1.out0", "nor0.in1"),
             CONNECT("nor0.out0", "and2.in0"),
             CONNECT("nor1.out0", "and3.in1"),
-            CONNECT("or.out0", "and2.in1"),
-            CONNECT("or.out0", "and3.in0"),
+            CONNECT("not.out0", "and2.in1"),
+            CONNECT("not.out0", "and3.in0"),
             CONNECT("and2.out0", "nor2.in0"),
             CONNECT("and3.out0", "nor3.in1"),
             CONNECT("nor3.out0", "nor2.in1"),

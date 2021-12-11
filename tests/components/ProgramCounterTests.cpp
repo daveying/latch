@@ -41,10 +41,128 @@ protected:
     }
 };
 
-TEST_F(ProgramCounterTests, MSJKFlipFlopInitialize)
+TEST_F(ProgramCounterTests, MSJKFlipFlopTruthTable)
 {
     auto msJK = ComponentFactory::create("MSJKFlipFlop", "msJK");
     msJK->initialize();
+
+    auto Clock = msJK->pin(0);
+    auto J     = msJK->pin(1);
+    auto K     = msJK->pin(2);
+    auto Q     = msJK->pin(3);
+    auto Qc    = msJK->pin(4);
+
+    ASSERT_EQ(J->value(), PinState::Low);
+    ASSERT_EQ(K->value(), PinState::Low);
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J Low, K Low
+    Clock->value(PinState::High);
+    Clock->value(PinState::Low);   // Clock pulse
+
+    sched::waitTillSteady();
+
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J High, K Low, Clock pulse => Q High, Qc Low
+    J->value(PinState::High);
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();      // NOTE: Clock cannot goes High and Low at the same timestamp
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J Low, K High, Clock pulse => Q Low, Qc High
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J Low, K Low, Clock pulse => no change
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J High, K Low, Clock pulse => Q High, Qc Low
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J Low, K Low, Clock pulse => no change
+    J->value(PinState::Low);
+    sched::waitTillSteady();
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J High, K High, Clock pulse => toggle
+    J->value(PinState::High);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // pulse
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // pulse
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // pulse
+    Clock->value(PinState::High); // Clock Low -> High
+    sched::waitTillSteady();
+    Clock->value(PinState::Low);  // Clock High -> Low
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
 }
 
 } // namespace component
+
