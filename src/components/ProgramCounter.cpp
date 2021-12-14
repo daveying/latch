@@ -27,6 +27,7 @@
 namespace component
 {
 REGISTER_COMPONENT(MSJKFlipFlop);
+REGISTER_COMPONENT(MSJKFlipFlopWithPresetClear);
 REGISTER_COMPONENT(BinaryCounter<1>, 1);
 REGISTER_COMPONENT(BinaryCounter<2>, 2);
 REGISTER_COMPONENT(BinaryCounter<4>, 4);

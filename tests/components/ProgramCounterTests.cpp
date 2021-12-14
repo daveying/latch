@@ -200,6 +200,233 @@ TEST_F(ProgramCounterTests, MSJKFlipFlopTruthTable)
     ASSERT_EQ(Qc->value(), PinState::Low);
 }
 
+TEST_F(ProgramCounterTests, MSJKFlipFlopWithPresetClearTruthTable)
+{
+    auto msJK = ComponentFactory::create("MSJKFlipFlopWithPresetClear", "msJK");
+    msJK->initialize();
+
+    auto CLK   = msJK->pin(0);
+    auto J     = msJK->pin(1);
+    auto K     = msJK->pin(2);
+    auto PR    = msJK->pin(3);
+    auto CLR   = msJK->pin(4);
+    auto Q     = msJK->pin(5);
+    auto Qc    = msJK->pin(6);
+
+    ASSERT_EQ(J->value(), PinState::Low);
+    ASSERT_EQ(K->value(), PinState::Low);
+    ASSERT_EQ(PR->value(), PinState::Low);
+    ASSERT_EQ(CLR->value(), PinState::Low);
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // PR High, CLR Low
+    PR->value(PinState::High);
+    CLR->value(PinState::Low);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::Low);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::High);
+    J->value(PinState::Low);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::High);
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::High);
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::High);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    CLK->value(PinState::High);
+    J->value(PinState::High);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // PR High, CLR Low -> High
+    CLR->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // PR Low, CLR High
+    PR->value(PinState::Low);
+    CLR->value(PinState::High);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::Low);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::High);
+    J->value(PinState::Low);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::High);
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::High);
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::Low);
+    J->value(PinState::High);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    CLK->value(PinState::High);
+    J->value(PinState::High);
+    K->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // PR Low -> High, CLR High
+    PR->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // PR Low, CLR Low
+    CLR->value(PinState::Low);
+    sched::waitTillSteady();
+    PR->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J High, K High, CLK High -> Low => toggle
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J Low, K Low, CLK High -> Low no change
+    J->value(PinState::Low);
+    K->value(PinState::Low);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J High, K Low, CLK High -> Low => Q High
+    J->value(PinState::High);
+    K->value(PinState::Low);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J Low, K High, CLK High -> Low => Q Low
+    J->value(PinState::Low);
+    K->value(PinState::High);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+
+    // J High, K High, CLK High -> Low => toggle
+    J->value(PinState::High);
+    K->value(PinState::High);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+
+    // J High, K High, CLK High -> Low => toggle
+    J->value(PinState::High);
+    K->value(PinState::High);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::High);
+    ASSERT_EQ(Qc->value(), PinState::Low);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    ASSERT_EQ(Q->value(), PinState::Low);
+    ASSERT_EQ(Qc->value(), PinState::High);
+}
+
 TEST_F(ProgramCounterTests, BinaryCounter1)
 {
     binaryCounterTest<1>();

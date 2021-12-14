@@ -159,6 +159,89 @@ private:
     }
 };
 
+class MSJKFlipFlopWithPresetClear : public ComponentBase
+{
+public:
+    static constexpr const char* Name()
+    {
+        return "MSJKFlipFlopWithPresetClear";
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            DEFINE_PIN("Clock", ForwardInputPin),
+            DEFINE_PIN("J", ForwardInputPin),
+            DEFINE_PIN("K", ForwardInputPin),
+            DEFINE_PIN("PR", ForwardInputPin),
+            DEFINE_PIN("CLR", ForwardInputPin),
+            DEFINE_PIN("Q", ForwardOutputPin),
+            DEFINE_PIN("Qc", ForwardOutputPin)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT("brkAnd0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("brkAnd1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("brkAnd2", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("nor", NORGateComponent),
+            DEFINE_SUBCOMPONENT("and0", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("and1", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("nor0", NORGate3Component),
+            DEFINE_SUBCOMPONENT("nor1", NORGate3Component),
+            DEFINE_SUBCOMPONENT("and2", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("and3", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("nor3", NORGateComponent), // reverse the order to make Q Low after initialize
+            DEFINE_SUBCOMPONENT("nor2", NORGateComponent),
+            DEFINE_SUBCOMPONENT("not", NOTGateComponent)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        return std::make_tuple(
+            CONNECT("J", "brkAnd0.in0"),
+            CONNECT("K", "brkAnd2.in0"),
+            CONNECT("Clock", "brkAnd1.in0"),
+            CONNECT("CLR", "nor.in0"),
+            CONNECT("CLR", "nor1.in2"),
+            CONNECT("PR", "nor.in1"),
+            CONNECT("PR", "nor0.in0"),
+            CONNECT("nor.out0", "brkAnd0.in1"),
+            CONNECT("nor.out0", "brkAnd1.in1"),
+            CONNECT("nor.out0", "brkAnd2.in1"),
+            CONNECT("brkAnd0.out0", "and0.in1"),
+            CONNECT("brkAnd2.out0", "and1.in1"),
+            CONNECT("brkAnd1.out0", "and0.in2"),
+            CONNECT("brkAnd1.out0", "and1.in0"),
+            CONNECT("brkAnd1.out0", "not.in0"),
+            CONNECT("and0.out0", "nor0.in1"),
+            CONNECT("and1.out0", "nor1.in1"),
+            CONNECT("nor0.out0", "nor1.in0"),
+            CONNECT("nor1.out0", "nor0.in2"),
+            CONNECT("nor0.out0", "and2.in0"),
+            CONNECT("nor1.out0", "and3.in1"),
+            CONNECT("not.out0", "and2.in1"),
+            CONNECT("not.out0", "and3.in0"),
+            CONNECT("and2.out0", "nor2.in0"),
+            CONNECT("and3.out0", "nor3.in1"),
+            CONNECT("nor3.out0", "nor2.in1"),
+            CONNECT("nor2.out0", "nor3.in0"),
+            CONNECT("nor2.out0", "and1.in2"),
+            CONNECT("nor3.out0", "and0.in0"),
+            CONNECT("nor2.out0", "Q"),
+            CONNECT("nor3.out0", "Qc")
+        );
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<MSJKFlipFlopWithPresetClear>(name);
+    }
+    MSJKFlipFlopWithPresetClear(const std::string& name)
+        : ComponentBase(detail::getDescription<MSJKFlipFlopWithPresetClear>(), name)
+    {}
+    virtual ~MSJKFlipFlopWithPresetClear() {}
+};
+
 } // namespace component
 
 #endif // PROGRAM_COUNTER_HPP__
