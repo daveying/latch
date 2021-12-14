@@ -63,6 +63,24 @@ DEFINE_GATE_TRUTH_TABLE(NORGate3, NORGate3InputSize, NORGate3OutputSize)
 }
 END_GATE_TRUTH_TABLE
 
+static constexpr size_t NORGate4InputSize  = 4;
+static constexpr size_t NORGate4OutputSize = 1;
+DEFINE_GATE_TRUTH_TABLE(NORGate4, NORGate4InputSize, NORGate4OutputSize)
+{
+    if (input[0]->value() == PinState::Low
+        && input[1]->value() == PinState::Low
+        && input[2]->value() == PinState::Low
+        && input[3]->value() == PinState::Low)
+    {
+        output[0]->value(PinState::High);
+    }
+    else
+    {
+        output[0]->value(PinState::Low);
+    }
+}
+END_GATE_TRUTH_TABLE
+
 using NORGate = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
     NORGate_TruthTable,
@@ -78,6 +96,10 @@ using NORGate3 = GateTemplate<
     NORGate3_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
+using NORGate4 = GateTemplate<
+    TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
+    NORGate4_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
 } // namespace component
 
 #endif // NOR_GATE_HPP__

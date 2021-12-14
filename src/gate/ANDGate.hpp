@@ -63,6 +63,43 @@ DEFINE_GATE_TRUTH_TABLE(ANDGate3, ANDGate3InputSize, ANDGate3OutputSize)
 }
 END_GATE_TRUTH_TABLE
 
+static constexpr size_t ANDGate4InputSize  = 4;
+static constexpr size_t ANDGate4OutputSize = 1;
+DEFINE_GATE_TRUTH_TABLE(ANDGate4, ANDGate4InputSize, ANDGate4OutputSize)
+{
+    if (input[0]->value() == PinState::High
+            && input[1]->value() == PinState::High
+            && input[2]->value() == PinState::High
+            && input[3]->value() == PinState::High)
+    {
+        output[0]->value(PinState::High);
+    }
+    else
+    {
+        output[0]->value(PinState::Low);
+    }
+}
+END_GATE_TRUTH_TABLE
+
+static constexpr size_t ANDGate5InputSize  = 5;
+static constexpr size_t ANDGate5OutputSize = 1;
+DEFINE_GATE_TRUTH_TABLE(ANDGate5, ANDGate5InputSize, ANDGate5OutputSize)
+{
+    if (input[0]->value() == PinState::High
+            && input[1]->value() == PinState::High
+            && input[2]->value() == PinState::High
+            && input[3]->value() == PinState::High
+            && input[4]->value() == PinState::High)
+    {
+        output[0]->value(PinState::High);
+    }
+    else
+    {
+        output[0]->value(PinState::Low);
+    }
+}
+END_GATE_TRUTH_TABLE
+
 using ANDGate = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin>,
     ANDGate_TruthTable,
@@ -73,6 +110,15 @@ using ANDGate3 = GateTemplate<
     ANDGate3_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
+using ANDGate4 = GateTemplate<
+    TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
+    ANDGate4_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
+
+using ANDGate5 = GateTemplate<
+    TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
+    ANDGate5_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
 } // namespace component
 
 #endif // AND_GATE_HPP_
