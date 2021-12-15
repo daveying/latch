@@ -356,6 +356,7 @@ public:
             CONNECT("jk[2].Q", "k2And0.in0"),
             CONNECT("jk[2].Q", "k3And0.in3"),
             CONNECT("jk[2].Q", "j3And1.in3"),
+            CONNECT("jk[3].Q", "k3And0.in0"),
             // connections for Qcs'
             CONNECT("jk[0].Qc", "j0And1.in1"),
             CONNECT("jk[1].Qc", "j1And1.in2"),

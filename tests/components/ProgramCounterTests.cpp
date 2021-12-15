@@ -524,7 +524,7 @@ TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
     checkVal(15, Q, 4);
     CLK->value(PinState::High);
     sched::waitTillSteady();
-    // checkVal(8, Q, 4);
+    checkVal(0, Q, 4);
     CLK->value(PinState::Low);
     sched::waitTillSteady();
 }
