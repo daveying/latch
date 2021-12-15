@@ -35,4 +35,5 @@ REGISTER_COMPONENT(BinaryCounter<8>, 8);
 REGISTER_COMPONENT(BinaryCounter<16>, 16);
 REGISTER_COMPONENT(BinaryCounter<32>, 32);
 REGISTER_COMPONENT(BinaryCounter<64>, 64);
+REGISTER_COMPONENT(SynchronousBinaryCounter);
 } // namespace component

@@ -242,6 +242,179 @@ public:
     virtual ~MSJKFlipFlopWithPresetClear() {}
 };
 
+// 4 bits synchronous binary counter with clear load and enable
+// clear is asynchronous
+class SynchronousBinaryCounter : public ComponentBase
+{
+public:
+    static constexpr const size_t BITS = 4;
+    static constexpr const char* Name()
+    {
+        return "SynchronousBinaryCounter";
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            // control pins
+            DEFINE_PIN("CLK", ForwardInputPin),         // raising edge triggered
+            DEFINE_PIN("CLR", ForwardInputPin),         // high level active
+            DEFINE_PIN("LOAD", ForwardInputPin),        // high level active
+            DEFINE_PIN("ENABLE", ForwardInputPin),      // high level active
+            DEFINE_PIN_ARRAY("D", ForwardInputPin, BITS),
+            DEFINE_PIN_ARRAY("Q", ForwardOutputPin, BITS),
+            DEFINE_PIN("RC", ForwardOutputPin)          // ripple carry output
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT("clkNot", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("enNot", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("ldClrOr", ORGateComponent),
+            DEFINE_SUBCOMPONENT("enLdNor", NORGateComponent),
+            DEFINE_SUBCOMPONENT("k0And0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("k0And1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j0And0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j0And1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("k1And0", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("k1And1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j1And0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j1And1", ANDGate3Component),
+            DEFINE_SUBCOMPONENT("k2And0", ANDGate4Component),
+            DEFINE_SUBCOMPONENT("k2And1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j2And0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j2And1", ANDGate4Component),
+            DEFINE_SUBCOMPONENT("k3And0", ANDGate5Component),
+            DEFINE_SUBCOMPONENT("k3And1", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j3And0", ANDGateComponent),
+            DEFINE_SUBCOMPONENT("j3And1", ANDGate5Component),
+            DEFINE_SUBCOMPONENT("k0Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j0Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j0Not", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("k1Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j1Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j1Not", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("k2Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j2Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j2Not", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("k3Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j3Or", ORGateComponent),
+            DEFINE_SUBCOMPONENT("j3Not", NOTGateComponent),
+            DEFINE_SUBCOMPONENT_ARRAY("jk", MSJKFlipFlopWithPresetClear, BITS),
+            DEFINE_SUBCOMPONENT("rcNor", NORGate4Component)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        return std::make_tuple(
+            // connections for CLK
+            CONNECT("CLK", "clkNot.in0"),
+            CONNECT_MULTICAST_COMPONENT("clkNot.out0", "jk.Clock", BITS),
+            // connections for CLR
+            CONNECT_MULTICAST_COMPONENT("CLR", "jk.CLR", BITS),
+            // connections for ENABLE CLR control logic
+            CONNECT("ENABLE", "enNot.in0"),
+            CONNECT("enNot.out0", "enLdNor.in1"),
+            CONNECT("CLR", "ldClrOr.in0"),
+            // connections for LOAD control lines
+            CONNECT("LOAD", "ldClrOr.in1"),
+            CONNECT("ldClrOr.out0", "enLdNor.in0"),
+            CONNECT("ldClrOr.out0", "k0And1.in0"),
+            CONNECT("ldClrOr.out0", "j0And0.in1"),
+            CONNECT("D[0]", "j0And0.in0"),
+            CONNECT("ldClrOr.out0", "k1And1.in0"),
+            CONNECT("ldClrOr.out0", "j1And0.in1"),
+            CONNECT("D[1]", "j1And0.in0"),
+            CONNECT("ldClrOr.out0", "k2And1.in0"),
+            CONNECT("ldClrOr.out0", "j2And0.in1"),
+            CONNECT("D[2]", "j2And0.in0"),
+            CONNECT("ldClrOr.out0", "k3And1.in0"),
+            CONNECT("ldClrOr.out0", "j3And0.in1"),
+            CONNECT("D[3]", "j3And0.in0"),
+            // connections for ENABLE control lines
+            CONNECT("enLdNor.out0", "k0And0.in1"),
+            CONNECT("enLdNor.out0", "j0And1.in0"),
+            CONNECT("enLdNor.out0", "k1And0.in2"),
+            CONNECT("enLdNor.out0", "j1And1.in0"),
+            CONNECT("enLdNor.out0", "k2And0.in3"),
+            CONNECT("enLdNor.out0", "j2And1.in0"),
+            CONNECT("enLdNor.out0", "k3And0.in4"),
+            CONNECT("enLdNor.out0", "j3And1.in0"),
+            // connections for Qs' adding
+            CONNECT("jk[0].Q", "k0And0.in0"),
+            CONNECT("jk[0].Q", "k1And0.in1"),
+            CONNECT("jk[0].Q", "j1And1.in1"),
+            CONNECT("jk[0].Q", "k2And0.in1"),
+            CONNECT("jk[0].Q", "j2And1.in1"),
+            CONNECT("jk[0].Q", "k3And0.in1"),
+            CONNECT("jk[0].Q", "j3And1.in1"),
+            CONNECT("jk[1].Q", "k1And0.in0"),
+            CONNECT("jk[1].Q", "k2And0.in2"),
+            CONNECT("jk[1].Q", "j2And1.in2"),
+            CONNECT("jk[1].Q", "k3And0.in2"),
+            CONNECT("jk[1].Q", "j3And1.in2"),
+            CONNECT("jk[2].Q", "k2And0.in0"),
+            CONNECT("jk[2].Q", "k3And0.in3"),
+            CONNECT("jk[2].Q", "j3And1.in3"),
+            // connections for Qcs'
+            CONNECT("jk[0].Qc", "j0And1.in1"),
+            CONNECT("jk[1].Qc", "j1And1.in2"),
+            CONNECT("jk[2].Qc", "j2And1.in3"),
+            CONNECT("jk[3].Qc", "j3And1.in4"),
+            CONNECT("jk[0].Qc", "rcNor.in3"),
+            CONNECT("jk[1].Qc", "rcNor.in2"),
+            CONNECT("jk[2].Qc", "rcNor.in1"),
+            CONNECT("jk[3].Qc", "rcNor.in0"),
+            CONNECT("rcNor.out0", "RC"),
+            // connections for selectors
+            CONNECT("k0And0.out0", "k0Or.in0"),
+            CONNECT("k0And1.out0", "k0Or.in1"),
+            CONNECT("j0And0.out0", "j0Or.in0"),
+            CONNECT("j0And1.out0", "j0Or.in1"),
+            CONNECT("k1And0.out0", "k1Or.in0"),
+            CONNECT("k1And1.out0", "k1Or.in1"),
+            CONNECT("j1And0.out0", "j1Or.in0"),
+            CONNECT("j1And1.out0", "j1Or.in1"),
+            CONNECT("k2And0.out0", "k2Or.in0"),
+            CONNECT("k2And1.out0", "k2Or.in1"),
+            CONNECT("j2And0.out0", "j2Or.in0"),
+            CONNECT("j2And1.out0", "j2Or.in1"),
+            CONNECT("k3And0.out0", "k3Or.in0"),
+            CONNECT("k3And1.out0", "k3Or.in1"),
+            CONNECT("j3And0.out0", "j3Or.in0"),
+            CONNECT("j3And1.out0", "j3Or.in1"),
+            // connections for J & K
+            CONNECT("k0Or.out0", "jk[0].K"),
+            CONNECT("j0Or.out0", "jk[0].J"),
+            CONNECT("k1Or.out0", "jk[1].K"),
+            CONNECT("j1Or.out0", "jk[1].J"),
+            CONNECT("k2Or.out0", "jk[2].K"),
+            CONNECT("j2Or.out0", "jk[2].J"),
+            CONNECT("k3Or.out0", "jk[3].K"),
+            CONNECT("j3Or.out0", "jk[3].J"),
+            // connections for LOAD data invertor
+            CONNECT("j0Or.out0", "j0Not.in0"),
+            CONNECT("j0Not.out0", "k0And1.in1"),
+            CONNECT("j1Or.out0", "j1Not.in0"),
+            CONNECT("j1Not.out0", "k1And1.in1"),
+            CONNECT("j2Or.out0", "j2Not.in0"),
+            CONNECT("j2Not.out0", "k2And1.in1"),
+            CONNECT("j3Or.out0", "j3Not.in0"),
+            CONNECT("j3Not.out0", "k3And1.in1"),
+            // connections for Output
+            CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("jk.Q", "Q", BITS)
+        );
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<SynchronousBinaryCounter>(name);
+    }
+    SynchronousBinaryCounter(const std::string& name)
+        : ComponentBase(detail::getDescription<SynchronousBinaryCounter>(), name)
+    {}
+    virtual ~SynchronousBinaryCounter() {}
+};
+
 } // namespace component
 
 #endif // PROGRAM_COUNTER_HPP__

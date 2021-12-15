@@ -46,10 +46,12 @@ protected:
             uint64_t mask = 1ull << i;
             if ((mask & val) > 0)
             {
+                std::cout << "Expect High" << std::endl;
                 ASSERT_EQ(pins[i]->value(), PinState::High);
             }
             else
             {
+                std::cout << "Expect Low" << std::endl;
                 ASSERT_EQ(pins[i]->value(), PinState::Low);
             }
         }
@@ -454,6 +456,77 @@ TEST_F(ProgramCounterTests, BinaryCounter32)
 TEST_F(ProgramCounterTests, BinaryCounter64)
 {
     binaryCounterTest<64>();
+}
+
+TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
+{
+    auto sbc = ComponentFactory::create("SynchronousBinaryCounter", "abc");
+    sbc->initialize();
+
+    auto CLK    = sbc->pin(0);
+    auto CLR    = sbc->pin(1);
+    auto LOAD   = sbc->pin(2);
+    auto ENABLE = sbc->pin(3);
+    auto D0     = sbc->pin(4);
+    auto D1     = sbc->pin(5);
+    auto D2     = sbc->pin(6);
+    auto D3     = sbc->pin(7);
+    auto Q0     = sbc->pin(8);
+    auto Q1     = sbc->pin(9);
+    auto Q2     = sbc->pin(10);
+    auto Q3     = sbc->pin(11);
+    auto RC     = sbc->pin(12);
+    std::vector<IPin*> Q = {Q0, Q1, Q2, Q3};
+
+    ASSERT_EQ(PinState::Low, CLK->value());
+    ASSERT_EQ(PinState::Low, CLR->value());
+    ASSERT_EQ(PinState::Low, LOAD->value());
+    ASSERT_EQ(PinState::Low, ENABLE->value());
+    ASSERT_EQ(PinState::Low, D0->value());
+    ASSERT_EQ(PinState::Low, D1->value());
+    ASSERT_EQ(PinState::Low, D2->value());
+    ASSERT_EQ(PinState::Low, D3->value());
+    ASSERT_EQ(PinState::Low, Q0->value());
+    ASSERT_EQ(PinState::Low, Q1->value());
+    ASSERT_EQ(PinState::Low, Q2->value());
+    ASSERT_EQ(PinState::Low, Q3->value());
+    ASSERT_EQ(PinState::Low, RC->value());
+
+    ENABLE->value(PinState::High);
+    sched::waitTillSteady(); // this is required, otherwise CLK will active first and then ENABLE
+    for (size_t i = 0; i < 15; ++i)
+    {
+        std::cout << "i: " << i << std::endl;
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        checkVal(i + 1, Q, 4);
+        if (i == 14)
+        {
+            ASSERT_EQ(PinState::High, RC->value());
+        }
+        else
+        {
+            ASSERT_EQ(PinState::Low, RC->value());
+        }
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        if (i == 14)
+        {
+            ASSERT_EQ(PinState::High, RC->value());
+        }
+        else
+        {
+            ASSERT_EQ(PinState::Low, RC->value());
+        }
+    }
+    ENABLE->value(PinState::Low);
+    sched::waitTillSteady(); // this is required, otherwise CLK will active first and then ENABLE
+    checkVal(15, Q, 4);
+    CLK->value(PinState::High);
+    sched::waitTillSteady();
+    // checkVal(8, Q, 4);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
 }
 
 } // namespace component
