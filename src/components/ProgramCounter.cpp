@@ -36,4 +36,10 @@ REGISTER_COMPONENT(BinaryCounter<16>, 16);
 REGISTER_COMPONENT(BinaryCounter<32>, 32);
 REGISTER_COMPONENT(BinaryCounter<64>, 64);
 REGISTER_COMPONENT(SynchronousBinaryCounter);
+REGISTER_COMPONENT(ProgramCounter<4>, pc4);
+REGISTER_COMPONENT(ProgramCounter<8>, pc8);
+REGISTER_COMPONENT(ProgramCounter<16>, pc16);
+REGISTER_COMPONENT(ProgramCounter<32>, pc32);
+REGISTER_COMPONENT(ProgramCounter<64>, pc64);
+
 } // namespace component

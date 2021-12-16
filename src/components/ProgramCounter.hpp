@@ -416,6 +416,92 @@ public:
     virtual ~SynchronousBinaryCounter() {}
 };
 
+template <size_t BITS>
+class ProgramCounter : public ComponentBase
+{
+public:
+    static constexpr size_t CHIP_BITS = 4;
+    static_assert((BITS % CHIP_BITS) == 0 && BITS >= CHIP_BITS, "BITS must be multiple of 4 and at least 4");
+    static constexpr size_t CHIPS     = BITS / CHIP_BITS;
+    static const char* Name()
+    {
+        static std::string name{"ProgramCounter" + std::to_string(BITS)};
+        return name.c_str();
+    }
+    static constexpr auto Pins()
+    {
+        return std::make_tuple(
+            DEFINE_PIN("CLK", ForwardInputPin),
+            DEFINE_PIN("J", ForwardInputPin),     // load from bus
+            DEFINE_PIN("CE", ForwardInputPin),    // counter enable
+            DEFINE_PIN("CO", ForwardInputPin),    // counter out
+            DEFINE_PIN("CLR", ForwardInputPin),
+            DEFINE_PIN_ARRAY("D", ForwardInputPin, BITS),
+            DEFINE_PIN_ARRAY("Q", ForwardOutputPin, BITS),
+            DEFINE_PIN("RC", ForwardOutputPin)
+        );
+    }
+    static constexpr auto Subcomponents()
+    {
+        return std::make_tuple(
+            DEFINE_SUBCOMPONENT_ARRAY("sbc", SynchronousBinaryCounter, CHIPS),
+            DEFINE_SUBCOMPONENT_ARRAY("en", BusBufferComponent, BITS)
+        );
+    }
+    static constexpr auto Connections()
+    {
+        auto conn0 = std::make_tuple(
+            CONNECT("CLK", "sbc[0].CLK"),
+            CONNECT_MULTICAST_COMPONENT("CE", "sbc.ENABLE", CHIPS),
+            CONNECT_MULTICAST_COMPONENT("J", "sbc.LOAD", CHIPS),
+            CONNECT_MULTICAST_COMPONENT("CLR", "sbc.CLR", CHIPS),
+            CONNECT_MULTICAST_COMPONENT("CO", "en.in1", BITS),
+            CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("en.out0", "Q", BITS),
+            CONNECT(sp("sbc[", CHIPS - 1, "].RC"), "RC")
+        );
+        return std::tuple_cat(
+            conn0,
+            connectRC(std::make_index_sequence<CHIPS - 1>{}),
+            connectD(std::make_index_sequence<CHIPS>{}),
+            connectQ(std::make_index_sequence<CHIPS>{})
+        );
+    }
+    static std::unique_ptr<IComponent> create(const std::string& name)
+    {
+        return std::make_unique<ProgramCounter>(name);
+    }
+    ProgramCounter(const std::string& name)
+        : ComponentBase(detail::getDescription<ProgramCounter>(), name)
+    {}
+    virtual ~ProgramCounter() {}
+private:
+    template <size_t... I>
+    static constexpr auto connectRC(const std::index_sequence<I...>&)
+    {
+        return std::make_tuple(CONNECT(sp("sbc[", I, "].RC"), sp("sbc[", I + 1, "].CLK"))...);
+    }
+    template <size_t... C>
+    static constexpr auto connectD(const std::index_sequence<C...>&)
+    {
+        return std::tuple_cat(connectChipD<C * CHIP_BITS, C>(std::make_index_sequence<CHIP_BITS>{})...);
+    }
+    template <size_t... C>
+    static constexpr auto connectQ(const std::index_sequence<C...>&)
+    {
+        return std::tuple_cat(connectChipQ<C * CHIP_BITS, C>(std::make_index_sequence<CHIP_BITS>{})...);
+    }
+    template <size_t B, size_t C, size_t... I>
+    static constexpr auto connectChipD(const std::index_sequence<I...>&)
+    {
+        return std::make_tuple(CONNECT(sp("D[", B + I, "]"), sp("sbc[", C, "].D[", I, "]"))...);
+    }
+    template <size_t B, size_t C, size_t... I>
+    static constexpr auto connectChipQ(const std::index_sequence<I...>&)
+    {
+        return std::make_tuple(CONNECT(sp("sbc[", C, "].Q[", I, "]"), sp("en[", B + I, "].in0"))...);
+    }
+};
+
 } // namespace component
 
 #endif // PROGRAM_COUNTER_HPP__
