@@ -46,12 +46,10 @@ protected:
             uint64_t mask = 1ull << i;
             if ((mask & val) > 0)
             {
-                std::cout << "Expect High" << std::endl;
                 ASSERT_EQ(pins[i]->value(), PinState::High);
             }
             else
             {
-                std::cout << "Expect Low" << std::endl;
                 ASSERT_EQ(pins[i]->value(), PinState::Low);
             }
         }
@@ -503,6 +501,8 @@ TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
         if (i == 14)
         {
             ASSERT_EQ(PinState::High, RC->value());
+            ENABLE->value(PinState::Low); // enable takes effect at next clock cycle
+            sched::waitTillSteady();
         }
         else
         {
@@ -519,14 +519,94 @@ TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
             ASSERT_EQ(PinState::Low, RC->value());
         }
     }
-    ENABLE->value(PinState::Low);
     sched::waitTillSteady(); // this is required, otherwise CLK will active first and then ENABLE
     checkVal(15, Q, 4);
+    ASSERT_EQ(PinState::High, RC->value());
     CLK->value(PinState::High);
     sched::waitTillSteady();
-    checkVal(0, Q, 4);
+    checkVal(15, Q, 4);
     CLK->value(PinState::Low);
     sched::waitTillSteady();
+    CLR->value(PinState::High); // clear
+    sched::waitTillSteady();
+    checkVal(0, Q, 4);
+    CLK->value(PinState::High); // clear still set
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    checkVal(0, Q, 4);
+    CLR->value(PinState::Low);  // disable clear
+    sched::waitTillSteady();
+    ENABLE->value(PinState::High); // enable
+    sched::waitTillSteady();
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    checkVal(1, Q, 4);
+
+    LOAD->value(PinState::High); // load is already inside the Low part of this clock cycle
+    D0->value(PinState::Low);
+    D1->value(PinState::Low);
+    D2->value(PinState::High);
+    D3->value(PinState::High);
+    sched::waitTillSteady();
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    checkVal(12, Q, 4);         // load established when clk goes high
+    LOAD->value(PinState::Low);
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    checkVal(12, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(13, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(14, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    ASSERT_EQ(PinState::High, RC->value()); // RC high
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(15, Q, 4);
+    ASSERT_EQ(PinState::High, RC->value()); // RC high
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    ASSERT_EQ(PinState::Low, RC->value()); // RC low
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(0, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(1, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    ENABLE->value(PinState::Low); // disable
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(2, Q, 4);
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(2, Q, 4);          // inhibit
+    CLK->value(PinState::High); // pusle
+    sched::waitTillSteady();
+    CLK->value(PinState::Low);  // begin of next clock cycle
+    sched::waitTillSteady();
+    checkVal(2, Q, 4);          // inhibit
 }
 
 } // namespace component
