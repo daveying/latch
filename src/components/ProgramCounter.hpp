@@ -301,7 +301,7 @@ public:
             DEFINE_SUBCOMPONENT("j3Or", ORGateComponent),
             DEFINE_SUBCOMPONENT("j3Not", NOTGateComponent),
             DEFINE_SUBCOMPONENT_ARRAY("jk", MSJKFlipFlopWithPresetClear, BITS),
-            DEFINE_SUBCOMPONENT("rcNor", NORGate4Component)
+            DEFINE_SUBCOMPONENT("rcNor", NORGateUnitInertial4Component)
         );
     }
     static constexpr auto Connections()

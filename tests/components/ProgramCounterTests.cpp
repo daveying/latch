@@ -39,6 +39,21 @@ protected:
     void TearDown() override
     {
     }
+    void setVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
+    {
+        for (uint64_t i = 0; i < bits; ++i)
+        {
+            uint64_t mask = 1ull << i;
+            if ((mask & val) > 0)
+            {
+                pins[i]->value(PinState::High);
+            }
+            else
+            {
+                pins[i]->value(PinState::Low);
+            }
+        }
+    }
     void checkVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
     {
         for (uint64_t i = 0; i < bits; ++i)
@@ -73,6 +88,46 @@ protected:
             Clock->value(PinState::Low);
             sched::waitTillSteady();
             checkVal(i + 1, C, BITS);
+        }
+    }
+    template <size_t... I>
+    void programCounterTest(std::index_sequence<I...>)
+    {
+        constexpr size_t BITS = sizeof...(I);
+        auto pc = ComponentFactory::create("ProgramCounter" + std::to_string(BITS), "pc" + std::to_string(BITS));
+        pc->initialize();
+        auto CLK = pc->pin(0);
+        auto J   = pc->pin(1);
+        auto CE  = pc->pin(2);
+        auto CO  = pc->pin(3);
+        auto CLR = pc->pin(4);
+        std::array<IPin*, BITS> Da {pc->pin(5 + I)...};
+        std::array<IPin*, BITS> Qa {pc->pin(5 + BITS + I)...};
+        auto RC  = pc->pin(5 + 2 * BITS);
+        std::vector<IPin*> D(Da.begin(), Da.end());
+        std::vector<IPin*> Q(Qa.begin(), Qa.end());
+
+        ASSERT_EQ(CLK->value(), PinState::Low);
+        ASSERT_EQ(J->value(), PinState::Low);
+        ASSERT_EQ(CE->value(), PinState::Low);
+        ASSERT_EQ(CO->value(), PinState::Low);
+        ASSERT_EQ(CLR->value(), PinState::Low);
+        ASSERT_EQ(RC->value(), PinState::Low);
+
+        checkVal(0, D, BITS);
+        checkVal(0, Q, BITS);
+
+        CE->value(PinState::High); // counter enable
+        CO->value(PinState::High); // counter out
+        sched::waitTillSteady();
+
+        for (uint64_t i = 0; i < BITS * 4; ++i)
+        {
+            CLK->value(PinState::High);
+            sched::waitTillSteady();
+            CLK->value(PinState::Low);
+            sched::waitTillSteady();
+            checkVal(i + 1, Q, BITS);
         }
     }
 };
@@ -609,5 +664,25 @@ TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
     checkVal(2, Q, 4);          // inhibit
 }
 
+TEST_F(ProgramCounterTests, ProgramCounter4)
+{
+    programCounterTest(std::make_index_sequence<4>{});
+}
+// TEST_F(ProgramCounterTests, ProgramCounter8)
+// {
+//     programCounterTest(std::make_index_sequence<8>{});
+// }
+// TEST_F(ProgramCounterTests, ProgramCounter16)
+// {
+//     programCounterTest(std::make_index_sequence<16>{});
+// }
+// TEST_F(ProgramCounterTests, ProgramCounter32)
+// {
+//     programCounterTest(std::make_index_sequence<32>{});
+// }
+// TEST_F(ProgramCounterTests, ProgramCounter64)
+// {
+//     programCounterTest(std::make_index_sequence<64>{});
+// }
 } // namespace component
 

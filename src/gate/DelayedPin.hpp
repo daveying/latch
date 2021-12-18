@@ -96,10 +96,11 @@ public:
     {
         m_index = idx;
     }
+    virtual ~DelayedInputPin() {}
 protected:
     IGate* m_parent;
     PinState m_value;
-    PinState m_valueImmediate;
+    PinState m_valueImmediate; // actually it's the value of the wire
     int64_t m_index;
 };
 
@@ -172,6 +173,7 @@ public:
     {
         m_index = idx;
     }
+    virtual ~DelayedOutputPin() {}
 protected:
     IGate* m_parent;
     PinState m_value;

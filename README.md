@@ -20,14 +20,19 @@ This project is called Latch because latch is the most fundamental element of el
     - [ ] Gate factory
     - [ ] Fix scheduler singleton issue
     - [x] Fix D flip flop test (Pulse)
+    - [ ] Two simulation contexts can communicate using wires (UART protocol?)
 - [ ] Tool to rendering the gate
     - [ ] Option 1: rendering at runtime
     - [ ] Option 2: rendering based on logs
 - [x] Fix DelayedNOTGate gate::gate_info<>
 - [x] Fix gate::gate_info<>
 - [ ] Name of pins are computed on the fly which saves memory but it's expected to slow down the simulation a lot
-    - Schedule log as binary format
-    - Tool to plot pin voltage sequence
+    - [ ] Schedule log as binary format
+    - [ ] Tool to plot pin voltage sequence
 - [x] Remove gate namespace
 - [ ] Get pin instance using pin name
 - [ ] Support floating state, pin connections should be non-directional.
+    - [ ] Wire class shared by all pins
+    - [ ] Wire has its own value, inertial or transport delay models can be supported
+    - [ ] Peers managed by Wire
+    - [ ] Pin has different interface for component and wire

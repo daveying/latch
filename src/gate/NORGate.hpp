@@ -25,6 +25,7 @@
 #define NOR_GATE_HPP__
 
 #include <DelayedPin.hpp>
+#include <InertialPin.hpp>
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
@@ -98,6 +99,11 @@ using NORGate3 = GateTemplate<
 
 using NORGate4 = GateTemplate<
     TypePack<ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin, ZeroDelayInputPin>,
+    NORGate4_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
+
+using NORGateUnitInertial4 = GateTemplate<
+    TypePack<UnitInertialInputPin, UnitInertialInputPin, UnitInertialInputPin, UnitInertialInputPin>,
     NORGate4_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 } // namespace component

@@ -5,6 +5,7 @@ project(gate C CXX)
 set(GATE_SOURCES
     IPin.hpp
     DelayedPin.hpp
+    InertialPin.hpp
     IGate.hpp
     GateTemplate.hpp
     TruthTable.hpp
