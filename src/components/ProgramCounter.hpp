@@ -445,7 +445,8 @@ public:
     {
         return std::make_tuple(
             DEFINE_SUBCOMPONENT_ARRAY("sbc", SynchronousBinaryCounter, CHIPS),
-            DEFINE_SUBCOMPONENT_ARRAY("en", BusBufferComponent, BITS)
+            DEFINE_SUBCOMPONENT_ARRAY("en", BusBufferComponent, BITS),
+            DEFINE_SUBCOMPONENT_ARRAY("rcNot", NOTGateComponent, CHIPS - 1)
         );
     }
     static constexpr auto Connections()
@@ -457,6 +458,7 @@ public:
             CONNECT_MULTICAST_COMPONENT("CLR", "sbc.CLR", CHIPS),
             CONNECT_MULTICAST_COMPONENT("CO", "en.in1", BITS),
             CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("en.out0", "Q", BITS),
+            CONNECT_COMPONENT_ARRAY_2_COMPONENT_ARRAY("sbc.RC", "rcNot.in0", CHIPS - 1),
             CONNECT(sp("sbc[", CHIPS - 1, "].RC"), "RC")
         );
         return std::tuple_cat(
@@ -478,7 +480,7 @@ private:
     template <size_t... I>
     static constexpr auto connectRC(const std::index_sequence<I...>&)
     {
-        return std::make_tuple(CONNECT(sp("sbc[", I, "].RC"), sp("sbc[", I + 1, "].CLK"))...);
+        return std::make_tuple(CONNECT(sp("rcNot[", I, "].out0"), sp("sbc[", I + 1, "].CLK"))...);
     }
     template <size_t... C>
     static constexpr auto connectD(const std::index_sequence<C...>&)

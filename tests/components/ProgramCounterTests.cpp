@@ -24,6 +24,7 @@
 #include <ComponentFactory.hpp>
 #include <ProgramCounter.hpp>
 #include <IScheduler.hpp>
+#include <bitset>
 
 #include <gtest/gtest.h>
 
@@ -54,8 +55,34 @@ protected:
             }
         }
     }
+    uint64_t pinVal(std::vector<IPin*>& pins, uint64_t bits)
+    {
+        uint64_t ret = 0;
+        for (uint64_t i = 0; i < bits; ++i)
+        {
+            if (pins[i]->value() == PinState::High)
+            {
+                ret += (1ull << i);
+            }
+        }
+        return ret;
+    }
+    std::string toBits(uint64_t val, uint64_t bits)
+    {
+        std::string ret;
+        uint64_t size = bits / 4;
+        for (uint64_t i = 0; i < size; ++i)
+        {
+            ret += std::bitset<4>(val >> (4 * (size - 1 - i))).to_string();
+            if (i < size - 1) ret += " ";
+        }
+        return ret;
+    }
     void checkVal(uint64_t val, std::vector<IPin*>& pins, uint64_t bits)
     {
+        uint64_t pinV = pinVal(pins, bits);
+        std::cout << "expect: " << val << " (" << toBits(val, bits) << ")" << std::endl;
+        std::cout << "actual: " << val << " (" << toBits(pinV, bits) << ")" << std::endl;
         for (uint64_t i = 0; i < bits; ++i)
         {
             uint64_t mask = 1ull << i;
@@ -101,11 +128,9 @@ protected:
         auto CE  = pc->pin(2);
         auto CO  = pc->pin(3);
         auto CLR = pc->pin(4);
-        std::array<IPin*, BITS> Da {pc->pin(5 + I)...};
-        std::array<IPin*, BITS> Qa {pc->pin(5 + BITS + I)...};
+        std::vector<IPin*> D {pc->pin(5 + I)...};
+        std::vector<IPin*> Q {pc->pin(5 + BITS + I)...};
         auto RC  = pc->pin(5 + 2 * BITS);
-        std::vector<IPin*> D(Da.begin(), Da.end());
-        std::vector<IPin*> Q(Qa.begin(), Qa.end());
 
         ASSERT_EQ(CLK->value(), PinState::Low);
         ASSERT_EQ(J->value(), PinState::Low);
@@ -121,7 +146,7 @@ protected:
         CO->value(PinState::High); // counter out
         sched::waitTillSteady();
 
-        for (uint64_t i = 0; i < BITS * 4; ++i)
+        for (uint64_t i = 0; i < BITS * BITS; ++i)
         {
             CLK->value(PinState::High);
             sched::waitTillSteady();
@@ -672,21 +697,21 @@ TEST_F(ProgramCounterTests, ProgramCounter4)
 {
     programCounterTest(std::make_index_sequence<4>{});
 }
-// TEST_F(ProgramCounterTests, ProgramCounter8)
-// {
-//     programCounterTest(std::make_index_sequence<8>{});
-// }
-// TEST_F(ProgramCounterTests, ProgramCounter16)
-// {
-//     programCounterTest(std::make_index_sequence<16>{});
-// }
-// TEST_F(ProgramCounterTests, ProgramCounter32)
-// {
-//     programCounterTest(std::make_index_sequence<32>{});
-// }
-// TEST_F(ProgramCounterTests, ProgramCounter64)
-// {
-//     programCounterTest(std::make_index_sequence<64>{});
-// }
+TEST_F(ProgramCounterTests, ProgramCounter8)
+{
+    programCounterTest(std::make_index_sequence<8>{});
+}
+TEST_F(ProgramCounterTests, ProgramCounter16)
+{
+    programCounterTest(std::make_index_sequence<16>{});
+}
+TEST_F(ProgramCounterTests, ProgramCounter32)
+{
+    programCounterTest(std::make_index_sequence<32>{});
+}
+TEST_F(ProgramCounterTests, ProgramCounter64)
+{
+    programCounterTest(std::make_index_sequence<64>{});
+}
 } // namespace component
 
