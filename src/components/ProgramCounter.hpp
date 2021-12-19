@@ -445,21 +445,22 @@ public:
     {
         return std::make_tuple(
             DEFINE_SUBCOMPONENT_ARRAY("sbc", SynchronousBinaryCounter, CHIPS),
-            DEFINE_SUBCOMPONENT_ARRAY("en", BusBufferComponent, BITS),
-            DEFINE_SUBCOMPONENT_ARRAY("rcNot", NOTGateComponent, CHIPS - 1)
+            DEFINE_SUBCOMPONENT_ARRAY("rcAnd", ANDGateComponent, CHIPS),
+            DEFINE_SUBCOMPONENT_ARRAY("en", BusBufferComponent, BITS)
         );
     }
     static constexpr auto Connections()
     {
         auto conn0 = std::make_tuple(
-            CONNECT("CLK", "sbc[0].CLK"),
-            CONNECT_MULTICAST_COMPONENT("CE", "sbc.ENABLE", CHIPS),
+            CONNECT_MULTICAST_COMPONENT("CLK", "sbc.CLK", CHIPS),
+            CONNECT("CE", "sbc[0].ENABLE"),
+            CONNECT("CE", "rcAnd[0].in1"),
             CONNECT_MULTICAST_COMPONENT("J", "sbc.LOAD", CHIPS),
             CONNECT_MULTICAST_COMPONENT("CLR", "sbc.CLR", CHIPS),
             CONNECT_MULTICAST_COMPONENT("CO", "en.in1", BITS),
             CONNECT_COMPONENT_ARRAY_2_PIN_ARRAY("en.out0", "Q", BITS),
-            CONNECT_COMPONENT_ARRAY_2_COMPONENT_ARRAY("sbc.RC", "rcNot.in0", CHIPS - 1),
-            CONNECT(sp("sbc[", CHIPS - 1, "].RC"), "RC")
+            CONNECT_COMPONENT_ARRAY_2_COMPONENT_ARRAY("sbc.RC", "rcAnd.in0", CHIPS),
+            CONNECT(sp("rcAnd[", CHIPS - 1, "].out0"), "RC")
         );
         return std::tuple_cat(
             conn0,
@@ -480,27 +481,30 @@ private:
     template <size_t... I>
     static constexpr auto connectRC(const std::index_sequence<I...>&)
     {
-        return std::make_tuple(CONNECT(sp("rcNot[", I, "].out0"), sp("sbc[", I + 1, "].CLK"))...);
+        return std::make_tuple(
+            CONNECT(sp("rcAnd[", I, "].out0"), sp("sbc[", I + 1, "].ENABLE"))...,
+            CONNECT(sp("rcAnd[", I, "].out0"), sp("rcAnd[", I + 1, "].in1"))...
+        );
     }
     template <size_t... C>
     static constexpr auto connectD(const std::index_sequence<C...>&)
     {
-        return std::tuple_cat(connectChipD<C * CHIP_BITS, C>(std::make_index_sequence<CHIP_BITS>{})...);
+        return std::tuple_cat(connectChipD<C>(std::make_index_sequence<CHIP_BITS>{})...);
     }
     template <size_t... C>
     static constexpr auto connectQ(const std::index_sequence<C...>&)
     {
-        return std::tuple_cat(connectChipQ<C * CHIP_BITS, C>(std::make_index_sequence<CHIP_BITS>{})...);
+        return std::tuple_cat(connectChipQ<C>(std::make_index_sequence<CHIP_BITS>{})...);
     }
-    template <size_t B, size_t C, size_t... I>
+    template <size_t C, size_t... I>
     static constexpr auto connectChipD(const std::index_sequence<I...>&)
     {
-        return std::make_tuple(CONNECT(sp("D[", B + I, "]"), sp("sbc[", C, "].D[", I, "]"))...);
+        return std::make_tuple(CONNECT(sp("D[", C * CHIP_BITS + I, "]"), sp("sbc[", C, "].D[", I, "]"))...);
     }
-    template <size_t B, size_t C, size_t... I>
+    template <size_t C, size_t... I>
     static constexpr auto connectChipQ(const std::index_sequence<I...>&)
     {
-        return std::make_tuple(CONNECT(sp("sbc[", C, "].Q[", I, "]"), sp("en[", B + I, "].in0"))...);
+        return std::make_tuple(CONNECT(sp("sbc[", C, "].Q[", I, "]"), sp("en[", C * CHIP_BITS + I, "].in0"))...);
     }
 };
 

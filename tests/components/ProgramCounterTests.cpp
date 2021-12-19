@@ -82,7 +82,7 @@ protected:
     {
         uint64_t pinV = pinVal(pins, bits);
         std::cout << "expect: " << val << " (" << toBits(val, bits) << ")" << std::endl;
-        std::cout << "actual: " << val << " (" << toBits(pinV, bits) << ")" << std::endl;
+        std::cout << "actual: " << pinV << " (" << toBits(pinV, bits) << ")" << std::endl;
         for (uint64_t i = 0; i < bits; ++i)
         {
             uint64_t mask = 1ull << i;
@@ -146,7 +146,9 @@ protected:
         CO->value(PinState::High); // counter out
         sched::waitTillSteady();
 
-        for (uint64_t i = 0; i < BITS * BITS; ++i)
+        uint64_t i = 0;
+        uint64_t cycles = std::min(BITS * BITS, 32ul * 16ul);
+        for (i = 0; i < cycles; ++i)
         {
             CLK->value(PinState::High);
             sched::waitTillSteady();
@@ -154,6 +156,89 @@ protected:
             sched::waitTillSteady();
             checkVal(i + 1, Q, BITS);
         }
+
+        CLK->value(PinState::High);
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(i, Q, BITS); // CLK is tolerant to spike
+
+        CE->value(PinState::Low);
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(i + 1, Q, BITS); // CE deactive at next CLK High
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(i + 1, Q, BITS); // CE deactive
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(i + 1, Q, BITS); // CE deactive
+
+        CLR->value(PinState::High);
+        sched::waitTillSteady();
+        CLR->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(0, Q, BITS); // CLR takes effect asynchronously
+
+        std::cout << "Test Jump" << std::endl;
+        uint64_t allOnes = -1;
+        uint64_t jV      = allOnes - 2;
+
+        J->value(PinState::High);
+        setVal(jV, D, BITS);
+        sched::waitTillSteady();
+        CLK->value(PinState::High); // J active at next CLK High
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        std::cout << "J takes effect" << std::endl;
+        checkVal(jV, Q, BITS); // J active at next CLK High
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        std::cout << "J still takes effect" << std::endl;
+        checkVal(jV, Q, BITS); // J still active, and supress ENABLE
+
+        J->value(PinState::Low);
+        CE->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(jV + 1, Q, BITS);
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(allOnes, Q, BITS);
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        checkVal(0, Q, BITS);
+
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        CLK->value(PinState::High);
+        sched::waitTillSteady();
+        CLK->value(PinState::Low);
+        sched::waitTillSteady();
+        CLR->value(PinState::High);
+        sched::waitTillSteady();
+        checkVal(0, Q, BITS); // CLR takes effect asynchronously
     }
 };
 
