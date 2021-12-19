@@ -268,7 +268,7 @@ public:
     static constexpr auto Subcomponents()
     {
         return std::make_tuple(
-            DEFINE_SUBCOMPONENT("clkNot", NOTGateComponent),
+            DEFINE_SUBCOMPONENT("clkNot", NOTGateUnitInertialComponent),
             DEFINE_SUBCOMPONENT("enNot", NOTGateComponent),
             DEFINE_SUBCOMPONENT("ldClrOr", ORGateComponent),
             DEFINE_SUBCOMPONENT("enLdNor", NORGateComponent),
@@ -301,7 +301,7 @@ public:
             DEFINE_SUBCOMPONENT("j3Or", ORGateComponent),
             DEFINE_SUBCOMPONENT("j3Not", NOTGateComponent),
             DEFINE_SUBCOMPONENT_ARRAY("jk", MSJKFlipFlopWithPresetClear, BITS),
-            DEFINE_SUBCOMPONENT("rcNor", NORGateUnitInertial4Component)
+            DEFINE_SUBCOMPONENT("rcNor", NORGate4Component)
         );
     }
     static constexpr auto Connections()

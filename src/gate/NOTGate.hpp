@@ -25,6 +25,7 @@
 #define NOT_GATE_HPP__
 
 #include <DelayedPin.hpp>
+#include <InertialPin.hpp>
 #include <GateTemplate.hpp>
 #include <TruthTable.hpp>
 
@@ -56,6 +57,10 @@ using NOTGateDelayed = GateTemplate<
     NOTGate_TruthTable,
     TypePack<ZeroDelayOutputPin>>;
 
+using NOTGateUnitInertial = GateTemplate<
+    TypePack<UnitInertialInputPin>,
+    NOTGate_TruthTable,
+    TypePack<ZeroDelayOutputPin>>;
 } // namespace component
 
 #endif // NOR_GATE_HPP__

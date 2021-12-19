@@ -640,6 +640,10 @@ TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
     CLK->value(PinState::Low);  // begin of next clock cycle
     sched::waitTillSteady();
     checkVal(0, Q, 4);
+    CLK->value(PinState::High); // CLK spike should be filtered
+    CLK->value(PinState::Low);
+    sched::waitTillSteady();
+    checkVal(0, Q, 4);
     CLK->value(PinState::High); // pusle
     sched::waitTillSteady();
     CLK->value(PinState::Low);  // begin of next clock cycle

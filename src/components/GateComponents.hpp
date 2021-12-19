@@ -146,6 +146,7 @@ DEFINE_GATE_COMPONENT(NORGate4Component, NORGate4);
 DEFINE_GATE_COMPONENT(NORGateUnitInertial4Component, NORGateUnitInertial4);
 DEFINE_GATE_COMPONENT(NORGateDelayedComponent, NORGateDelayed);
 DEFINE_GATE_COMPONENT(NOTGateComponent, NOTGate);
+DEFINE_GATE_COMPONENT(NOTGateUnitInertialComponent, NOTGateUnitInertial);
 DEFINE_GATE_COMPONENT(NOTGateDelayedComponent, NOTGateDelayed);
 DEFINE_GATE_COMPONENT(ORGateComponent, ORGate);
 DEFINE_GATE_COMPONENT(XORGateComponent, XORGate);
