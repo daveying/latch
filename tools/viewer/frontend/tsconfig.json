@@ -6,7 +6,10 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["element-plus/global"]
+    "types": [
+        "element-plus/global",
+        "@typed-mxgraph/typed-mxgraph/index"
+    ]
   },
 
   "references": [
