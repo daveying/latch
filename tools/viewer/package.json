@@ -1,0 +1,21 @@
+{
+  "name": "viewer",
+  "version": "1.0.0",
+  "description": "Latch simulation viewer",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently -k 'npm run dev -w frontend' 'npm run electron:dev'",
+    "electron:dev": "cross-env IS_DEV=true electron ."
+  },
+  "author": "daveying@163.com",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^18.0.0"
+  },
+  "workspaces": [
+    "frontend"
+  ]
+}
