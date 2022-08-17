@@ -40,7 +40,7 @@ function main(container: any)
 		{
 			var v1 = graph.insertVertex(parent, null, 'Hello,', 20, 20, 80, 30, "rounded;strokeColor=red;fillColor=green");
 			var v2 = graph.insertVertex(parent, null, 'World!', 200, 150, 80, 30);
-			var e1 = graph.insertEdge(parent, null, '', v1, v2);
+			graph.insertEdge(parent, null, '', v1, v2);
 		}
 		finally
 		{

@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "tests/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -8,7 +8,8 @@
     },
     "types": [
         "element-plus/global",
-        "@typed-mxgraph/typed-mxgraph/index"
+        "@typed-mxgraph/typed-mxgraph/index",
+        "@types/jest"
     ]
   },
 
