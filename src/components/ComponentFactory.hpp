@@ -24,10 +24,13 @@
 #ifndef COMPONENT_FACTORY_HPP__
 #define COMPONENT_FACTORY_HPP__
 
+#include <nlohmann/json.hpp>
 #include <ComponentDescription.hpp>
 
 namespace component
 {
+
+using JSON = nlohmann::json;
 
 class ComponentFactory
 {
