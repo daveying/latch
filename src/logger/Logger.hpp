@@ -26,9 +26,12 @@
 
 #include <iostream>
 
+namespace latch
+{
 namespace log
 {
 using Logger = std::ostream;
 } // namespace log
+} // namespace latch
 
 #endif // LOGGER_HPP__
