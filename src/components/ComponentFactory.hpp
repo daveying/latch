@@ -24,6 +24,7 @@
 #ifndef COMPONENT_FACTORY_HPP__
 #define COMPONENT_FACTORY_HPP__
 
+#include <sstream>
 #include <nlohmann/json.hpp>
 #include <ComponentDescription.hpp>
 
@@ -45,13 +46,18 @@ public:
         {
             throw std::runtime_error("Precompiled component type: " + desc.type + " has already been registered.");
         }
+        validateDescription(desc);
         m_preCompiledComponents[desc.type] = desc;
     }
 
     static void registerCustomComponent(const ComponentDescription& desc);
     static bool tryRegisterCustomComponent(const ComponentDescription& desc);
+    static bool isDescriptionValid(const ComponentDescription& descriptor, std::stringstream& errInfo);
     static std::unique_ptr<IComponent> create(const std::string& type, const std::string& name);
+
+    static JSON dump();
 private:
+    static void validateDescription(const ComponentDescription& descriptor);
     static std::unordered_map<std::string, ComponentDescription> m_preCompiledComponents;
     static std::unordered_map<std::string, ComponentDescription> m_customComponents;
 };

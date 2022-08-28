@@ -54,6 +54,27 @@ struct Endpoint
     size_t pinIndex;
 };
 
+// for std::set<Endpoint> or std::map<Endpoint,>
+static inline bool operator<(const Endpoint& lhs, const Endpoint& rhs)
+{
+    if (lhs.componentIndex < rhs.componentIndex)
+    {
+        return true;
+    }
+    else if (lhs.componentIndex == rhs.componentIndex)
+    {
+        return lhs.pinIndex < rhs.pinIndex;
+    }
+    else
+    {
+        return false;
+    }
+}
+static inline bool operator==(const Endpoint& lhs, const Endpoint& rhs)
+{
+    return (lhs.componentIndex == rhs.componentIndex) && (lhs.pinIndex == rhs.pinIndex);
+}
+
 struct ConnectionDescription
 {
     Endpoint src;

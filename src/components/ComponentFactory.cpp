@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
+#include <set>
 #include <ComponentBase.hpp>
 #include <ComponentFactory.hpp>
 
@@ -45,6 +46,7 @@ void ComponentFactory::registerCustomComponent(const ComponentDescription& desc)
     {
         throw std::runtime_error("Custom component type: " + desc.type + " has already been registered.");
     }
+    validateDescription(desc);
     m_customComponents[desc.type] = desc;
 }
 
@@ -55,8 +57,81 @@ bool ComponentFactory::tryRegisterCustomComponent(const ComponentDescription& de
     {
         return false;
     }
+    validateDescription(desc);
     m_customComponents[desc.type] = desc;
     return true;
+}
+
+void ComponentFactory::validateDescription(const ComponentDescription& descriptor)
+{
+    std::stringstream errInfo;
+    if (!isDescriptionValid(descriptor, errInfo))
+    {
+        throw std::runtime_error("Precompiled component type: " + descriptor.type + " is not valid: " + errInfo.str());
+    }
+}
+
+bool ComponentFactory::isDescriptionValid(const ComponentDescription& descriptor, std::stringstream& errInfo)
+{
+    bool valid = true;
+    auto checkName = [&errInfo, &valid](auto& vec, std::string vecName) {
+        std::set<std::string> names;
+        for (const auto& item : vec)
+        {
+            auto found = names.find(item.name);
+            if (found != names.end())
+            {
+                valid = false;
+                errInfo << "duplicate " << vecName << " name '" << *found << "';";
+            }
+            names.insert(item.name);
+        }
+    };
+    // pin name needs to be unique
+    checkName(descriptor.pins, "pin");
+    // subcomponent name needs to be unique
+    checkName(descriptor.subcomponents, "subcomponent");
+
+    size_t numComps = descriptor.subcomponents.size();
+    // connection indices should be valid index
+    for (const auto& conn : descriptor.connections)
+    {
+        // componentIndex == numComps means this component
+        if (conn.src.componentIndex > numComps)
+        {
+            errInfo << "connection src contains invalid component index: '" << conn.src.componentIndex << "';";
+        }
+        if (conn.dest.componentIndex > numComps)
+        {
+            errInfo << "connection dest contains invalid component index: '" << conn.dest.componentIndex << "';";
+        }
+    }
+    // should not contain duplicate connections
+    std::map<Endpoint, std::set<Endpoint>> connections;
+    for (const auto& conn : descriptor.connections)
+    {
+        auto srcFound = connections.find(conn.src);
+        if (srcFound != connections.end())
+        {
+            auto& destSet = srcFound->second;
+            auto destFound = destSet.find(conn.dest);
+            if (destFound != destSet.end())
+            {
+                valid = false;
+                errInfo << "duplicate connection src: (" << conn.src.componentIndex << "," << conn.src.pinIndex
+                    << "), dest: (" << conn.dest.componentIndex << "," << conn.dest.pinIndex << ");";
+            }
+            destSet.insert(conn.dest);
+        }
+        else
+        {
+            std::set<Endpoint> destSet;
+            destSet.insert(conn.dest);
+            connections.insert({conn.src, std::move(destSet)});
+        }
+    }
+
+    return valid;
 }
 
 std::unique_ptr<IComponent> ComponentFactory::create(const std::string& type, const std::string& name)
@@ -86,6 +161,52 @@ std::unique_ptr<IComponent> ComponentFactory::create(const std::string& type, co
     {
         throw std::runtime_error("Cannot find description for " + type);
     }
+
+    return ret;
+}
+
+JSON ComponentFactory::dump()
+{
+    JSON ret = JSON::object();
+    /**
+     * The dump format:
+     * {
+     *   "descriptors": {
+     *     "<descriptor ID>": {
+     *       "type": "<descriptor ID>",
+     *       "pins": [
+     *         {
+     *           "name": "<pin name>",
+     *           "direction": "INPUT|OUTPUT"
+     *         },
+     *         ...
+     *       ],
+     *       "subcomponents": [
+     *         {
+     *           "name": "<component name>",
+     *           "type": "<descriptor ID>"
+     *         },
+     *         ...
+     *       ],
+     *       "connections": [
+     *         {
+     *           "src": {
+     *             "name": "optional: <component name>.<pin name>",
+     *             "componentIndex": <component index>,
+     *             "pinIndex": <pin index>
+     *           },
+     *           "dest": {
+     *             "name": "optional: <component name>.<pin name>",
+     *             "componentIndex": <component index>,
+     *             "pinIndex": <pin index>
+     *           }
+     *         },
+     *         ...
+     *       ]
+     *     }
+     *   }
+     * }
+     */
 
     return ret;
 }
