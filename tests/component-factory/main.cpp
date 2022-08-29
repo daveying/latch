@@ -90,5 +90,8 @@ TEST(ComponentFactory, AddPreCompiledComponents)
     auto BusBufferComp      = ComponentFactory::create("BusBufferComponent", "BusBufferComp");
 
     EXPECT_STREQ(andGateComp->name().c_str(), "andGateComp");
+
+    component::JSON dump = ComponentFactory::dump();
+    std::cout << dump.dump(2) << std::endl;
 }
 

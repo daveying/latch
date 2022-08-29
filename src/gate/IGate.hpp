@@ -64,4 +64,23 @@ public:
 
 class TruthTableBase {};
 } // namespace component
+
+namespace std
+{
+
+static inline std::string to_string(component::PinDirection direction)
+{
+    std::string ret;
+    if (direction == component::PinDirection::INPUT)
+    {
+        ret = "INPUT";
+    }
+    else
+    {
+        ret = "OUTPUT";
+    }
+    return ret;
+}
+
+} // namespace std
 #endif

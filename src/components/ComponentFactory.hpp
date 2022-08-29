@@ -57,6 +57,7 @@ public:
 
     static JSON dump();
 private:
+    static JSON dumpDescription(const ComponentDescription& desc);
     static void validateDescription(const ComponentDescription& descriptor);
     static std::unordered_map<std::string, ComponentDescription> m_preCompiledComponents;
     static std::unordered_map<std::string, ComponentDescription> m_customComponents;
