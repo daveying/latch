@@ -96,12 +96,12 @@ bool ComponentFactory::isDescriptionValid(const ComponentDescription& descriptor
     // connection indices should be valid index
     for (const auto& conn : descriptor.connections)
     {
-        // componentIndex == numComps means this component
-        if (conn.src.componentIndex > numComps)
+        // componentIndex = -1 means this component
+        if (conn.src.componentIndex >= numComps || conn.src.componentIndex < -1)
         {
             errInfo << "connection src contains invalid component index: '" << conn.src.componentIndex << "';";
         }
-        if (conn.dest.componentIndex > numComps)
+        if (conn.dest.componentIndex >= numComps || conn.dest.componentIndex < -1)
         {
             errInfo << "connection dest contains invalid component index: '" << conn.dest.componentIndex << "';";
         }
@@ -165,9 +165,66 @@ std::unique_ptr<IComponent> ComponentFactory::create(const std::string& type, co
     return ret;
 }
 
+JSON ComponentFactory::dumpDescription(const ComponentDescription& desc)
+{
+    JSON ret = JSON::object();
+    ret["type"] = desc.type;
+    ret["pins"] = JSON::array();
+    auto& pins = ret["pins"];
+    for (const auto& pin : desc.pins)
+    {
+        pins.push_back({
+            {"name", pin.name},
+            {"direction", std::to_string(pin.direction)}
+        });
+    }
+    ret["subcomponents"] = JSON::array();
+    auto& subcomponents = ret["subcomponents"];
+    for (const auto& subcomp : desc.subcomponents)
+    {
+        subcomponents.push_back({
+            {"name", subcomp.name},
+            {"type", subcomp.type}
+        });
+    }
+
+    auto pinName = [&desc](const Endpoint& pin) -> std::string {
+        std::string ret;
+        if (pin.componentIndex == -1)
+        {
+            ret = desc.pins[pin.pinIndex].name;
+        }
+        else
+        {
+            ret = desc.subcomponents[pin.componentIndex].name + "." + std::to_string(pin.pinIndex);
+        }
+        return ret;
+    };
+
+    ret["connections"] = JSON::array();
+    auto& connections = ret["connections"];
+    for (const auto& conn : desc.connections)
+    {
+        connections.push_back({
+            {"src", {
+                {"name", pinName(conn.src)},
+                {"componentIndex", conn.src.componentIndex},
+                {"pinIndex", conn.src.pinIndex},
+            }},
+            {"dest", {
+                {"name", pinName(conn.dest)},
+                {"componentIndex", conn.dest.componentIndex},
+                {"pinIndex", conn.dest.pinIndex},
+            }}
+        });
+    }
+    return ret;
+}
+
 JSON ComponentFactory::dump()
 {
     JSON ret = JSON::object();
+    ret["descriptors"] = JSON::object();
     /**
      * The dump format:
      * {
@@ -207,6 +264,17 @@ JSON ComponentFactory::dump()
      *   }
      * }
      */
+
+    using DescMap = std::unordered_map<std::string, ComponentDescription>;
+    auto dumpDescVec = [](const DescMap& vec, JSON& ret) {
+        for (const auto& desc : vec)
+        {
+            ret[desc.first] = dumpDescription(desc.second);
+        }
+    };
+
+    dumpDescVec(m_preCompiledComponents, ret["descriptors"]);
+    dumpDescVec(m_customComponents, ret["descriptors"]);
 
     return ret;
 }
