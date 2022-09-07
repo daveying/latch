@@ -1,1 +1,2 @@
+add_subdirectory(component_descriptors)
 add_subdirectory(viewer)

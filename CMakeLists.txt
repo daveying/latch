@@ -14,5 +14,5 @@ enable_testing()
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
-add_subdirectory(tests)
 add_subdirectory(tools)
+add_subdirectory(tests)
