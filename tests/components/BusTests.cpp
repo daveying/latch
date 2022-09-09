@@ -249,8 +249,10 @@ TEST_F(BusTests, initialize)
     bus16->initialize();
     auto bus32 = ComponentFactory::create("Bus32", "bus32");
     bus32->initialize();
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
     auto bus64 = ComponentFactory::create("Bus64", "bus64");
     bus64->initialize();
+#endif
 }
 
 TEST_F(BusTests, ALU_A_B1)
@@ -273,9 +275,11 @@ TEST_F(BusTests, ALU_A_B32)
 {
     ALU_A_B_addTest<32>();
 }
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(BusTests, ALU_A_B64)
 {
     ALU_A_B_addTest<64>();
 }
+#endif
 
 } // namespace component

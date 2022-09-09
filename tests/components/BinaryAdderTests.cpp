@@ -129,8 +129,10 @@ TEST_F(BinaryAdderTests, BinaryAdder32Overflow)
     binaryAdderOverflowTest(std::make_index_sequence<32>{});
 }
 
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(BinaryAdderTests, BinaryAdder64Overflow)
 {
     binaryAdderOverflowTest(std::make_index_sequence<64>{});
 }
+#endif
 } // namespace component

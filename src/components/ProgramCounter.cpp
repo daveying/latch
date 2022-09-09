@@ -34,12 +34,16 @@ REGISTER_COMPONENT(BinaryCounter<4>, 4);
 REGISTER_COMPONENT(BinaryCounter<8>, 8);
 REGISTER_COMPONENT(BinaryCounter<16>, 16);
 REGISTER_COMPONENT(BinaryCounter<32>, 32);
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 REGISTER_COMPONENT(BinaryCounter<64>, 64);
+#endif
 REGISTER_COMPONENT(SynchronousBinaryCounter);
 REGISTER_COMPONENT(ProgramCounter<4>, pc4);
 REGISTER_COMPONENT(ProgramCounter<8>, pc8);
 REGISTER_COMPONENT(ProgramCounter<16>, pc16);
 REGISTER_COMPONENT(ProgramCounter<32>, pc32);
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 REGISTER_COMPONENT(ProgramCounter<64>, pc64);
+#endif
 
 } // namespace component

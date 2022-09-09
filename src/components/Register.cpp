@@ -33,5 +33,7 @@ REGISTER_COMPONENT(Register<4>, 4);
 REGISTER_COMPONENT(Register<8>, 8);
 REGISTER_COMPONENT(Register<16>, 16);
 REGISTER_COMPONENT(Register<32>, 32);
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 REGISTER_COMPONENT(Register<64>, 64);
+#endif
 } // namespace component

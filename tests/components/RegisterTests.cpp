@@ -406,9 +406,11 @@ TEST_F(RegisterTests, thirtyTwoBitInitialize)
     ASSERT_NO_THROW(thirtyTwoBit->initialize());
 }
 
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(RegisterTests, sixtyFourBitInitialize)
 {
     std::unique_ptr<IComponent> sixtyFourBit = Register<64>::create("sixtyFourBit");
     ASSERT_NO_THROW(sixtyFourBit->initialize());
 }
+#endif
 } // namespace component

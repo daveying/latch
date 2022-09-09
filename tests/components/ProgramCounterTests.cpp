@@ -616,10 +616,12 @@ TEST_F(ProgramCounterTests, BinaryCounter32)
 {
     binaryCounterTest<32>();
 }
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(ProgramCounterTests, BinaryCounter64)
 {
     binaryCounterTest<64>();
 }
+#endif
 
 TEST_F(ProgramCounterTests, SynchronousBinaryCounter)
 {
@@ -794,9 +796,11 @@ TEST_F(ProgramCounterTests, ProgramCounter32)
 {
     programCounterTest(std::make_index_sequence<32>{});
 }
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(ProgramCounterTests, ProgramCounter64)
 {
     programCounterTest(std::make_index_sequence<64>{});
 }
+#endif
 } // namespace component
 
