@@ -63,8 +63,10 @@ TEST_F(ALUTests, ALU32)
     ALUOverflowTest(std::make_index_sequence<32>{});
 }
 
+#ifdef DEEP_TEMPLATE_RECURSIVE_BUILD
 TEST_F(ALUTests, ALU64)
 {
     ALUOverflowTest(std::make_index_sequence<64>{});
 }
+#endif
 } // namespace component
