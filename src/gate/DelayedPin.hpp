@@ -39,6 +39,10 @@ class DelayedInputPin : public IPin
 {
 public:
     static_assert(DELAY >= 0, "Input pin delay must >= 0");
+    static std::string Name()
+    {
+        return "DelayedInputPin_" + std::to_string(DELAY);
+    }
     static constexpr auto direction()
     {
         return component::PinDirection::INPUT;
@@ -111,6 +115,10 @@ class DelayedOutputPin : public ISourcePin
 {
 public:
     static_assert(DELAY >= 0, "Output pin delay must >= 0");
+    static std::string Name()
+    {
+        return "DelayedOutputPin_" + std::to_string(DELAY);
+    }
     static constexpr auto direction()
     {
         return component::PinDirection::OUTPUT;

@@ -31,10 +31,6 @@
 namespace component
 {
 class IComponent;
-}
-
-namespace component
-{
 
 using PinStateType = uint8_t;
 

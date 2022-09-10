@@ -174,6 +174,7 @@ JSON ComponentFactory::dumpDescription(const ComponentDescription& desc)
     for (const auto& pin : desc.pins)
     {
         pins.push_back({
+            {"type", pin.type},
             {"name", pin.name},
             {"direction", std::to_string(pin.direction)}
         });
@@ -234,7 +235,8 @@ JSON ComponentFactory::dump()
      *       "pins": [
      *         {
      *           "name": "<pin name>",
-     *           "direction": "INPUT|OUTPUT"
+     *           "direction": "INPUT|OUTPUT",
+     *           "type": "<pin type>"
      *         },
      *         ...
      *       ],
