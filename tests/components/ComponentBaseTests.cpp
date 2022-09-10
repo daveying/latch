@@ -37,10 +37,10 @@ protected:
     {
         ComponentDescription description;
         description.type = "OneBit";
-        description.pins.push_back({"Load", PinDirection::INPUT});  // -1,0
-        description.pins.push_back({"D", PinDirection::INPUT});     // -1,1
-        description.pins.push_back({"Clock", PinDirection::INPUT}); // -1,2
-        description.pins.push_back({"Q", PinDirection::OUTPUT});    // -1,3
+        description.pins.push_back({"ForwardInputPin", "Load", PinDirection::INPUT});  // -1,0
+        description.pins.push_back({"ForwardInputPin", "D", PinDirection::INPUT});     // -1,1
+        description.pins.push_back({"ForwardInputPin", "Clock", PinDirection::INPUT}); // -1,2
+        description.pins.push_back({"ForwardOutputPin", "Q", PinDirection::OUTPUT});    // -1,3
 
         description.subcomponents.push_back({"dataInvertor", "NOTGateComponent"});          // 0
         description.subcomponents.push_back({"feedbackAnd", "ANDGateComponent"});           // 1
@@ -81,16 +81,16 @@ protected:
     {
         ComponentDescription description;
         description.type = "FourBit";
-        description.pins.push_back({"Load", PinDirection::INPUT});  // -1,0
-        description.pins.push_back({"D0", PinDirection::INPUT});    // -1,1
-        description.pins.push_back({"D1", PinDirection::INPUT});    // -1,2
-        description.pins.push_back({"D2", PinDirection::INPUT});    // -1,3
-        description.pins.push_back({"D3", PinDirection::INPUT});    // -1,4
-        description.pins.push_back({"Clock", PinDirection::INPUT}); // -1,5
-        description.pins.push_back({"Q0", PinDirection::OUTPUT});   // -1,6
-        description.pins.push_back({"Q1", PinDirection::OUTPUT});   // -1,7
-        description.pins.push_back({"Q2", PinDirection::OUTPUT});   // -1,8
-        description.pins.push_back({"Q3", PinDirection::OUTPUT});   // -1,9
+        description.pins.push_back({"ForwardInputPin", "Load", PinDirection::INPUT});  // -1,0
+        description.pins.push_back({"ForwardInputPin", "D0", PinDirection::INPUT});    // -1,1
+        description.pins.push_back({"ForwardInputPin", "D1", PinDirection::INPUT});    // -1,2
+        description.pins.push_back({"ForwardInputPin", "D2", PinDirection::INPUT});    // -1,3
+        description.pins.push_back({"ForwardInputPin", "D3", PinDirection::INPUT});    // -1,4
+        description.pins.push_back({"ForwardInputPin", "Clock", PinDirection::INPUT}); // -1,5
+        description.pins.push_back({"ForwardOutputPin", "Q0", PinDirection::OUTPUT});   // -1,6
+        description.pins.push_back({"ForwardOutputPin", "Q1", PinDirection::OUTPUT});   // -1,7
+        description.pins.push_back({"ForwardOutputPin", "Q2", PinDirection::OUTPUT});   // -1,8
+        description.pins.push_back({"ForwardOutputPin", "Q3", PinDirection::OUTPUT});   // -1,9
 
         description.subcomponents.push_back({"bit0", "OneBit"}); // 0
         description.subcomponents.push_back({"bit1", "OneBit"}); // 1

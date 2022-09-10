@@ -36,6 +36,7 @@ namespace component
 
 struct PinDescription
 {
+    std::string type;
     std::string name;
     PinDirection direction;
 };
@@ -225,6 +226,12 @@ static PinDirection pinDirection(T*)
     return std::remove_pointer<T>::type::direction();
 }
 
+template <typename T>
+static std::string pinTypeName(T*)
+{
+    return std::remove_pointer<T>::type::Name();
+}
+
 
 template <typename T, size_t... I>
 static constexpr auto gatePinsImpl(T& t, size_t inputPinSize, std::index_sequence<I...>)
@@ -270,18 +277,19 @@ static void getPins(std::vector<PinDescription>& pinsOut)
     auto pinsTuple = T::Pins();
     for_each(pinsTuple, [&pinsOut] (auto& pinTuple, size_t) {
             std::string pinName    = to_str(std::get<PIN_NAME>(pinTuple));
+            std::string pinType    = pinTypeName(std::get<PIN_TYPE>(pinTuple));
             PinDirection direction = pinDirection(std::get<PIN_TYPE>(pinTuple));
             size_t pinSize         = std::get<PIN_SIZE>(pinTuple);
             if (pinSize > 0)
             {
                 for (size_t i = 0; i < pinSize; ++i)
                 {
-                    pinsOut.push_back({.name = pinName + "[" + std::to_string(i) + "]", .direction = direction});
+                    pinsOut.push_back({.type = pinType, .name = pinName + "[" + std::to_string(i) + "]", .direction = direction});
                 }
             }
             else
             {
-                pinsOut.push_back({.name = pinName, .direction = direction});
+                pinsOut.push_back({.type = pinType, .name = pinName, .direction = direction});
             }
         });
 }

@@ -87,7 +87,7 @@ public:
     }
     virtual void initialize() override
     {
-        m_gate.compute();
+        m_gate.initialize();
     }
     virtual const std::string& name() const override
     {
@@ -112,7 +112,7 @@ public:
     }
     virtual IComponent* subcomponent(int) override
     {
-        return &m_gate;
+        return nullptr;
     }
     static std::unique_ptr<IComponent> create(const std::string& name)
     {

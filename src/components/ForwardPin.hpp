@@ -35,6 +35,11 @@ template <PinDirection Direction>
 class ForwardPin : public ISourcePin
 {
 public:
+    static std::string Name()
+    {
+        return std::string("Forward") + (Direction == PinDirection::INPUT ? "Input" : "Output") + "Pin";
+    }
+
     static constexpr auto direction()
     {
         return Direction;

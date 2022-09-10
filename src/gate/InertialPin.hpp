@@ -33,6 +33,10 @@ template <sched::Period DELAY>
 class InertialInputPin : public DelayedInputPin<DELAY>
 {
 public:
+    static std::string Name()
+    {
+        return "InertialInputPin_" + std::to_string(DELAY);
+    }
     static_assert(DELAY >= 1, "Inertial has to bigger than one time unit to make sense");
     explicit InertialInputPin(IGate* parent, int64_t index = -1)
         : DelayedInputPin<DELAY>(parent, index)

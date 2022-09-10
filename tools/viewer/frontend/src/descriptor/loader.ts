@@ -22,11 +22,11 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 export enum PinType {
-    ZeroDelayInputPin,
-    ZeroDelayOutputPin,
+    DelayedInputPin_0,
+    DelayedOutputPin_0,
     DelayedInputPin_1,
     DelayedInputPin_5,
-    UnitInertialInputPin,
+    InertialInputPin_1,
     ForwardInputPin,
     ForwardOutputPin,
 }
