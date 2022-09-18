@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
+import fs from "fs";
+
 export enum PinType {
     DelayedInputPin_0,
     DelayedOutputPin_0,
@@ -37,11 +39,32 @@ export class Pin {
         this.type = type;
     }
 }
+
 export class Gate {
     inputPins: Pin[];
     outputPins: Pin[];
     constructor(inputPins: Pin[], outputPins: Pin[]) {
         this.inputPins = inputPins;
         this.outputPins = outputPins;
+    }
+}
+
+export class ComponentDescriptor {
+    name: string;
+    rawDescriptor: any;
+    constructor(compName: string, rawDesc: any) {
+        this.name = compName;
+        this.rawDescriptor = rawDesc;
+    }
+}
+
+export class Loader {
+    descriptors: ComponentDescriptor[];
+    constructor(fileName: string) {
+        this.descriptors = [];
+        let jsonData = JSON.parse(fs.readFileSync(fileName).toString());
+        for (let compName in jsonData) {
+            this.descriptors.push(new ComponentDescriptor(compName, jsonData[compName]));
+        }
     }
 }
