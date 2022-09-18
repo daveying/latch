@@ -17,7 +17,7 @@ option(
 if (DEEP_TEMPLATE_RECURSIVE_BUILD)
     message(
         WARNING
-        "Build the components require deep template recursive instantiation."
+        "Build the components require deep recursive template instantiation.\n"
         "Large memory is needed for compiler."
     )
     add_compile_definitions(DEEP_TEMPLATE_RECURSIVE_BUILD)

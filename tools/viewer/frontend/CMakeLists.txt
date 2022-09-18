@@ -10,7 +10,7 @@ add_custom_target(
 )
 
 add_custom_target(
-    VIEWER_TESTS ALL
+    VIEWER_TESTS
     COMMAND ${NPM} install
     COMMAND DESCRIPTOR_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../component_descriptors/component_descriptors.json ${NPM} run test
     DEPENDS component_descriptors_json
