@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ main, viewer ]
+    branches: [ main, loader ]
   pull_request:
     branches: [ main ]
 
