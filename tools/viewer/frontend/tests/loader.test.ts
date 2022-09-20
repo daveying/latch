@@ -1,6 +1,5 @@
-import { PinType } from "../src/descriptor/loader";
 import { Loader } from "../src/descriptor/loader";
-import fs from "fs";
+import * as fs from "fs";
 
 describe("Make sure the descriptor file is ready for loader tests", () => {
     test("Env var DESCRIPTOR_PATH is set", () => {
@@ -15,12 +14,9 @@ describe("Make sure the descriptor file is ready for loader tests", () => {
     });
 });
 
-test("Defined PinType", () => {
-    expect(PinType.DelayedInputPin_1).toBe(PinType.DelayedInputPin_1);
-});
-
 describe("Loader can load component descriptor file and convert it to ComponentDescriptor instances", () => {
     test("Loader can load component descriptor file", () => {
-        new Loader(process.env.DESCRIPTOR_PATH as string);
+        let loader = Loader.fromFile(process.env.DESCRIPTOR_PATH as string);
+        expect(loader).toBeTruthy();
     });
 });
