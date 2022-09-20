@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /////////////////////////////////////////////////////////////////////////////////
 
-import fs from "fs";
+import * as fs from "fs";
 
 export enum PinType {
     DelayedInputPin_0,
@@ -33,38 +33,125 @@ export enum PinType {
     ForwardOutputPin,
 }
 
-export class Pin {
+export enum PinDirection {
+    INPUT,
+    OUTPUT,
+}
+
+export class PinDescriptor {
     type: PinType;
-    constructor(type: PinType) {
+    name: string;
+    direction: PinDirection;
+    constructor(name: string, type: PinType, direction: PinDirection) {
+        this.name = name;
         this.type = type;
+        this.direction = direction;
+    }
+    static fromJSON(jsonData: any): PinDescriptor {
+        if (typeof jsonData.name !== "string" ||
+            typeof jsonData.type !== "string" ||
+            typeof jsonData.direction !== "string") {
+            throw `Invalid JSON data for PinDescriptor. ${JSON.stringify(jsonData)}`;
+        }
+        return new PinDescriptor(
+            jsonData.name,
+            PinType[<keyof typeof PinType>jsonData.type],
+            PinDirection[<keyof typeof PinDirection>jsonData.direction]
+        );
     }
 }
 
-export class Gate {
-    inputPins: Pin[];
-    outputPins: Pin[];
-    constructor(inputPins: Pin[], outputPins: Pin[]) {
-        this.inputPins = inputPins;
-        this.outputPins = outputPins;
+export class SubcomponentDescriptor {
+    type: string;
+    name: string;
+    constructor(name: string, type: string) {
+        this.name = name;
+        this.type = type;
+    }
+    static fromJSON(jsonData: any): SubcomponentDescriptor {
+        if (typeof jsonData.name !== "string" ||
+            typeof jsonData.type !== "string") {
+            throw `Invalid JSON data for SubcomponentDescriptor. ${JSON.stringify(jsonData)}`;
+        }
+        return new SubcomponentDescriptor(jsonData.name, jsonData.type);
+    }
+}
+
+export class Endpoint {
+    componentIndex: number;
+    pinIndex: number;
+    constructor(componentIndex: number, pinIndex: number) {
+        this.componentIndex = componentIndex;
+        this.pinIndex = pinIndex;
+    }
+    static fromJSON(jsonData: any): Endpoint {
+        if (typeof jsonData.componentIndex !== "number" ||
+            typeof jsonData.pinIndex !== "number") {
+            throw `Invalid JSON data for Endpoint. ${JSON.stringify(jsonData)}`;
+        }
+        return new Endpoint(jsonData.componentIndex, jsonData.pinIndex);
+    }
+}
+
+export class ConnectionDescriptor {
+    src: Endpoint;
+    dest: Endpoint;
+    constructor(src: Endpoint, dest: Endpoint) {
+        this.src = src;
+        this.dest = dest;
+    }
+    static fromJSON(jsonData: any): ConnectionDescriptor {
+        if (!jsonData.src || !jsonData.dest) {
+            throw `Invalid JSON data for ConnectionDescriptor. ${JSON.stringify(jsonData)}`;
+        }
+        return new ConnectionDescriptor(
+            Endpoint.fromJSON(jsonData.src),
+            Endpoint.fromJSON(jsonData.dest)
+        );
     }
 }
 
 export class ComponentDescriptor {
-    name: string;
-    rawDescriptor: any;
-    constructor(compName: string, rawDesc: any) {
-        this.name = compName;
-        this.rawDescriptor = rawDesc;
+    type: string;
+    pins: PinDescriptor[];
+    subcomponents: SubcomponentDescriptor[];
+    connections: ConnectionDescriptor[];
+    constructor(
+        type: string,
+        pins: PinDescriptor[],
+        subcomponents: SubcomponentDescriptor[],
+        connections: ConnectionDescriptor[]) {
+        this.type = type;
+        this.pins = pins;
+        this.subcomponents = subcomponents;
+        this.connections = connections;
+    }
+    static fromJSON(jsonData: any): ComponentDescriptor {
+        if (!Array.isArray(jsonData.pins) ||
+            !Array.isArray(jsonData.subcomponents) ||
+            !Array.isArray(jsonData.connections) ||
+            typeof jsonData.type !== "string") {
+            throw `Invalid JSON data for ComponentDescriptor. ${JSON.stringify(jsonData.type)}`;
+        }
+        return new ComponentDescriptor(
+            jsonData.type,
+            jsonData.pins.map((pinDesc: any) => PinDescriptor.fromJSON(pinDesc)),
+            jsonData.subcomponents.map((subcompDesc: any) => SubcomponentDescriptor.fromJSON(subcompDesc)),
+            jsonData.connections.map((connectionDesc: any) => ConnectionDescriptor.fromJSON(connectionDesc)),
+        );
     }
 }
 
 export class Loader {
-    descriptors: ComponentDescriptor[];
-    constructor(fileName: string) {
-        this.descriptors = [];
-        let jsonData = JSON.parse(fs.readFileSync(fileName).toString());
+    descriptors: Map<string, ComponentDescriptor>;
+    constructor(jsonData: any) {
+        this.descriptors = new Map();
         for (let compName in jsonData) {
-            this.descriptors.push(new ComponentDescriptor(compName, jsonData[compName]));
+            this.descriptors.set(compName, ComponentDescriptor.fromJSON(jsonData[compName]));
         }
+    }
+    static fromFile(fileName: string): Loader {
+        let jsonData = JSON.parse(fs.readFileSync(fileName).toString());
+        return new Loader(jsonData["descriptors"]);
     }
 }
