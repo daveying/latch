@@ -53,10 +53,15 @@ export class PinDescriptor {
             typeof jsonData.direction !== "string") {
             throw `Invalid JSON data for PinDescriptor. ${JSON.stringify(jsonData)}`;
         }
+        let type = PinType[<keyof typeof PinType>jsonData.type];
+        let direction = PinDirection[<keyof typeof PinDirection>jsonData.direction];
+        if (type === undefined || direction === undefined) {
+            throw `Pin type (${jsonData.type}) or direction (${jsonData.direction}) is invalid`;
+        }
         return new PinDescriptor(
             jsonData.name,
-            PinType[<keyof typeof PinType>jsonData.type],
-            PinDirection[<keyof typeof PinDirection>jsonData.direction]
+            type,
+            direction
         );
     }
 }
@@ -144,7 +149,7 @@ export class ComponentDescriptor {
 
 export class Loader {
     descriptors: Map<string, ComponentDescriptor>;
-    constructor(jsonData: any) {
+    constructor(jsonData?: any) {
         this.descriptors = new Map();
         for (let compName in jsonData) {
             this.descriptors.set(compName, ComponentDescriptor.fromJSON(jsonData[compName]));
@@ -153,5 +158,13 @@ export class Loader {
     static fromFile(fileName: string): Loader {
         let jsonData = JSON.parse(fs.readFileSync(fileName).toString());
         return new Loader(jsonData["descriptors"]);
+    }
+    loadSingle(jsonData: any): void {
+        if (!jsonData.type || this.descriptors.has(jsonData.type)) {
+            throw jsonData.type ? `Component type ${jsonData.type} has already loaded.`
+                                : "Invalid JSON data for ComponentDescriptor";
+        }
+        let compDesc = ComponentDescriptor.fromJSON(jsonData);
+        this.descriptors.set(compDesc.type, compDesc);
     }
 }
