@@ -167,4 +167,7 @@ export class Loader {
         let compDesc = ComponentDescriptor.fromJSON(jsonData);
         this.descriptors.set(compDesc.type, compDesc);
     }
+    getDescriptor(name: string): ComponentDescriptor | undefined {
+        return this.descriptors.get(name);
+    }
 }
