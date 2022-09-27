@@ -98,30 +98,27 @@ export class Component {
         desc: ComponentDescriptor,
         descriptors: Map<string, ComponentDescriptor>
     ): Component {
-        let pins: Pin[] = [];
-        for (let pinDesc of desc.pins) {
-            pins.push(Pin.fromDescriptor(pinDesc, null));
-        }
-        let subcomponents: Component[] = [];
-        for (let subcompDesc of desc.subcomponents) {
+        let pins: Pin[] = desc.pins.map(pinDesc => Pin.fromDescriptor(pinDesc, null));
+
+        let subcomponents: Component[] = desc.subcomponents.map(subcompDesc => {
             let compDesc = descriptors.get(subcompDesc.type);
-            if (compDesc) {
-                subcomponents.push(Component.fromDescriptor(subcompDesc.name, null, compDesc, descriptors));
-            } else {
+            if (!compDesc) {
                 throw `Invalid ComponentDescriptor '${desc.type}': subcomponent type '${subcompDesc.type}' is not registered.`;
             }
-        }
+            return Component.fromDescriptor(subcompDesc.name, null, compDesc, descriptors);
+        });
 
         let comp = new Component(name, subcomponents, pins, parent);
+
         pins.forEach((pin) => pin.setParent(comp));
         subcomponents.forEach((c) => c.setParent(comp));
 
-        desc.connections.map((conn): [Pin, Pin] => {
+        desc.connections.map((conn, index): [Pin, Pin] => {
             function getPin(endpoint: Endpoint): Optional<Pin> {
                 let pinComp = endpoint.componentIndex === -1 ?
                     comp : subcomponents[endpoint.componentIndex];
                 if (pinComp) {
-                    let pin = comp.pins[endpoint.pinIndex];
+                    let pin = pinComp.pins[endpoint.pinIndex];
                     return pin || null;
                 }
                 return null;
@@ -129,7 +126,7 @@ export class Component {
             let srcPin = getPin(conn.src);
             let destPin = getPin(conn.dest);
             if (!srcPin || !destPin) {
-                throw `Invalid ComponentDescriptor '${desc.type}': connection invalid.`;
+                throw `Invalid ComponentDescriptor '${desc.type}': connection '${index}' invalid.`;
             }
             return [srcPin, destPin];
         }).forEach((pins) => {
