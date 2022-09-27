@@ -92,6 +92,24 @@ export class Component {
     id(): string {
         return this.parent ? `${this.parent.id()}.${this.name}` : this.name;
     }
+    getComponent(id: string): Optional<Component> {
+        let thisId = this.id();
+        if (id.startsWith(thisId)) {
+            if (id === thisId) {
+                return this;
+            }
+            let subcompName = id.slice(thisId.length).split(".", 2)[1];
+            if (!subcompName) {
+                // empty string or undefined
+                return null;
+            }
+            let subcomp = this.subcomponents.find(comp => comp.name === subcompName);
+            if (subcomp) {
+                return subcomp.getComponent(id);
+            }
+        }
+        return null;
+    }
     static fromDescriptor(
         name: string,
         parent: Optional<Component>,
