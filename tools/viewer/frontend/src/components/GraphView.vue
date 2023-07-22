@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
-import mxgraph from './mxgraph'
+import { mxFactory } from './mxgraph'
+
+const mxgraph = mxFactory({})
 
 const mxGraph = mxgraph.mxGraph
 const mxClient = mxgraph.mxClient

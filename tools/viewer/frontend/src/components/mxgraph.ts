@@ -8,8 +8,9 @@ import mx from 'mxgraph'
 (window as any)['mxLoadStylesheets'] = true;
 
 // mx is the function returned from <viewer>/node_modules/mxgraph/javascript/dist/build.json:10
-// the empty {} passed into mx() is the opts
+// the empty opts passed into mx() is the opts
 // mxgraph will be the object __mxOutput
-const mxgraph = mx({});
 
-export default mxgraph;
+export function mxFactory(opts) {
+    return mx(opts)
+}

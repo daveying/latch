@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GraphView from './components/GraphView.vue'
+import GraphViewV2 from './components/GraphViewV2.vue'
 import descriptors from './assets/descriptors.json'
 import { ref, computed } from 'vue'
 import { Loader } from './descriptor/loader'
@@ -25,7 +26,7 @@ const loader = new Loader(descriptors.descriptors);
         <GraphView />
       </div>
       <div id="second">
-        <GraphView />
+        <GraphViewV2 />
       </div>
     </div>
   </main>
