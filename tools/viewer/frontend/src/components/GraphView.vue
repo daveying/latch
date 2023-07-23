@@ -23,7 +23,7 @@ if (!mxClient.isBrowserSupported())
   mxUtils.error('Browser is not supported!', 200, false);
 }
 
-mxGraph.prototype.getAllConnectionConstraints = function(terminal, source?: boolean | undefined) {
+mxGraph.prototype.getAllConnectionConstraints = function(terminal, _source?: boolean | undefined) {
   if (terminal.shape.constraints != null)
       return terminal.shape.constraints
   if (terminal != null && terminal.shape != null) {
@@ -36,7 +36,7 @@ mxGraph.prototype.getAllConnectionConstraints = function(terminal, source?: bool
   else if (terminal.shape.constraints != null) {
     return terminal.shape.constraints
   }
-  return null
+  return []
 }
 mxShape.prototype.constraints = [new mxConnectionConstraint(new mxPoint(0.25, 0), true),
                                  new mxConnectionConstraint(new mxPoint(0.5, 0), true),
@@ -50,7 +50,7 @@ mxShape.prototype.constraints = [new mxConnectionConstraint(new mxPoint(0.25, 0)
                                  new mxConnectionConstraint(new mxPoint(0.25, 1), true),
                                  new mxConnectionConstraint(new mxPoint(0.5, 1), true),
                                  new mxConnectionConstraint(new mxPoint(0.75, 1), true)];
-mxPolyline.prototype.constraints = null
+mxPolyline.prototype.constraints = []
 // Program starts here. Creates a sample graph in the
 // DOM node with the specified ID. This function is invoked
 // from the onLoad event handler of the document (see below).
@@ -70,9 +70,9 @@ function main(container: any)
     var graph = new mxGraph(container);
     graph.setConnectable(true);
     // Enables connect preview for the default edge style
-    graph.connectionHandler.createEdgeState = function(me)
+    graph.connectionHandler.createEdgeState = function(_me)
     {
-      var edge = graph.createEdge(null, null, null, null, null);
+      var edge = graph.createEdge(new mxgraph.mxCell(), null, null, new mxgraph.mxCell(), new mxgraph.mxCell());
       return new mxCellState(this.graph.view, edge, this.graph.getCellStyle(edge));
     };
     // Enables rubberband selection

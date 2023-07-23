@@ -11,6 +11,6 @@ import mx from 'mxgraph'
 // the empty opts passed into mx() is the opts
 // mxgraph will be the object __mxOutput
 
-export function mxFactory(opts) {
+export function mxFactory(opts: any) {
     return mx(opts)
 }
